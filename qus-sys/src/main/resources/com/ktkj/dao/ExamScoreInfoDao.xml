@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.ExamScoreInfoDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.exam_result_id,
+        T.qus_naire_station,
+        T.qus_naire_name,
+        T.qus_naire_dept,
+        T.qus_naire_vice_dept,
+        T.qus_naire_city,
+        T.qus_naire_station_name,
+        T.qus_naire_staff_id,
+        T.qus_naire_dept_id,
+        T.qus_naire_vice_dept_id,
+        T.qus_naire_city_id,
+        T.exam_station,
+        T.exam_name,
+        T.exam_dept,
+        T.exam_city,
+        T.exam_station_name,
+        T.exam_staff_id,
+        T.exam_dept_id,
+        T.exam_city_id,
+        T.index_item_id,
+        T.index_item_name,
+        T.index_item_score,
+        T.score_type,
+        T.create_time,
+        T.update_time,
+        exam_item_id,
+        exam_item_name
+        FROM tower_exam_score_info T
+        WHERE 1=1
+        <if test="params.qusNaireStaffId != null ">
+            AND T.qus_naire_staff_id = '${params.qusNaireStaffId}'
+        </if>
+    </sql>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into tower_exam_score_info
+        (qus_naire_station,
+        qus_naire_name,
+        qus_naire_dept,
+        qus_naire_city,
+        qus_naire_station_name,
+        qus_naire_staff_id,
+        qus_naire_dept_id,
+        qus_naire_city_id,
+        exam_station,
+        exam_name,
+        exam_dept,
+        exam_city,
+        exam_station_name,
+        exam_staff_id,
+        exam_dept_id,
+        exam_city_id,
+        index_item_id,
+        index_item_name,
+        index_item_score,
+        index_item_percent,
+        page_id,
+        score_type,
+        create_time,
+        qus_naire_vice_dept,
+        qus_naire_vice_dept_id,
+        exam_item_id,
+        exam_item_name)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.qusNaireStation},
+            #{item.qusNaireName},
+            #{item.qusNaireDept},
+            #{item.qusNaireCity},
+            #{item.qusNaireStationName},
+            #{item.qusNaireStaffId},
+            #{item.qusNaireDeptId},
+            #{item.qusNaireCityId},
+            #{item.examStation},
+            #{item.examName},
+            #{item.examDept},
+            #{item.examCity},
+            #{item.examStationName},
+            #{item.examStaffId},
+            #{item.examDeptId},
+            #{item.examCityId},
+            #{item.indexItemId},
+            #{item.indexItemName},
+            #{item.indexItemScore},
+            #{item.indexItemPercent},
+            #{item.pageId},
+            #{item.scoreType},
+            #{item.createTime},
+            #{item.qusNaireViceDept},
+            #{item.qusNaireViceDeptId},
+            #{item.examItemId},
+            #{item.examItemName}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectExamScoreInfoPage" resultType="com.ktkj.entity.ExamScoreInfoEntity">
+        <include refid="queryDeptScore"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.ExamScoreInfoEntity">
+        <include refid="selectSql"/>
+    </select>
+    <select id="queryDeptAll" resultType="com.ktkj.entity.ExamScoreInfoEntity">
+        <include refid="queryDeptScore"/>
+    </select>
+    <sql id="queryDeptScore">
+        select exam_name,avg(index_item_score)  index_item_score from
+        tower_exam_score_info where score_type='1'
+        <if test="params.examStation != null ">
+            AND exam_station = '${params.examStation}'
+        </if>
+        GROUP BY exam_name
+        order by exam_name
+    </sql>
+
+    <select id="queryFinalScore" resultType="com.ktkj.entity.FinalExamScoreInfoEntity">
+    select
+            b.exel_station qus_naire_station,
+            d.item_name qus_naire_station_name,
+            c.station exam_station_name,
+            c.staff_name exam_name,
+            c.dept exam_dept,
+            c.city exam_city,
+            c.staff_id exam_staff_id,
+            c.station_id exam_station,
+            c.dept_id exam_dept_id,
+            c.city_id exam_city_id,
+            a.percent*b.index_item_score/100 final_score,
+            now() create_time
+            from tower_exam_per_def a,
+            (select AVG(index_item_score) index_item_score,
+            exam_staff_id,
+            exam_station,
+            exel_station from
+            tower_exam_score_info where
+            score_type='1' and
+            exam_station!='15' and
+            exam_station!='25' and
+            exam_station!='26' and
+            exam_station!='27'
+            group by exam_staff_id,exam_station,exel_station) b,
+            tower_staff_info c,
+            tower_dict_def d
+            where a.qus_station_id = b.exel_station
+            and a.exam_station_id = b.exam_station
+            and b.exam_staff_id = c.staff_id
+            and b.exel_station = d.item_value
+            and d.type_code = 'EXEL_STATION'
+    union all
+    select
+            b.exel_station qus_naire_station,
+            d.item_name qus_naire_station_name,
+            '分公司领导班子' exam_station_name,
+            concat(c.item_name,'分公司领导班子') exam_name,
+            '无' exam_dept,
+            c.item_name exam_city,
+            c.code exam_staff_id,
+            '15' exam_station,
+            '' exam_dept_id,
+            c.item_value exam_city_id,
+            a.percent*b.index_item_score/100 final_score,
+            now() create_time
+            from tower_exam_per_def a,
+            (select AVG(index_item_score) index_item_score,
+            exam_staff_id,
+            exam_station,
+            exel_station from
+            tower_exam_score_info where score_type='1' and exam_station='15'
+            group by exam_staff_id,exam_station,exel_station) b,
+            tower_dict_def c,
+            tower_dict_def d
+            where a.qus_station_id = b.exel_station
+            and a.exam_station_id = b.exam_station
+            and b.exam_staff_id = c.code
+                    and c.type_code = 'CITY'
+            and b.exel_station = d.item_value
+            and d.type_code = 'EXEL_STATION'
+
+    </select>
+
+    <delete id="deleteByQusStaffId" >
+        delete from tower_exam_score_info where qus_naire_staff_id = #{qusStaffId}
+    </delete>
+</mapper>

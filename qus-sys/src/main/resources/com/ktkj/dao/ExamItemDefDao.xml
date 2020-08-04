@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.ExamItemDefDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.exam_item_id,
+        T.exam_station,
+        T.excellent_count,
+        T.good_count,
+        T.exam_item_name,
+        T.exam_item_desc,
+        T.exam_seq,
+        T.create_time,
+        T.create_operator,
+        T.update_time,
+        T.update_operator,
+        T.exam_station_id
+        FROM tower_exam_item_def T
+        WHERE 1=1
+        <if test="params.examStationId != null and params.examStationId.trim() != ''">
+            AND T.exam_station_id = '${params.examStationId}'
+        </if>
+    </sql>
+
+    <select id="selectExamItemDefPage" resultType="com.ktkj.entity.ExamItemDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.ExamItemDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="qryExamItem" resultType="com.ktkj.entity.ExamItemDefEntity">
+        SELECT
+            *
+        FROM
+            tower_exam_item_def
+        WHERE
+            exam_item_id IN ( SELECT exam_item_id FROM tower_qus_item_rel WHERE qus_naire_id IN
+            ( SELECT qus_naire_id FROM tower_questionnaire_def WHERE
+            qus_naire_station_id = '${params.qusNaireStationId}' ) )
+    </select>
+</mapper>

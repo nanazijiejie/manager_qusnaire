@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>天安十年 感恩有您</title>
+  <script type="text/javascript" src="js/tb.resize.js" ignoreapd="1"></script>
+  <link rel="stylesheet" href="css/animate.min.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/cropper.css">
+  <link rel="stylesheet" href="css/main.css">
+  <!--<script src="js/jquery-3.2.1.js"></script>-->
+  <script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+  <script src="js/tap.js"></script>
+  <script src="js/cropper.js"></script>
+  <script src="js/head.js"></script>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ad3aba90bf335133517e4849cec29967";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+</head>
+
+<script type="text/javascript">
+  var url = "https://admin.jixuxiang.com/ring/html/tianan/index.html";
+  if(window.location.href!=url){
+    window.location.href= url;
+  }
+  var shareImgUrl = "https://admin.jixuxiang.com/ring/html/tianan/images/share.jpeg";
+  var HOST = "https://admin.jixuxiang.com/ring/";
+  //var HOST = "http://localhost:8080/ring_framework_war_exploded/";
+  //服务端提供的接口。HOST是服务器的地址，在项目中定义为全局变量；
+  var url11 = HOST + "weixinscan/list";
+  $.ajax({
+    //与服务器交互
+    url:url11,
+    dataType: 'json',
+    data: {"url" : url},
+    complete: function(XMLHttpRequest, textStatus){
+
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown){
+      //alert("发生错误："+errorThrown);
+    },
+    success: function(res){
+      var appId = res.appId;
+      var noncestr = res.nonceStr;
+      var jsapi_ticket = res.jsapi_ticket;
+      var timestamp = res.timestamp;
+      var signature = res.signature;
+      wx.config({
+        debug: false, //开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: appId, //必填，公众号的唯一标识
+        timestamp: timestamp, // 必填，生成签名的时间戳
+        nonceStr: noncestr, //必填，生成签名的随机串
+        signature: signature,// 必填，签名，见附录1
+        jsApiList: ['checkJsApi', 'onMenuShareTimeline','onMenuShareAppMessage'] //必填，需要使用的JS接口列表，所有JS接口列表 见附录2
+      });
+    }
+  });
+  wx.ready (function () {
+    // 微信分享的数据
+    var shareData1 = {
+      "imgUrl" : shareImgUrl,    // 分享显示的缩略图地址
+      "link" : url,    // 分享地址
+      "title" : "天安十年，感恩有您！",   // 分享标题
+      success : function () {
+
+      }
+    };
+    var shareData2 = {
+      "imgUrl" : shareImgUrl,    // 分享显示的缩略图地址
+      "link" : url,    // 分享地址
+      "desc" : "天安伙伴们，一起来制作属于自己的十周年专题微信头像吧！",   // 分享描述
+      "title" : "天安十年，感恩有您！",   // 分享标题
+      success : function () {
+
+      }
+    };
+    wx.onMenuShareTimeline (shareData1);//分享到朋友圈
+    wx.onMenuShareAppMessage (shareData2);//分享给朋友
+  });
+</script>
+<body>
+<div class="container">
+  <!--<div id="audio">
+    <audio id="bgmusic" src="mp3/bg.mp3" autoplay="autoplay" loop></audio>
+    <span class="music on"></span>
+  </div>-->
+  <div class="loading_box">
+    <div class="sk-folding-cube selected loading">
+      <div class="sk-cube1 sk-cube"></div>
+      <div class="sk-cube2 sk-cube"></div>
+      <div class="sk-cube4 sk-cube"></div>
+      <div class="sk-cube3 sk-cube"></div>
+    </div>
+    <div class="loading_text">加载中...</div>
+  </div>
+  <div class="home">
+    <div class="home-1 animated fadeInRight"><img src="images/home-7.png" alt=""></div>
+    <div class="home-1 home-1-bg animated fadeInRight"><img src="images/home-7.png" alt=""></div>
+    <div class="home-2 animated fadeInLeft"><img src="images/home-6.png" alt=""></div>
+    <div class="home-2 home-2-bg animated fadeInLeft"><img src="images/home-6.png" alt=""></div>
+    <div class="home-3 animated fadeInLeft"><img src="images/home-5.png" alt=""></div>
+    <div class="home-logo animated fadeInLeft"><img src="images/home-3.png" alt=""></div>
+    <div class="home-4 animated bounceIn"><img src="images/home-1.png" alt=""></div>
+    <div class="home-5 animated bounceIn"><img src="images/home-2.png" alt=""></div>
+    <div class="home-6 animated fadeInRight"><img src="images/home-4.png" alt=""></div>
+  </div>
+  <div class="wenan">
+    <img src="images/two.png" alt="">
+    <a class="wenanLink" href="javascript:;">
+      <img class="wenanLink-2" src="images/join-2.png" alt="">
+      <img class="wenanLink-1" src="images/join-1.png" alt="">
+    </a>
+  </div>
+    <div class="photoImgs" hidden>
+      <div class="col-center-center">
+      <img class="h-1" src="images/bg-1.png" alt="">
+      <img class="h-2" src="images/bg-3.png" alt="">
+      <div class="b">
+        <div class="imgs">
+          <a class="imgsClick"><input id="upload" type="file"></a>
+          <!-- 存放裁剪图片 -->
+          <div class="imgsSuccess" id="cropDiv">
+            <img src="images/picsbt.jpg" id="image" alt="" style="width:100%;height:100%;overflow: hidden">
+          </div>
+          <div class="imgsSuccess" style="display:none" id="finalImgDiv">
+            <img src="" id="finalImage" alt="" style="/*max-width:271px;max-height:271px*/">
+          </div>
+        </div>
+          <p class="tips">缩放照片选择裁切范围</p >
+          <!--<a class="btn">选择头像<input class="input-upload" id="upload2" type="file"></a>-->
+          <div class="btns row-around-center">
+            <a class="btn" id="rechoose">重新选图</a>
+            <a class="btn" id="submit">制作头像</a>
+            <a class="btn" id="genPhoto">分享</a>
+          </div>
+      </div>
+      <img class="h-3" src="images/logo.png" alt="">
+    </div>
+    </div>
+  </div>
+  <!--<div id="sharePhotoDiv" class="sharePhotos col-center-center" style="display: none">
+    <img src="" alt="" id="sharePhoto">
+  </div>-->
+  <div class="sharePhotos" id="sharePhotoDiv" style="display: none">
+    <div class="col-center-center">
+      <div class="shareImg"><img src="images/photos.png" alt="" id="sharePhoto"></div>
+      <p>长按保存图片</p>
+      <a class="close"></a>
+    </div>
+  </div>
+  <div class="alert">
+    <div class="alert-b">
+      <p id="msgTip">信息提示</p>
+      <a class="alert-c">确 定</a>
+    </div>
+    <div class="alert-bg"></div>
+  </div>
+  <div class="loadering col-center-center">
+    <div class="loader">
+      <div class="slice">
+        <div class="circle-side"></div>
+      </div>
+      <p>正在制作中</p>
+    </div>
+  </div>
+
+</body>
+</html>

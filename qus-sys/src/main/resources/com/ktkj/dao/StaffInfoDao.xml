@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.StaffInfoDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.staff_id,
+        T.staff_name,
+        T.city,
+        T.dept,
+        T.rice_dept,
+        T.station,
+        T.email,
+        T.phone,
+        T.pwd,
+        T.send_status,
+        T.create_operator,
+        T.create_time,
+        T.update_operator,
+        T.update_time,
+        T.send_time,
+        T.is_submit,
+        T.is_represent,
+        T.city_id,
+        T.dept_id,
+        T.rice_dept_id,
+        T.station_id,
+        T.is_chief,
+        T.is_upt_pwd,
+        T.is_selection,
+        T.sel_station_id,
+        T.sel_station,
+        T.is_sel_submit,
+        T.sel_edu,
+        T.sel_perform1,
+        T.sel_perform2,
+        T.sel_perform3,
+        T.sel_take_office_years,
+        T.sel_now_station,
+        T.last_login_time
+        FROM tower_staff_info T
+        WHERE 1=1
+        <if test="params.staffName != null and params.staffName.trim() != ''">
+            AND T.staff_name LIKE '%${params.staffName}%'
+        </if>
+        <if test="params.sendStatus != null and params.sendStatus.trim() != ''">
+            AND T.send_status = '${params.sendStatus}'
+        </if>
+        <if test="params.phone != null and params.phone.trim() != ''">
+            AND T.phone = '${params.phone}'
+        </if>
+        <if test="params.email != null and params.email.trim() != ''">
+            AND T.email = '${params.email}'
+        </if>
+        <if test="params.city != null and params.city.trim() != ''">
+            AND T.city = '${params.city}'
+        </if>
+        <if test="params.cityId != null and params.cityId.trim() != ''">
+            AND T.city_id = '${params.cityId}'
+        </if>
+        <if test="params.isSubmit != null and params.isSubmit.trim() != ''">
+            AND T.is_submit = '${params.isSubmit}'
+        </if>
+        <if test="params.isRepresent != null and params.isRepresent.trim() != ''">
+            AND T.is_represent = '${params.isRepresent}'
+        </if>
+        <if test="params.isChief != null and params.isChief.trim() != ''">
+            AND T.is_chief = '${params.isChief}'
+        </if>
+        <if test="params.stationId != null and params.stationId.trim() != ''">
+            AND T.station_id = '${params.stationId}'
+        </if>
+        <if test="params.selStationId != null and params.selStationId.trim() != ''">
+            AND T.sel_station_id = '${params.selStationId}'
+        </if>
+        <if test="params.isSelection != null and params.isSelection.trim() != ''">
+            AND T.is_selection = '${params.isSelection}'
+        </if>
+        <if test="params.sendMailMark != null and params.sendMailMark.trim() != ''">
+            AND (
+            ((T.is_chief = '1' or T.station_id='04' or T.station_id='13') and T.is_represent='1')
+            OR (T.is_chief != '1' and  T.station_id!='04' and  T.station_id!='13')
+            )
+        </if>
+        order by create_time desc
+    </sql>
+    <select id="qryExamStaff" resultType="com.ktkj.entity.StaffInfoEntity">
+        SELECT
+            distinct *
+        FROM
+            tower_staff_info T
+        WHERE
+            station_id IN ( SELECT exam_station_id FROM tower_exam_item_def WHERE exam_item_id IN
+            ( SELECT exam_item_id FROM tower_qus_item_rel WHERE qus_naire_id IN
+            ( SELECT qus_naire_id FROM tower_questionnaire_def WHERE qus_naire_station_id = '${params.qusNaireStationId}' ) ) )
+            and staff_id != '${params.staffId}'
+            <if test="params.isRepresent != null and params.isRepresent.trim() != ''">
+                AND T.is_represent = '${params.isRepresent}'
+            </if>
+            <if test="params.cityId != null and params.cityId.trim() != ''">
+                AND T.city_id = '${params.cityId}'
+            </if>
+        ORDER BY
+            station_id,show_seq
+    </select>
+    <select id="qrySelStaff" resultType="com.ktkj.entity.StaffInfoEntity">
+        select *
+        from tower_staff_info where
+        sel_station_id is not null
+        and sel_station_id!=''
+        <if test="params.cityId != null and params.cityId.trim() != ''">
+        and city_id='${params.cityId}'
+        </if>
+        order by sel_station_id
+    </select>
+    <select id="qrySelDef" resultType="com.ktkj.entity.SelectionDefEntity">
+        select * from  tower_selection_def where
+        sel_city_id='${params.cityId}'
+        order by sel_station_id
+    </select>
+    <select id="selectStaffInfoPage" resultType="com.ktkj.entity.StaffInfoEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.StaffInfoEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="qryStaffInfoByMobiles" resultType="com.ktkj.entity.StaffInfoEntity">
+        select * from  tower_staff_info where phone in
+        <foreach item="phone" collection="list" open="(" separator="," close=")">
+            #{phone}
+        </foreach>
+    </select>
+
+    <select id="qryStaffInfoByEmails" resultType="com.ktkj.entity.StaffInfoEntity">
+        select * from  tower_staff_info where email in
+        <foreach item="email" collection="list" open="(" separator="," close=")">
+            #{email}
+        </foreach>
+    </select>
+
+    <update id="updateBatch">
+        UPDATE tower_staff_info SET is_represent=#{status} WHERE
+        STAFF_ID IN
+        <foreach item="staffId" collection="list"  open="(" separator="," close=")">
+            #{staffId}
+        </foreach>
+    </update>
+
+    <update id="updateIsSelectionBatch">
+        UPDATE tower_staff_info SET is_selection=#{status} WHERE
+        STAFF_ID IN
+        <foreach item="staffId" collection="list"  open="(" separator="," close=")">
+            #{staffId}
+        </foreach>
+    </update>
+
+    <update id="updateBatchByEmail">
+        UPDATE tower_staff_info SET is_represent=#{status} WHERE
+        EMAIL IN
+        <foreach item="email" collection="list"  open="(" separator="," close=")">
+            #{email}
+        </foreach>
+        and (station_id in ('04','13') or is_chief='1')
+    </update>
+    <update id="updateIsSelectionBatchByEmail">
+        UPDATE tower_staff_info SET is_selection=#{status} WHERE
+        EMAIL IN
+        <foreach item="email" collection="list"  open="(" separator="," close=")">
+            #{email}
+        </foreach>
+    </update>
+
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="staffId" keyColumn="STAFF_ID">
+        insert into tower_staff_info
+        (staff_name,city,dept,station,email,phone,create_time,create_operator,city_id,dept_id,station_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.staffName},
+            #{item.city},
+            #{item.dept},
+            #{item.station},
+            #{item.email},
+            #{item.phone},
+            #{item.createTime},
+            #{item.createOperator},
+            #{item.cityId},
+            #{item.deptId},
+            #{item.stationId}
+            )
+        </foreach>
+    </insert>
+    <update id="updateDeptNull">
+        update tower_staff_info set
+        <if test="params.deptType != null and params.deptType == 0">
+            dept_id='',dept=''
+        </if>
+        <if test="params.deptType != null and params.deptType == 1">
+            rice_dept_id='',rice_dept=''
+        </if>
+        <if test="params.deptType != null and params.deptType == 2">
+            sel_station_id='',sel_station=''
+        </if>
+
+        where staff_id = '${params.staffId}'
+    </update>
+
+    <insert id="saveKeys" parameterType="com.ktkj.entity.StaffInfoEntity" useGeneratedKeys="true" keyProperty="staffId" keyColumn="STAFF_ID">
+		insert into tower_staff_info
+		(
+			`staff_name`,
+			`city`,
+			`dept`,
+			`station`,
+			`email`,
+			`phone`,
+			`pwd`,
+			`create_operator`,
+			`create_time`,
+			`city_id`,
+			`station_id`,
+			`dept_id`,
+			`rice_dept_id`,
+			`rice_dept`,
+			`is_represent`,
+			`is_chief`,
+			`is_selection`,
+			`sel_station_id`,
+			`sel_station`,
+			`sel_edu`,
+			`sel_take_office_years`,
+			`sel_now_station`,
+			`sel_perform1`,
+			`sel_perform2`,
+			`sel_perform3`
+
+		)
+		values
+		(
+			#{staffName},
+			#{city},
+			#{dept},
+			#{station},
+			#{email},
+			#{phone},
+			#{pwd},
+			#{createOperator},
+			#{createTime},
+			#{cityId},
+			#{stationId},
+			#{deptId},
+			#{riceDeptId},
+			#{riceDept},
+			#{isRepresent},
+			#{isChief},
+			#{isSelection},
+			#{selStationId},
+			#{selStation},
+			#{selEdu},
+			#{selTakeOfficeYears},
+			#{selNowStation},
+			#{selPerform1},
+			#{selPerform2},
+			#{selPerform3}
+		)
+	</insert>
+
+
+</mapper>

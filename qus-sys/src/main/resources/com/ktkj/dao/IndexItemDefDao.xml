@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.IndexItemDefDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.index_item_id,
+        T.index_item_name,
+        T.create_time,
+        T.create_operator,
+        T.update_time,
+        T.update_operator,
+        T.item_seq
+        FROM tower_index_item_def T
+        WHERE 1=1
+        <if test="params.indexItemName != null and params.indexItemName.trim() != ''">
+            AND T.index_item_name = '${params.indexItemName}'
+        </if>
+        order by item_seq
+    </sql>
+
+    <select id="selectIndexItemDefPage" resultType="com.ktkj.entity.IndexItemDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.IndexItemDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryExamIndex" resultType="com.ktkj.entity.IndexItemDefAddEntity">
+        select a.*,b.percent from tower_index_item_def a,tower_exam_index_rel b where a.index_item_id = b.index_item_id
+                and b.exam_item_id='${params.examItemId}'
+    </select>
+</mapper>

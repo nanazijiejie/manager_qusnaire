@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.SelectionInfoDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.sel_id,
+        T.sel_station_id,
+        T.sel_station,
+        T.sel_name,
+        T.sel_city_id,
+        T.sel_city,
+        T.sel_pre_station_id,
+        T.sel_pre_station,
+        T.qus_name,
+        T.qus_city_id,
+        T.qus_city,
+        T.qus_dept,
+        T.sel_dept,
+        T.qus_station_id,
+        T.qus_station,
+        T.reason,
+        T.sel_satff_id
+        FROM tower_selection_info T
+        WHERE 1=1
+        <if test="params.name != null and params.name.trim() != ''">
+            AND T.NAME LIKE '%${params.name}%'
+        </if>
+    </sql>
+
+    <select id="selectSelectionInfoPage" resultType="com.ktkj.entity.SelectionInfoEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.SelectionInfoEntity">
+        <include refid="selectSql"/>
+    </select>
+    <select id="querySelCount" resultType="com.ktkj.entity.SelRetEntity">
+        SELECT
+            b.sel_city_id city_id,
+            b.sel_station_id,
+            count( a.staff_id ) total_count
+        FROM
+            tower_staff_info a,
+            tower_selection_def b
+        WHERE
+            a.is_selection = '1'
+            AND a.city_id = b.sel_city_id
+        GROUP BY
+            b.sel_city_id,
+            b.sel_station_id
+    </select>
+    <select id="selCountByStation" resultType="java.lang.Integer">
+        select count(1) from tower_selection_info where
+            1=1
+            <if test="params.selStationId != null">
+                AND sel_station_id='${params.selStationId}'
+            </if>
+            <if test="params.selStaffId != null">
+                AND sel_staff_id='${params.selStaffId}'
+            </if>
+    </select>
+    <select id="querySelRet" resultType="com.ktkj.entity.SelRetEntity">
+     SELECT
+        a.staff_id,
+        a.staff_name,
+        a.dept,
+        a.city,
+        a.city_id,
+        a.sel_now_station station,
+        a.station_id,
+        a.sel_station,
+        a.sel_station_id,
+        b.total_count,
+        c.item_name qus_station,
+        b.qus_station_id qus_station_id
+    FROM
+        tower_staff_info a,
+        (
+        SELECT
+            qus_city_id,
+            sel_station_id,
+            sel_staff_id,
+            qus_station_id,
+            count( sel_staff_id ) total_count
+        FROM
+            tower_selection_info
+        GROUP BY
+            qus_city_id,
+            sel_station_id,
+            sel_staff_id,
+            qus_station_id
+        ORDER BY
+            sel_station_id,
+            sel_staff_id
+        ) b,
+        tower_dict_def c
+    WHERE
+        a.staff_id = b.sel_staff_id
+        AND c.type_code = 'STATION'
+        AND c.item_value = b.qus_station_id
+    order by b.sel_station_id,b.sel_staff_id
+    </select>
+</mapper>

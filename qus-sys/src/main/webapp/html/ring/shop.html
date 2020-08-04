@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <title></title>
+    <link href="../../css/ring/style_new.css" rel="stylesheet" type="text/css">
+<body>
+
+<div id="hideall">
+    <!--滚动下单提示-->
+    <div class="notice" id="leftmenu" style="display:none;">
+        <ul id='gd'></ul>
+    </div>
+
+    <div class="wrap entry-container">
+        <div class="inner" style="padding:0px;">
+            <div class="form-description">
+                <div id="content_div">
+
+                    <img style="width:100%;" id="goodsPicPath" src="">
+                    <div id="marketingModules">
+                        <div class="good-price"
+                             style="color: #e40031;font-size: 20px;padding: 15px 8px 0;line-height: 20px;">
+                            <span style="font-size: 16px">￥</span><span style="font-size: 20pt"
+                                                                        id="goodsPrice">0</span>
+                            <span style="font-size:14px; font-weight:700;  padding-left:0px; color:#C77989;display:inline-block;">&nbsp;&nbsp;原价¥<s
+                                    id="preGoodsPrice">0</s></span>
+                            <span style="float:right;font-size:14px; font-weight:700;  padding-left:7px; color:#cf2a4f;">限时特价</span>
+                        </div>
+                        <h2 class="page-title" style="padding: 10px 8px 4px;">
+                            <span class="icon" style="color: #ffffff;background-color: #cf2a4f;">热卖</span>
+                            <p style="text-indent: 40px;font-weight:bold;color:#000;" id="goodsName"></p>
+                        </h2>
+                        <div class="good-services clear" style="height:auto;">
+                            <div class="item">
+					<span class="span-icon">
+					<svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 26 26" version="1.1">
+					<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+					<g transform="translate(-62.000000, -1116.000000)" fill-rule="nonzero" stroke="#cf2a4f"
+                       stroke-width="2">
+					<g transform="translate(0.000000, 1084.000000)">
+					<g transform="translate(62.000000, 26.000000)">
+					<g transform="translate(0.000000, 6.000000)">
+					<rect x="1" y="1" width="24" height="24" rx="12"></rect>
+					<g transform="translate(9.000000, 6.500000)" stroke-linecap="round">
+					<path d="M0,0.5 L4,6"></path>
+					<path d="M5,0.5 L9,6"
+                          transform="translate(6.500000, 3.000000) scale(-1, 1) translate(-6.500000, -3.000000) "></path>
+					<path d="M0,7 L8,7"
+                          transform="translate(4.000000, 7.000000) scale(-1, 1) translate(-4.000000, -7.000000) "></path>
+					<path d="M0,11 L8,11"
+                          transform="translate(4.000000, 11.000000) scale(-1, 1) translate(-4.000000, -11.000000) "></path>
+					<path d="M4,14 L4,6"
+                          transform="translate(4.000000, 9.500000) scale(-1, 1) translate(-4.000000, -9.500000) "></path>
+					</g>
+					</g>
+					</g>
+					</g>
+					</g>
+					</g>
+					</svg>
+					</span>微信支付
+                            </div>
+
+                            <div class="item">
+				<span class="span-icon">
+					<svg t="1559022258173" class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+                         xmlns="http://www.w3.org/2000/svg" p-id="10061"
+                         width="16" height="16"><defs><style type="text/css"></style></defs><path
+                            d="M207.91 795.702c25.103 1.767 45.748 7.147 61.894 16.146 12.53-19.762 26.911-49.32 43.057-88.805 1.766-7.147 6.265-13.455 13.455-18.837 3.574 0 5.382-0.883 5.382-2.692-5.382-5.382-25.145-10.763-59.204-16.145-16.145 50.247-37.674 86.996-64.584 110.333zM716.521 666.531l-51.13 26.91c39.44 34.101 70.85 71.733 94.187 113.026l56.513-37.677c-19.763-19.719-52.939-53.82-99.57-102.259zM711.14 626.164c17.912 17.956 29.602 31.41 34.983 40.367l43.057-34.984c-41.29-34.058-73.583-60.969-96.877-80.731 3.572 1.808 10.764 2.691 21.527 2.691 10.766 1.808 18.838 2.689 24.219 2.689-3.614-12.528-4.497-39.439-2.69-80.731v-67.276c-1.807-30.485 0-52.896 5.383-67.277-14.382 3.616-42.174 4.5-83.423 2.691H536.22v-37.675h164.155c35.866 0 68.16 1.808 96.879 5.383v-56.513c-30.527 5.383-63.702 8.074-99.569 8.074H536.22c0-19.721 3.574-35.867 10.765-48.44 3.573-1.766 5.383-3.574 5.383-5.382-1.81-1.766-8.999-3.574-21.529-5.383-12.573 0-28.719-0.882-48.44-2.69 3.575 16.146 4.458 36.792 2.692 61.895H331.699c-46.673 0-78.966-2.691-96.878-8.074v53.822c8.957-1.766 42.132-2.691 99.57-2.691h150.7v37.675H363.992c-41.292 0-65.511-0.883-72.659-2.691v5.382c3.574 21.529 5.382 41.292 5.382 59.203v75.35c-1.808 25.145-3.616 44.866-5.382 59.205v16.145h24.22c14.338-1.765 32.293-3.573 53.821-5.381H485.09v40.366a4191.158 4191.158 0 0 1-150.7 2.691c-46.674 0-81.658-1.767-104.952-5.383 8.956 21.528 15.222 42.173 18.838 61.895 8.956-5.383 145.317-12.53 409.042-21.528a537.041 537.041 0 0 0 53.822-2.694zM485.09 510.45H347.846v-43.058H485.09v43.058z m0-80.733H347.846v-45.748H485.09v45.748z m51.13-45.748h148.01v45.748H536.22v-45.748z m0 83.423h148.01v43.058H536.22v-43.058z m0 83.423h142.627l-32.293 21.528 29.602 16.146H536.22v-37.674zM627.716 709.588c1.767 50.248-23.336 71.733-75.349 64.586h-80.733c-37.676 1.766-53.821-7.189-48.439-26.911V714.97c0-17.912 4.457-30.484 13.455-37.675l2.691-2.691c-12.572-3.573-36.792-6.264-72.659-8.072v16.147c0 8.997 0.883 18.835 2.691 29.602v51.129c-7.19 43.059 28.677 62.777 107.643 59.203h86.114c41.249 0 69.043-5.382 83.423-16.145 16.147-8.999 30.485-30.528 43.057-64.588-23.336 0-43.98-10.763-61.894-32.292z"
+                            p-id="10062" fill="#cf2a4f"></path><path
+                            d="M520.074 741.88l56.512-18.837c-8.999-21.529-20.645-45.748-34.983-72.658L485.09 663.84c17.912 30.528 29.601 56.513 34.984 78.04z"
+                            p-id="10063" fill="#cf2a4f"></path><path
+                            d="M512 0.006C229.234 0.006 0.006 229.234 0.006 512c0 282.767 229.228 511.994 511.994 511.994 282.767 0 511.994-229.228 511.994-511.994S794.767 0.006 512 0.006z m315.817 827.811c-41.039 41.039-88.811 73.251-141.987 95.743-55.02 23.273-113.506 35.073-173.83 35.073-60.324 0-118.809-11.8-173.83-35.072-53.177-22.492-100.948-54.704-141.987-95.743-41.04-41.039-73.252-88.811-95.744-141.987C77.167 630.809 65.367 572.324 65.367 512c0-60.324 11.8-118.809 35.072-173.83 22.492-53.177 54.705-100.948 95.744-141.987 41.039-41.04 88.811-73.252 141.987-95.744C393.191 77.167 451.676 65.367 512 65.367c60.324 0 118.81 11.8 173.83 35.072 53.177 22.492 100.948 54.705 141.987 95.744s73.251 88.811 95.743 141.987c23.272 55.021 35.072 113.506 35.072 173.83 0 60.324-11.8 118.809-35.072 173.83-22.492 53.177-54.704 100.948-95.743 141.987z"
+                            p-id="10064" fill="#cf2a4f"></path></svg>
+					</span>一折优惠
+                            </div>
+                            <div class="item">
+					<span class="span-icon">
+						<svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 26 26" version="1.1">
+						<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+						<g transform="translate(-306.000000, -1116.000000)" fill-rule="nonzero" stroke="#cf2a4f"
+                           stroke-width="2">
+						<g transform="translate(0.000000, 1084.000000)">
+						<g transform="translate(306.000000, 32.000000)">
+						<circle cx="13" cy="13" r="12"></circle>
+						<g transform="translate(6.500000, 6.500000)" stroke-linecap="round">
+						<path d="M0.5,4 L0.5,12"></path>
+						<path d="M3.5,1 L3.5,12"></path>
+						<path d="M9.5,3 L9.5,12"></path>
+						<path d="M12.5,3 L12.5,8"></path>
+						<path d="M6.5,4 L6.5,12"></path>
+						<path d="M6.5,12 L0.5,12"></path>
+						<path d="M6.5,4 L0.5,4"></path>
+						<path d="M12.5,3 L9.5,3"></path>
+						<path d="M12.5,8 L10,8"></path>
+						<path d="M6.5,8 L0.5,8"></path>
+						</g>
+						</g>
+						</g>
+						</g>
+						</g>
+						</svg>
+					</span>全国包邮
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="untdt4" id="countdown" style="display:none;">
+                        <div class="time4">距活动结束仅剩：<span id="remainTime_1" class="cutDown"
+                                                         style="font-size:20px;"></span></div>
+                    </div>
+
+                    <a href="javascript:;" name="todo" class="newbuy" style="background-color:#cf2a4f;">立即抢购</a>
+
+                    <!--中间灰色间隔-->
+                    <div style="border-top: 8px solid #f7f7f7; margin-bottom:8px;" id="goodsPicDtlPath"></div>
+                    <!--<p width='640' height='498'><img src='http://localhost:8080/ring/uploadimgs/20190828/203844367a56c5.png' style='max-width: 100%;'></p>-->
+                    <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+                    <p><br></p>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="big-counter">
+            <div class="xiadan">
+                <div class="tdd"><h3 class="tddh2">客户最新评价(857) <span
+                        style="float:right; font-size:12px; font-weight:500;"
+                        onclick="javascript:layer.open({content: '您还未购买，无法参与评价。',skin: 'msg',time: 2 });">参与评价</span>
+                </h3></div>
+                <div id="opinionBefor" class="panel-body" style="padding-left:5px;padding: 10px;padding-bottom:2px;">
+                    <li class="commentli">产品不错(170)</li>
+                    <li class="commentli">用着效果不错(165)</li>
+                    <li class="commentli">质量很好(372)</li>
+                </div>
+                <div style="padding:10px">
+                    <script src="/ring/js/ring/gundong.js"></script>
+                    <div id="opinion" class="wforderr">
+                        <div class="wfformr">
+                            <div class="wftitleb"></div>
+                            <div class="wffahuo_wrap">
+                                <div id="wffahuo" class="wffahuo wffahuo wffahuo-wffahuo"
+                                     style="height:350px; line-height:25px;color:#666">
+                                    <ul id="opinionList" class="wffhlist" style="margin-top: 0px;">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+        </div>
+        <div id="join_div">
+            <form class="center with-shadow" id="form1" method="post">
+                <div class="form-content" style="">
+                    <div class="form-group" style="margin-bottom:30px;">
+
+                        <div id="specAfter" class="form-group">
+                            <label class="field-title">选择件数</label>
+                            <div id="inpT" class="inpT">
+                                <div id="inpl" onclick="comp(1)" class="inpl">-</div>
+                                <input class="sdddq" id="number" name="number" value="1" readonly>
+                                <div id="inpr" onclick="comp(2)" class="inpr">+</div>
+                            </div>
+                            <div class="pricedivbg">
+                                <div style="text-align:center;line-height:30px;color:#cf2a4f;font-weight: bold;"
+                                     id="showprice">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt20">
+                            <label class="field-title">收货人姓名</label>
+                            <div class="field-content">
+                                <input name="name" id="name" type="text"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="field-title">联系电话</label>
+                            <div class="field-content">
+                                <input name="mobile" id="mobile" type="tel" maxlength="11"></div>
+                        </div>
+
+                        <div class="form-group " data-role="address">
+                            <label class="field-title">收货地址</label>
+                            <div class="field-content address">
+                                <div>
+                                    <select id="province" name="province" data-role="province">
+                                        <option value="">- 省/自治区/直辖市 -</option>
+                                    </select>
+                                    <select id="city" name="city" data-role="city">
+                                        <option value="">- 市 -</option>
+                                    </select>
+                                    <select id="area" name="district" data-role="district" required="">
+                                        <option value="">- 区/县 -</option>
+                                    </select>
+                                </div>
+                                <div class="mt10">
+                                    <textarea name="detailaddress" id="detailaddress"
+                                              placeholder="为确保您收到货，地址请尽可能详细到街道以及门牌号"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="field-title">微信支付</label>
+                            <div class="col-xs-12"
+                                 style="border:1px solid #ccc;border-radius:5px; padding:8px;display:flex;align-items: center">
+                                <?xml version="1.0" standalone="no"?><!DOCTYPE PUBLIC "-//W3C//DTD SVG 1.1//EN"
+                                "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+                                <svg t="1559118109655" class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+                                     xmlns="http://www.w3.org/2000/svg" p-id="1998"
+                                     width="25" height="25">
+                                    <defs>
+                                        <style type="text/css"></style>
+                                    </defs>
+                                    <path d="M0 488.96v-30.72C2.56 430.08 7.68 404.48 15.36 378.88c20.48-66.56 53.76-122.88 99.84-171.52C179.2 138.24 256 94.72 340.48 66.56c48.64-15.36 97.28-23.04 145.92-25.6 40.96-2.56 79.36 0 120.32 7.68 33.28 5.12 64 12.8 97.28 25.6 79.36 28.16 148.48 71.68 207.36 133.12 7.68 7.68 12.8 15.36 20.48 23.04-2.56 0-2.56 2.56-5.12 2.56-20.48 10.24-40.96 20.48-61.44 28.16-143.36 66.56-286.72 133.12-430.08 197.12-28.16 12.8-56.32 10.24-81.92-5.12-20.48-12.8-38.4-25.6-58.88-38.4-12.8-10.24-25.6-17.92-40.96-28.16-12.8-7.68-20.48-2.56-20.48 12.8v2.56c2.56 12.8 5.12 25.6 10.24 38.4 25.6 61.44 51.2 120.32 76.8 181.76 7.68 17.92 20.48 25.6 35.84 23.04 10.24 0 20.48-2.56 28.16-7.68 30.72-15.36 58.88-33.28 87.04-51.2 156.16-92.16 309.76-184.32 465.92-276.48 10.24-7.68 23.04-12.8 33.28-20.48 0 2.56 2.56 2.56 2.56 5.12 5.12 10.24 10.24 17.92 12.8 28.16 28.16 61.44 40.96 125.44 35.84 192-2.56 28.16-7.68 56.32-15.36 84.48-17.92 61.44-48.64 115.2-92.16 163.84-51.2 56.32-115.2 99.84-184.32 128-40.96 15.36-81.92 28.16-122.88 35.84-28.16 5.12-56.32 7.68-81.92 7.68h-46.08c-20.48-2.56-40.96-2.56-58.88-5.12-30.72-5.12-61.44-12.8-89.6-23.04H322.56c-12.8 7.68-23.04 15.36-35.84 23.04-28.16 17.92-53.76 33.28-81.92 48.64-5.12 2.56-12.8 5.12-17.92 5.12s-10.24-2.56-10.24-10.24c0-5.12 0-12.8 2.56-17.92 5.12-38.4 12.8-74.24 20.48-112.64 0-5.12 0-7.68-5.12-10.24-15.36-12.8-30.72-23.04-46.08-38.4-51.2-46.08-92.16-102.4-117.76-166.4C20.48 599.04 12.8 568.32 7.68 537.6c-2.56-12.8-2.56-25.6-2.56-40.96-5.12 0-5.12-2.56-5.12-7.68z"
+                                          fill="#6BCC03" p-id="1999"></path>
+                                </svg>
+                                <div style="margin-left:4px;font-size:16px;">微信支付，更安全的支付。</div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="form-group">
+                            <label class="field-title">温馨提示</label>
+                            <div class="col-xs-12">
+                                <p><font color="#ff0000">特别声明：特价活动商品，支付成功后自动发货，36小时后更新物流信息，出质量问题之外，个人原因退换货邮费自理。接受声明才可参加活动。</font>
+                                </p>
+                                <p><br></p></div>
+                        </div>
+
+                        <input type="hidden" id="aid" name="aid" value="1"/>
+                        <input type="hidden" name="sid" id="sid" value="56"/>
+                        <input type="hidden" name="pay_type" id="pay_type" value="2"/>
+                        <input type="hidden" name="price" id="price" value=""/>
+                        <input type="hidden" name="product_name" id="product_name" value="运动鞋"/>
+                        <input type="hidden" name="token" id="token" value="uwjjsmynenshkushdripoypv"/>
+
+                        <div class="field submit-field ">
+                            <div style="text-align:center;">
+                                <input id="subbtn" type="button" class="btn btn-primary"
+                                       style="padding: 13px 85px;text-align:center;font-size:14px;"
+                                       onclick="checkInput();" value="填写好了  确认提交">
+
+                                <style>
+                                    .mains {
+                                        margin: 2%;
+                                        overflow: hidden;
+                                        padding: 10px 0;
+                                        margin-top: 10px;
+                                    }
+
+                                    .search {
+                                        width: 98%;
+                                        margin: 10px 1%;
+                                        overflow: hidden;
+                                    }
+
+                                    .search dt {
+                                        float: left;
+                                        width: 78%;
+                                    }
+
+                                    .search dt input {
+                                        width: 96%;
+                                        height: 35px;
+                                        line-height: 35px;
+                                        border-radius: 3px;
+                                        border: 1px solid #ccc;
+                                        padding: 0px 2%;
+                                    }
+
+                                    .search dd {
+                                        width: 20%;
+                                        float: right;
+                                        border-radius: 3px;
+                                        height: 35px;
+                                        line-height: 35px;
+                                        background: #f61d4b;
+                                        color: #fff;
+                                        text-align: center;
+                                        cursor: pointer;
+                                    }
+                                </style>
+                                <div class="mains">
+                                    <dl class="search">
+                                        <dt><input type="tel" id="ssphone" maxlength="11" value=""
+                                                   placeholder="请填写手机号码查询订单信息"></dt>
+                                        <dd onclick="sphone()">查 询</dd>
+                                    </dl>
+                                    <p><font size="5" color="#ff0000"><b>输入下单手机号查询订单</b></font></p>
+                                </div>
+
+                                <!---->
+                            </div>
+                        </div>
+                        <!--<a class="report-form" style="float:right;margin-top:10px;color:#607fa6;" href="/Public/report/report1.html?sign=jfidoshfiewuhfuigfidsufgu">投诉</a>-->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--底部菜单列表-->
+    <div id="btn-list" class="preview-phone-btn-list " style="height:50px;">
+        <ul class="main-btn-list clear">
+
+            <li id="contact_msg" style="width: 30%;box-sizing: border-box;" onclick="kf_wx()">
+                <a href="javacript:void(0);">
+                    <div class="svg-wrapper">
+                        <?xml version="1.0" standalone="no"?><!DOCTYPE PUBLIC "-//W3C//DTD SVG 1.1//EN"
+                        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+                        <svg t="1558926974632" class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+                             xmlns="http://www.w3.org/2000/svg" p-id="2069"
+                             width="16" height="16">
+                            <defs>
+                                <style type="text/css"></style>
+                            </defs>
+                            <path d="M499.057025 347.95532c27.691946 0 45.751911-18.661964 45.751911-45.751911 0-27.089947-18.661964-45.751911-45.751911-45.751911-26.487948 0-54.781893 17.457966-54.781893 45.751911C444.275132 329.895356 472.569077 347.95532 499.057025 347.95532z"
+                                  p-id="2070" fill="#2c2c2c"></path>
+                            <path d="M299.795414 301.601411c0-27.089947-18.661964-45.751911-45.751911-45.751911-26.487948 0-54.781893 17.457966-54.781893 45.751911 0 28.293945 28.293945 45.751911 54.781893 45.751911C281.73545 347.95532 299.795414 329.293357 299.795414 301.601411z"
+                                  p-id="2071" fill="#2c2c2c"></path>
+                            <path d="M1024 625.476778c0-67.423868-30.099941-132.439741-84.279835-183.007643-53.577895-49.965902-125.215755-80.667842-201.067607-87.28983 0-1.203998 0-2.407995 0-3.611993-31.905938-148.091711-190.833627-260.063492-370.229277-260.063492C164.947678 91.503821 0 232.973545 0 406.951205 0 499.659024 46.955908 583.938859 136.653733 649.556731l-30.70194 92.707819c-2.407995 7.223986 0 14.447972 5.417989 19.263962 5.417989 4.815991 13.845973 5.417989 19.865961 2.407995l116.787772-58.393886 13.845973 3.009994 0.601999 0c36.119929 7.223986 67.423868 13.845973 105.951793 13.845973 7.223986 0 34.915932-2.407995 43.945914-6.621987 44.547913 108.359788 163.74368 181.201646 297.387419 181.201646 33.711934 0 68.025867-7.825985 102.3398-16.253968l89.697825 48.761905c2.407995 1.203998 5.417989 2.407995 8.427984 2.407995 4.213992 0 8.427984-1.203998 11.437978-4.213992 6.019988-4.815991 7.825985-12.039976 6.019988-19.263962l-22.875955-75.249853C981.258083 772.364491 1024 698.318636 1024 625.476778zM864.470312 803.66843c-6.019988 4.213992-8.427984 12.039976-6.019988 18.661964l12.641975 42.741917-54.179894-29.497942c-2.407995-1.203998-5.417989-2.407995-8.427984-2.407995-1.203998 0-3.009994 0-4.213992 0.601999-31.303939 7.825985-63.811875 16.253968-95.717813 16.253968-146.285714 0-265.481481-100.533804-265.481481-223.943563 0-123.409759 119.195767-223.943563 265.481481-223.943563 143.877719 0 264.879483 102.3398 264.879483 223.943563C974.034098 687.482657 935.506173 750.692534 864.470312 803.66843zM181.803645 640.526749c2.407995-7.223986 0-15.049971-6.621987-19.865961C90.901822 561.664903 48.159906 490.027043 48.159906 407.553204 48.159906 258.859494 191.435626 137.857731 367.821282 137.857731c154.111699 0 291.96943 93.911817 322.069371 218.525573-164.345679 3.611993-297.387419 120.399765-297.387419 261.869489 0 18.661964 2.407995 37.925926 7.825985 57.189888-0.601999 0-1.805996 0-2.407995 0-9.631981 0.601999-19.865961 1.203998-30.099941 1.203998-34.313933 0-63.811875-6.019988-95.717813-12.641975l-19.263962-3.611993c-3.611993-0.601999-7.825985 0-11.437978 1.203998l-80.065844 40.333921L181.803645 640.526749z"
+                                  p-id="2072" fill="#2c2c2c"></path>
+                            <path d="M612.834803 509.893004c-18.661964 0-37.323927 18.661964-37.323927 37.323927 0 18.661964 18.661964 37.323927 37.323927 37.323927 28.293945 0 45.751911-19.263962 45.751911-37.323927C658.586714 529.156966 641.128748 509.893004 612.834803 509.893004z"
+                                  p-id="2073" fill="#2c2c2c"></path>
+                            <path d="M804.872428 509.893004c-18.661964 0-36.721928 18.661964-36.721928 37.323927 0 18.661964 18.059965 37.323927 36.721928 37.323927 28.293945 0 45.751911-19.263962 45.751911-37.323927C850.624339 529.156966 833.166373 509.893004 804.872428 509.893004z"
+                                  p-id="2074" fill="#2c2c2c"></path>
+                        </svg>
+                    </div>
+                    客服微信
+                </a>
+            </li>
+            <li style="width: 30%;">
+                <a id="contact_tel" href="tel:13845122216">
+                    <div class="svg-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 25 32" version="1.1">
+                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <g transform="translate(-30.000000, -4439.000000)" fill="#000000" fill-rule="nonzero">
+                                    <g transform="translate(-1.000000, 4407.000000)">
+                                        <g transform="translate(0.000000, 1.000000)">
+                                            <g transform="translate(1.000000, 1.000000)">
+                                                <g transform="translate(41.632686, 46.612505) rotate(-30.000000) translate(-41.632686, -46.612505) translate(32.632686, 29.112505)">
+                                                    <g transform="translate(0.510968, 0.801104)">
+                                                        <path d="M12.5411439,2.00125388 C5.44948941,-0.0974009621 1.75238967,5.58987624 1.69113021,20.1380496 C1.6780082,23.2543218 2.42540642,25.8965522 3.67833745,28.0893301 C4.08913937,28.8082823 4.52676946,29.4278099 4.97020861,29.9566267 C5.12637914,30.1428654 5.27234993,30.3047663 5.41207499,30.4504438 C5.48289013,30.5242759 5.63450098,30.6758928 5.64810484,30.690524 C6.09048546,31.1663114 6.75551864,31.6312075 7.66273577,31.9416127 C9.02856197,32.4089316 10.6853152,32.4211471 12.6837207,31.8081163 C12.7268989,31.794871 12.7704293,31.7849819 12.8139705,31.7782947 C13.6559839,31.2332091 12.8732608,25.9577785 11.2337772,23.9821128 C10.9588535,23.6508151 11.0091858,23.1631543 11.3461973,22.8928918 C11.6832089,22.6226294 12.1792804,22.6721083 12.454204,23.003406 C14.7220213,25.7362473 15.6806129,32.4852085 13.2429586,33.2799631 C13.1830202,33.2995049 13.1223897,33.3115742 13.0621127,33.3166867 C8.95569252,34.5280923 6.06573819,33.523177 4.35786054,31.6863269 C4.77389805,32.1337821 3.93067568,31.2546369 3.62651753,30.8919177 C3.12585223,30.2948568 2.6357242,29.6010108 2.17844844,28.8007239 C0.802537627,26.3927166 -0.0140241826,23.5059766 0.00018237447,20.1321394 C0.0651066497,4.71363005 4.35599127,-2.01321156 12.9646299,0.521884012 C13.0029072,0.527683806 13.0412268,0.536336198 13.0793277,0.547976169 C13.5483824,0.691274353 14.2005479,1.01460928 14.8514139,1.58499651 C14.9888942,1.70547757 15.120758,1.83345346 15.2462301,1.96916549 C17.6808644,4.60249162 16.0993853,9.12672589 13.6532459,11.0151199 C13.2550451,11.3225267 12.8924264,11.5321607 12.5153799,11.6618757 C11.6294833,11.9666499 11.1563311,11.9069301 9.12047622,11.2852885 C8.48953422,11.99717 8.02884445,13.1027785 7.76093456,14.6159638 C7.13812496,18.133663 7.41027747,21.5350907 8.46698687,22.4772166 C8.78914963,22.7644458 8.81345297,23.2540278 8.52126991,23.5707284 C8.22908684,23.8874291 7.73106114,23.9113204 7.40889837,23.6240912 C5.803095,22.192412 5.49736539,18.3713298 6.20925868,14.3504759 C6.57416423,12.2894479 7.28595916,10.7741575 8.37914417,9.82581587 C8.5861121,9.6462705 8.87359872,9.58635842 9.13687133,9.6679059 C11.158256,10.2940205 11.5203934,10.3638052 11.9951267,10.2004831 C12.1910796,10.1330696 12.4085901,10.0073244 12.6804895,9.79742087 C14.5028295,8.39059346 15.7516922,4.81789504 14.0806954,3.01052713 C13.9929001,2.91556688 13.9002723,2.82567006 13.8033477,2.74073011 C13.3428924,2.33720947 12.8837366,2.10956621 12.6119104,2.02652214 C12.5876863,2.0191216 12.5640858,2.01067685 12.5411439,2.00125388 Z"></path>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    电话咨询
+                </a>
+            </li>
+            <li style="width:40%;background-color: #cf2a4f">
+                <a href="javacript:void(0);" name="todo" style="color: #ffffff;">
+                    <div class="svg-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 26 33" version="1.1">
+                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <g transform="translate(-518.000000, -4439.000000)" fill="#ffffff" fill-rule="nonzero">
+                                    <g transform="translate(-1.000000, 4407.000000)">
+                                        <g transform="translate(0.000000, 1.000000)">
+                                            <g transform="translate(519.000000, 26.000000)">
+                                                <path d="M15.8025523,18.8679031 C15.7177793,18.8679031 15.6331512,18.8607161 15.5495316,18.8464156 C14.711095,18.7030267 14.144689,17.8893494 14.2844285,17.0290165 L15.9133898,7 L2,24.1320969 L10.1974477,24.1320969 C10.2822207,24.1320969 10.3668488,24.1392839 10.4504684,24.1535844 C11.288905,24.2969733 11.855311,25.1106506 11.7155715,25.9709835 L10.0866102,36 L24,18.8679031 L15.8025523,18.8679031 Z M24.4495063,17.1627896 C25.3058203,17.1627896 26,17.8618502 26,18.7241853 C26,19.0894528 25.8728344,19.4431603 25.6406285,19.7237665 L10.9817169,37.4381463 C10.433518,38.1006104 9.45583135,38.190116 8.79799268,37.6380625 C8.37499403,37.2830851 8.17067547,36.7288212 8.26119698,36.1818732 L9.97326931,25.8372104 L1.55049375,25.8372104 C0.694179695,25.8372104 0,25.1381498 0,24.2758147 C0,23.9105472 0.127165635,23.5568397 0.359371456,23.2762335 L15.0182831,5.5618537 C15.566482,4.89938956 16.5441686,4.80988401 17.2020073,5.36193746 C17.625006,5.71691487 17.8293245,6.27117882 17.738803,6.81812679 L16.0267307,17.1627896 L24.4495063,17.1627896 Z"></path>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    立即抢购</a>
+            </li>
+        </ul>
+    </div>
+
+</div><!--hideall  ending-->
+
+
+</body>
+
+</html>
+
+<script src="/ring/statics/libs/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+        src="/ring/js/ring/areaselector-nohaiwuai.js"></script>
+<script src="/ring/js/ring/layer.js"></script>
+
+<script type="text/javascript" src="/ring/js/ring/timer.js"></script>
+
+<script language="javascript">
+    var countdown = localStorage.getItem("countdown1");
+    if (null == countdown || '' == countdown) {
+        countdown = parseInt(new Date().getTime() / 1000) + 65898;
+        localStorage.setItem("countdown1", countdown);
+    } else {
+        var current_countdown = parseInt(new Date().getTime() / 1000);
+        if (current_countdown > countdown) {
+            countdown = parseInt(new Date().getTime() / 1000) + 65898;
+            localStorage.setItem("countdown1", countdown);
+        }
+    }
+    addTimeLesser(1, countdown);
+    $("#countdown").show();
+</script>
+
+<script type="text/javascript">
+    var specList = "";
+    var payoid = "";
+    var goods = {};
+
+    function initSerializeObject() {
+        $.fn.serializeObject = function () {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function () {
+                if (o[this.name]) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
+    }
+
+    function checkInput() {
+
+        $('#subbtn').attr("disabled", "disabled");
+
+
+        for (k in specList) {
+            if ($("input[name=spec_" + specList[k].specSeq + "]:checked").length < 1) {
+                return shom_msg('请选择一个' + specList[k].specName);
+            }
+        }
+//        if ($("input[name=pattern]:checked").length < 1) {
+//            return shom_msg('请选择一个颜色');
+//        }
+//        if ($("input[name=sex]:checked").length < 1) {
+//            return shom_msg('请选择一个款式');
+//        }
+//        if ($("input[name=attr]:checked").length < 1) {
+//            return shom_msg('请选择一个尺码');
+//        }
+
+
+        if ($('#name').val() == '') {
+            return shom_msg('收货人姓名不能为空');
+        }
+
+        var rname = $.trim($('#name').val());
+        var reg = /^[\u4e00-\u9fa5]+$/;
+        if (!reg.test(rname)) {
+            return shom_msg('姓名格式不正确，必须为中文');
+        }
+        if (rname.length > 4) {
+            return shom_msg('姓名不能大于4个字符');
+        }
+
+        if ($('#mobile').val() == '') {
+            return shom_msg('手机号码不能为空');
+        }
+
+        if (!checkMobile($('#mobile').val())) {
+            return shom_msg('手机号码有误，请重填');
+        }
+
+        var province = $("select[name='province'] option:selected").text();
+        var city = $("select[name='city'] option:selected").text();
+        var district = $("select[name='district'] option:selected").text();
+
+        if (province == '- 省/自治区/直辖市 -' || city == '- 市 -' || province == '' || city == '' || district == '- 区/县 -' || district == '') {
+            return shom_msg('请填写正确的省市区');
+        }
+
+        if ($('#detailaddress').val() == '') {
+            return shom_msg('详细街道地址不能为空');
+        }
+
+        if ($('#detailaddress').val().length < 4) {
+            return shom_msg('街道地址少于4个字符,请填写详细');
+        }
+
+
+        if (payoid != "") {
+            window.location.href = "http://www.nanxiucun.cn/weixinpay/wxpay.html?aid=1&oid=" + payoid;
+            return false;
+        }
+        var jz = layer.open({
+            type: 2
+            , content: '提交中',
+            shadeClose: false
+        });
+
+        initSerializeObject();
+        var jsonData = $("#form1").serializeObject();
+        var ajaxData = {
+            "totalPayAmount": jsonData.price * 100,
+            "goodsName": jsonData.product_name,
+            "receiver": jsonData.name,
+            "contactPhone": jsonData.mobile,
+            "receiveAddr": jsonData.province + jsonData.city + jsonData.district + jsonData.detailaddress,
+            "totalCount": jsonData.number,
+            "specParam": "",
+            "nickName": "微信昵称",
+            "openId": "openid"
+        };
+        if (jsonData.spec_1 != undefined) {
+            ajaxData.specParam += jsonData.spec_1 + "-";
+        }
+        if (jsonData.spec_2 != undefined) {
+            ajaxData.specParam += jsonData.spec_2 + "-";
+        }
+        if (jsonData.spec_3 != undefined) {
+            ajaxData.specParam += jsonData.spec_3 + "-";
+        }
+        if (jsonData.spec_4 != undefined) {
+            ajaxData.specParam += jsonData.spec_4 + "-";
+        }
+        if (jsonData.spec_5 != undefined) {
+            ajaxData.specParam += jsonData.spec_5 + "-";
+        }
+        if (jsonData.spec_6 != undefined) {
+            ajaxData.specParam += jsonData.spec_6 + "-";
+        }
+        if (jsonData.spec_7 != undefined) {
+            ajaxData.specParam += jsonData.spec_7 + "-";
+        }
+        if (jsonData.spec_8 != undefined) {
+            ajaxData.specParam += jsonData.spec_8 + "-";
+        }
+        if (jsonData.spec_9 != undefined) {
+            ajaxData.specParam += jsonData.spec_9 + "-";
+        }
+        if (jsonData.spec_10 != undefined) {
+            ajaxData.specParam += jsonData.spec_10 + "-";
+        }
+        if (jsonData.spec_11 != undefined) {
+            ajaxData.specParam += jsonData.spec_11 + "-";
+        }
+        if (jsonData.spec_12 != undefined) {
+            ajaxData.specParam += jsonData.spec_12 + "-";
+        }
+        ajaxData.specParam = ajaxData.specParam.substring(0, ajaxData.specParam.length - 1);
+//
+//        // 微信授权跳转页面
+//        window.location.href = "http://localhost:8080/ring/api/auth/oAuth_weixin";
+
+        $.ajax({
+            type: "POST",  //提交方式
+            url: "/ring/api/orderinfo/save",
+            data: JSON.stringify(ajaxData),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                if (result.code == "0") {
+                    window.sessionStorage["orderId"] = result.orderInfo.orderId;
+                    window.sessionStorage["totalPayAmount"] = result.orderInfo.totalPayAmount;
+                    window.sessionStorage["specParam"] = result.orderInfo.specParam;
+                    window.sessionStorage["goodsName"] = result.orderInfo.goodsName;
+                    window.sessionStorage["goodsPicPath"] = goods.goodsPicPath;
+
+//                    window.location.href = "https://admin.jixuxiang.com/ring/api/auth/oAuth_weixin";
+//                    window.location.href = "http://localhost:8080/ring/api/auth/oAuth_weixin";
+//                    window.location.href = "http://localhost:8080/ring/api/auth/getCodeUrl";
+                    window.location.href = "http://admin.jixuxiang.com/ring/api/auth/getCodeUrl";
+                    layer.close(jz);
+                    $('#subbtn').removeAttr("disabled");
+                } else {
+                    $('#subbtn').removeAttr("disabled");
+                    layer.open({content: result.msg, btn: '我知道了'});
+                }
+            }, error: function () {
+                $('#subbtn').removeAttr("disabled");
+                layer.open({content: '您的网络不稳定，请关闭页面后重试！', btn: '我知道了'});
+            }
+        });
+    }
+
+    //验证必须是正确的手机号
+    function checkMobile(val) {
+        var reg = /^1[3456789]\d{9}$/;
+        if (reg.test(val)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //提示信息
+    function shom_msg(msg) {
+        $('#subbtn').removeAttr("disabled");
+        layer.open({content: msg, skin: 'msg', time: 2});
+        return false;
+    }
+</script>
+
+<script>
+    var aa = document.getElementsByName("todo");
+    for (var i = 0; i < aa.length; i++) {
+        aa[i].onclick = function () {
+            //document.getElementById("join_div").scrollIntoView();
+            //页面滚动到锚点位置
+            $("html, body").animate({scrollTop: $("#join_div").offset().top - 20 + "px"}, 500);
+            return false;//不要这句会有点卡顿
+        }
+    }
+    $("div#sel_color label").click(function () {
+        $("div#sel_color label").removeClass('label_sel');
+        $(this).addClass('label_sel');
+    });
+
+    $("div#attr_color label").click(function () {
+        $("div#attr_color label").removeClass('label_sel');
+        $(this).addClass('label_sel');
+    });
+
+    $("div#sex_color label").click(function () {
+        $("div#sex_color label").removeClass('label_sel');
+        $(this).addClass('label_sel');
+    });
+    $("div#agree2_color label").click(function () {
+        $("div#agree2_color label").removeClass('label_sel');
+        $(this).addClass('label_sel');
+    });
+    function kf_wx() {
+        layer.open({
+            content: '<h1 style="font-size:16pt;margin-bottom:15px;">长按二维码添加客服微信</h1><img src="' + goods.contactCodePath + '"/>'
+            , style: 'background-color:#fff; color:#000000; border:none;'
+            , btn: '我知道了'
+        });
+    }
+
+    function sphone() {
+        var mobile = $('#ssphone').val();
+        if (!checkMobile(mobile)) {
+            layer.open({content: "查询的手机号码有误，请重填", skin: 'msg', time: 2});
+        } else {
+            window.location.href = "express.html?mobile=" + mobile;
+        }
+    }
+
+    $("#province").change(function () {
+        var province = $("select[name='province'] option:selected").text();
+        var bubaoyou_areas = "新疆维吾尔自治区=西藏自治区";
+        if (bubaoyou_areas.indexOf(province) >= 0) {
+            layer.open({content: '您的收货地区为偏远地区，需要自理邮费10元', skin: 'msg', time: 3});
+        }
+    });
+
+    function comp(d) {
+        var number = $("#number").val();
+        var price = $("#price").val();
+        number = parseInt(number);
+        price = parseFloat(price);
+        if (d == "1") {
+            if (number > 1) {
+                number = number - 1;
+            } else {
+                layer.open({content: '最少必须选择一件', skin: 'msg', time: 2});
+            }
+        } else {
+            if (number >= 10) {
+                layer.open({content: '最多不能超过10件', skin: 'msg', time: 2});
+            } else {
+                number = number + 1;
+            }
+        }
+
+        $("#number").val(number);
+        var showprice = (price * number).toFixed(2);
+        $("#showprice").html("¥ " + showprice);
+    }
+
+
+    var userList = ["胡 * * 河南省 郑州 * * ", "王 * * 吉林省 松原 * * ", "李 * * 广东省 东莞 * * ", "张 * * 重庆市 万州 * * ", "王 * * 河南省 南阳 * * ", "刘 * * 湖北省 武汉 * * ", "龙 * * 广东省 中山 * * ", "宋 * * 贵州省 铜仁 * * ", "鄢 * * 湖北省 武汉 * * ", "赵 * * 江苏省 徐州 * * ",
+        "吕 * * 河南省 郑州 * * ", "李 * * 河北省 石家 * * ", "池 * * 上海市 浦东 * * ", "杨 * * 广东省 汕头 * * ", "张 * * 河北省 石家 * * ", "王 * * 贵州省 贵阳 * * ", "陈 * * 黑龙江省 哈 * * ", "张 * * 天津市 静海 * * ", "张 * * 河北省 石家 * * ", "魏 * * 黑龙江省 哈 * * ", "谢 * * 河北省 石家 * * ", "王 * * 河北省 衡水 * * ", "刘 * * 北京市 顺义 * * ", "孙 * * 河北省 石家 * * ",
+        "李 * * 河北省 衡水 * * ", "李 * * 上海市 黄浦 * * ", "孙 * * 河北省 石家 * * ", "谢 * * 河北省 石家 * * ", "赵 * * 河南省 郑州 * * ", "王 * * 河南省 开封 * * "];
+    var html = "";
+    $.each(userList, function (i, item) {
+        var myDate = new Date();
+        var h = myDate.getHours();
+        var m = myDate.getMinutes();
+        var s = myDate.getSeconds();
+        if (m > 5) {
+            m = m - Math.floor(Math.random() * 4);
+        }
+        if (s > 15) {
+            s = s - Math.floor(Math.random() * 9);
+        }
+        if (s < 10) {
+            s = '0' + s;
+        }
+        if (m < 10) {
+            m = '0' + m;
+        }
+        if (h == 0) {
+            h = 12;
+        }
+        html += '<li>' + userList[Math.floor(Math.random() * 30)] + ' ' + h + ':' + m + ':' + s + ' 下单成功 </li>';
+    });
+    $("#gd").append(html);
+    $("#leftmenu").show();
+
+    function noticeUp(obj, top, time) {
+        $(obj).animate({
+            marginTop: top
+        }, time, function () {
+            $(this).css({marginTop: "0"}).find(":first").appendTo(this);
+        })
+    }
+    $(function () {
+        // 调用 公告滚动函数
+        setInterval("noticeUp('.notice ul','-28px',500)", 3000);
+    });
+
+    $(document).ready(function () {
+        var menuYloc = $("#leftmenu").offset().top; //此ID为随着屏幕滚动div的ID
+        $(window).scroll(function () {
+            var offsetTop = menuYloc + $(window).scrollTop() + "px";
+            $("#leftmenu").animate({top: offsetTop}, {duration: 600, queue: false}); //此ID为随着屏幕滚动div的ID
+
+            //底部btn列表-显示隐藏
+            var sc = $(document).scrollTop();
+            var hh = $(document).height() - $(window).height();
+            var cha = hh - sc;
+            if (cha >= 1300) {
+                $("#btn-list").removeClass('fade-out');
+            } else {
+                $("#btn-list").addClass('fade-out');
+            }
+        });
+    });
+</script>
+<!--<script src="http://www.zjqzdy.com.cn/index.php/home/mobile/pvcount?aid=1&sid=56"></script>-->
+
+<script language="JavaScript">
+    //    var contextPath = location.protocol + "\\" + location.hostname + "\\:" + (location.port == "" ? 80 : location.port) + "ring";
+    // 产品
+    $.ajax({
+        type: "POST",  //提交方式
+        url: "/ring/api/goodsdef/queryAll",
+        data: {'goodsStatus': '0'},
+        dataType: "json",
+        success: function (result) {
+            if (result.code == "0") {
+                if (result.list.length < 1) {
+                    return;
+                }
+                goods = result.list[0];
+                $("#goodsPicPath")[0].src = goods.goodsPicPath;
+                $("#goodsPrice")[0].innerHTML = (goods.goodsPrice / 100).toFixed(2);
+                $("#preGoodsPrice")[0].innerHTML = (goods.preGoodsPrice / 100).toFixed(2);
+                $("#showprice")[0].innerHTML = "¥" + (goods.goodsPrice / 100).toFixed(2);
+                $("#price").val((goods.goodsPrice / 100).toFixed(2));
+                $("#product_name").val(goods.goodsName);
+                $("#goodsName")[0].innerHTML = goods.goodsName;
+                $("#contact_tel").attr("href", "tel:" + goods.contactPhone);
+
+                var goodsPicDtlPathHtml = "";
+                var goodsPicDtlPaths = goods.goodsPicDtlPath.split(",");
+                for (k in goodsPicDtlPaths) {
+                    goodsPicDtlPathHtml += "<p width='640' height='498'><img src='" + goodsPicDtlPaths[k] + "' style='max-width: 100%;'></p>";
+                }
+                $("#goodsPicDtlPath").append(goodsPicDtlPathHtml);
+
+                //title
+                document.title = goods.goodsName;
+            }
+        }, error: function () {
+            layer.open({content: '您的网络不稳定，请关闭页面后重试！', btn: '我知道了'});
+        }
+    });
+
+    // 评论
+    $.ajax({
+        type: "POST",  //提交方式
+        url: "/ring/api/highopiniondef/queryAll",
+//        data: $("#form1").serialize(),
+        dataType: "json",
+        async: false,
+        success: function (result) {
+            if (result.code == "0") {
+                var opinionHtml = "";
+                var opinionList = result.list;
+                for (k in opinionList) {
+                    opinionHtml += "<li style='opacity: 1;border-bottom: 1px dashed #dadada;'><span style='color:#000'>" + opinionList[k].userName + "</span>&nbsp;&nbsp;&nbsp;⭐⭐⭐⭐⭐<br>" + opinionList[k].highOpinion + "</li>";
+                }
+//                var newScript = document.createElement('script');
+//                newScript.src = "/ring/js/ring/gundong.js";
+//                newScript.type = "text/javaScript";
+//                $("#opinion").before(newScript);
+                $("#opinionList")[0].innerHTML = opinionHtml;
+//                $("#opinionBefor").after("<div style='padding:10px'><div class='wforderr'><div class='wfformr'><div class='wftitleb'></div><div class='wffahuo_wrap'><div id='wffahuo' class='wffahuo wffahuo wffahuo-wffahuo' style='height:350px; line-height:25px;color:#666'><ul class='wffhlist' style='margin-top: 0px;'>" + opinionHtml + "</ul></div></div></div></div><div style='clear:both;'></div></div>");
+            }
+//            $.getScript("/ring/js/ring/gundong.js")
+//                    .done(function() {
+//                        alert("sdfdsfsdfds");
+//                    });
+        }, error: function () {
+            layer.open({content: '您的网络不稳定，请关闭页面后重试！', btn: '我知道了'});
+        }
+    });
+
+    // 规格
+    $.ajax({
+        type: "POST",  //提交方式
+        url: "/ring/api/specparamdef/queryAll",
+        data: {'specStatus': '0'},
+        dataType: "json",
+        success: function (result) {
+            if (result.code == "0") {
+                specList = result.list;
+                var specHtml = "";
+                var specSeq = -1;
+                var specSeqs = new Array();
+                var isFisrt = true;
+                for (k in specList) {
+                    if (specSeq == specList[k].specSeq) {
+                        if (specList[k].paramPicPath != "") {
+                            specHtml += '<li><label><div class="pwrap"><div class="img-wrap"><img src="' + specList[k].paramPicPath + '"></div><h3 style="text-align:center;font-size:14px;"><input type="radio" name="spec_' + specSeq + '" value="' + specList[k].paramName + '" class="a-radio"><span class="b-radio"></span>' + specList[k].paramName + '</h3></div></label></li>';
+                        } else {
+                            specHtml += '<label class="inpbox"><input type="radio" value="' + specList[k].paramName + '" name="spec_' + specSeq + '">' + specList[k].paramName + '</label>';
+                        }
+                        specSeqs.push(specSeq);
+                    } else {
+                        specSeq = specList[k].specSeq;
+                        // 图片
+                        if (specList[k].paramPicPath != "") {
+                            if (!isFisrt) {
+                                specHtml += "</ul></div></div></div>";
+                            }
+                            specHtml += '<div class="form-group"><label class="field-title">选择' + specList[k].specName + '</label><div class="field-content"><div class="list clearfix"><ul id="' + specSeq + '_color">';
+                            specHtml += '<li><label><div class="pwrap"><div class="img-wrap"><img src="' + specList[k].paramPicPath + '"></div><h3 style="text-align:center;font-size:14px;"><input type="radio" name="spec_' + specSeq + '" value="' + specList[k].paramName + '" class="a-radio"><span class="b-radio"></span>' + specList[k].paramName + '</h3></div></label></li>';
+                        } else {
+                            if (!isFisrt) {
+                                specHtml += "</div></div>";
+                            }
+                            specHtml += '<div class="form-group"><label class="field-title">选择' + specList[k].specName + '</label><div class="col-xs-12" id="' + specSeq + '_color">';
+                            specHtml += '<label class="inpbox"><input type="radio" value="' + specList[k].paramName + '" name="spec_' + specSeq + '">' + specList[k].paramName + '</label>';
+                        }
+                    }
+                    isFisrt = false;
+                }
+                if (specList[specList.length - 1].paramPicPath != "") {
+                    specHtml += "</ul></div></div></div>";
+                } else {
+                    specHtml += "</div></div>";
+                }
+                $("#specAfter").before(specHtml);
+                // 按钮
+                specSeqs = Array.from(new Set(specSeqs));
+                for (k in specSeqs) {
+                    if (specSeqs[k] === "1") {
+                        $("div#1_color label").click(function () {
+                            $("div#1_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                    if (specSeqs[k] === "2") {
+                        $("div#2_color label").click(function () {
+                            $("div#2_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                    if (specSeqs[k] === "3") {
+                        $("div#3_color label").click(function () {
+                            $("div#3_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                    if (specSeqs[k] === "4") {
+                        $("div#4_color label").click(function () {
+                            $("div#4_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                    if (specSeqs[k] === "5") {
+                        $("div#5_color label").click(function () {
+                            $("div#5_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                    if (specSeqs[k] === "6") {
+                        $("div#6_color label").click(function () {
+                            $("div#6_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                    if (specSeqs[k] === "7") {
+                        $("div#7_color label").click(function () {
+                            $("div#7_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                    if (specSeqs[k] === "8") {
+                        $("div#8_color label").click(function () {
+                            $("div#8_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                    if (specSeqs[k] === "9") {
+                        $("div#9_color label").click(function () {
+                            $("div#9_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                    if (specSeqs[k] === "10") {
+                        $("div#10_color label").click(function () {
+                            $("div#10_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                    if (specSeqs[k] === "11") {
+                        $("div#11_color label").click(function () {
+                            $("div#11_color label").removeClass('label_sel');
+                            $(this).addClass('label_sel');
+                        });
+                        continue;
+                    }
+                }
+            }
+        }, error: function () {
+            layer.open({content: '您的网络不稳定，请关闭页面后重试！', btn: '我知道了'});
+        }
+    });
+
+</script>

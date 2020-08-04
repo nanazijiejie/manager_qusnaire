@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>广告信息表</title>
+    #parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+        <Row :gutter="16">
+            <div class="search-group">
+                <i-col span="4">
+                    <i-input v-model="q.name" @on-enter="query" placeholder="名称"/>
+                </i-col>
+                <i-button @click="query">查询</i-button>
+                <i-button @click="reloadSearch">重置</i-button>
+            </div>
+            <div class="buttons-group">
+                #if($shiro.hasPermission("adinfo:save"))
+                <i-button type="info" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</i-button>
+                #end
+                #if($shiro.hasPermission("adinfo:update"))
+                <i-button type="warning" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</i-button>
+                #end
+                #if($shiro.hasPermission("adinfo:delete"))
+                <i-button type="error" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</i-button>
+                #end
+            </div>
+        </Row>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+
+    <Card v-show="!showList">
+        <p slot="title">{{title}}</p>
+		<i-form ref="formValidate" :model="adInfo" :rules="ruleValidate" :label-width="80">
+            <Form-item label="名称" prop="adName">
+                <i-input v-model="adInfo.adName" placeholder="名称"/>
+            </Form-item>
+            <Form-item label="图片路径" prop="adPicPath">
+                <i-input v-model="adInfo.adPicPath" placeholder="图片路径"/>
+            </Form-item>
+            <Form-item label="创建时间" prop="createTime">
+                <i-input v-model="adInfo.createTime" placeholder="创建时间"/>
+            </Form-item>
+            <Form-item label="创建人名字" prop="createOperator">
+                <i-input v-model="adInfo.createOperator" placeholder="创建人名字"/>
+            </Form-item>
+            <Form-item label="生效时间" prop="startDate">
+                <i-input v-model="adInfo.startDate" placeholder="生效时间"/>
+            </Form-item>
+            <Form-item label="失效时间" prop="endDate">
+                <i-input v-model="adInfo.endDate" placeholder="失效时间"/>
+            </Form-item>
+            <Form-item label="0:上架；1:下架" prop="adStatus">
+                <i-input v-model="adInfo.adStatus" placeholder="0:上架；1:下架"/>
+            </Form-item>
+            <Form-item label="展示顺序，从左到右" prop="adSeq">
+                <i-input v-model="adInfo.adSeq" placeholder="展示顺序，从左到右"/>
+            </Form-item>
+            <Form-item label="类型：0屏显，1轮播" prop="adType">
+                <i-input v-model="adInfo.adType" placeholder="类型：0屏显，1轮播"/>
+            </Form-item>
+            <Form-item>
+                <i-button type="primary" @click="handleSubmit('formValidate')">提交</i-button>
+                <i-button type="warning" @click="reload" style="margin-left: 8px"/>返回</i-button>
+                <i-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-button>
+            </Form-item>
+        </i-form>
+	</Card>
+</div>
+
+<script src="${rc.contextPath}/js/shop/adinfo.js?_${date.systemTime}"></script>
+</body>
+</html>

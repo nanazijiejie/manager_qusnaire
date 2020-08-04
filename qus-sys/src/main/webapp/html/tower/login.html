@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>福建铁塔绩效考评系统</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link rel="stylesheet" type="text/css" href="../../css/layout.css">
+  <script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="../../js/tower/session.js"></script>
+  <link rel="shortcut icon" href="../../images/tieta.jpeg" type="image/x-icon">
+</head>
+<script type="text/javascript">
+  //var HOST = "http://localhost:8080/qus/";
+  var HOST = "";//"http://129.28.85.6:8084/qus/";
+  var codeTimeOut;
+  var time = 60;
+  $(function () {
+    //http://120.39.62.34:8084/qus/html/tower/login.html
+    debugger;
+    var endIndex = window.location.href.indexOf("qus");
+    HOST = window.location.href.substring(0,endIndex+4);
+    $('#loginBtn').on('click',doLogin);
+    $("#uptPwdBtn").on('click',doUptPwd);
+  });
+  function doLogin(){
+    if(!checkLogin()) return false;
+    var url = "tower/staffinfo/login?number="+Math.random();
+    $.ajax({
+      //与服务器交互
+      url:HOST+url,
+      dataType: 'json',
+      data: {"userName" : $.trim($("#userName").val()),
+        "userPwd":$.trim($("#userPwd").val())
+      },
+      complete: function(XMLHttpRequest, textStatus){
+
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown){
+        showAlert("发生错误："+errorThrown);
+      },
+      success: function(res) {
+        if(res.msg!=undefined){
+          showAlert(res.msg);
+          if(res.msg.indexOf('修改密码')!=-1){
+              $("#uptUserName").val($("#userName").val());
+              $("#oldPwd").val("");
+              $("#newPwd").val("");
+              $("#newConfirmPwd").val("");
+              $('.form1').hide();
+              $('.form2').fadeIn();
+          }
+          return;
+        }
+        window.sessionStorage.setItem("token",res.token);
+        window.sessionStorage.setItem("tokenTime",new Date().getTime());
+        window.sessionStorage.setItem("userName",res.userName);
+        window.sessionStorage.setItem("staffName",res.staffName);
+        window.sessionStorage.setItem("isSubmit",res.isSubmit);
+        window.sessionStorage.setItem("isSelSubmit",res.isSelSubmit);
+        window.sessionStorage.setItem("isSelection",res.isSelection);
+        //跳转到填写问卷的页面
+        setSession("qusInfo",res.qusInfo);
+        setSession("examStaffInfo",res.examStaffInfo);
+        setSession("examItemInfo",res.examItemInfo);
+        setSession("examScoreInfo",res.examScoreInfo);
+        setSession("selStaffInfo",res.selStaffInfo);
+        setSession("selDefInfo",res.selDefInfo);
+        window.location.href = HOST + "html/tower/qus.html";
+      }
+    });
+  }
+  function sendCode(){
+    if(time!=60){
+      return;
+    }
+    if($.trim($("#uptUserName").val())==""||($.trim($("#uptUserName").val())).length!=11){
+      $("#uptMsgSpan").html("请填写11位手机号码");
+      return;
+    }
+    var url = "tower/staffinfo/sendCode?number="+Math.random();
+    $("#uptMsgSpan").html("");
+    $.ajax({
+      //与服务器交互
+      url: HOST + url,
+      dataType: 'json',
+      data: {
+        phone: $.trim($("#uptUserName").val())
+      },
+      type:"post",
+      complete: function (XMLHttpRequest, textStatus) {
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        alert("发生错误：" + errorThrown);
+      },
+      success: function (res) {
+        if(res.msg!=undefined){
+          $("#uptMsgSpan").html(res.msg);
+        }else{
+          codeTimeOut = setInterval(function() {
+            time--;
+            $("#sendCodeBtn").html('重新发送(' + time + 's)');
+            if (time <= 0) {
+              clearInterval(codeTimeOut);
+              $("#sendCodeBtn").html('重新发送');
+              time = 60;
+            }
+          }, 1000);
+        }
+      }
+    });
+  };
+  function showAlert(msg){
+    $(".alert").show();
+    $("#alertMsg").html(msg);
+  }
+  function closeAlert(){
+    $(".alert").hide();
+  }
+  function checkLogin(){
+    if($.trim($("#userName").val())==''){
+      $("#msgSpan").html("请填写用户名");
+      return false;
+    }
+    if($.trim($("#userPwd").val())==''){
+      $("#msgSpan").html("请填写用户名");
+      return false;
+    }
+    return true;
+
+  }
+  function checkUptPwd(){
+    if($.trim($("#uptUserName").val())==''){
+      $("#uptMsgSpan").html("请填写用户名");
+      return false;
+    }
+    if($.trim($("#msgCode").val())==''){
+      $("#uptMsgSpan").html("请填写验证码");
+      return false;
+    }
+    if($.trim($("#oldPwd").val())==''){
+      $("#uptMsgSpan").html("请填写旧密码");
+      return false;
+    }
+    if($.trim($("#newPwd").val())==''){
+      $("#uptMsgSpan").html("请填写新密码");
+      return false;
+    }
+    if($.trim($("#newConfirmPwd").val())==''){
+      $("#uptMsgSpan").html("请填写确认旧密码");
+      return false;
+    }
+    if($.trim($("#newPwd").val())!=$.trim($("#newConfirmPwd").val())){
+      $("#uptMsgSpan").html("两次新密码输入不一致");
+      return false;
+    }
+    return true;
+
+  }
+  function doUptPwd(){
+    if(!checkUptPwd()) return false;
+    $("#uptMsgSpan").html("");
+    var url = "tower/staffinfo/uptPwd?number="+Math.random();
+    $.ajax({
+      //与服务器交互
+      url:HOST+url,
+      dataType: 'json',
+      data: {"userName" : $.trim($("#uptUserName").val()),
+        "oldPwd":$.trim($("#oldPwd").val()),
+        "newPwd":$.trim($("#newPwd").val()),
+        "newConfirmPwd":$.trim($("#newConfirmPwd").val()),
+        "msgCode":$.trim($("#msgCode").val())},
+      complete: function(XMLHttpRequest, textStatus){
+
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown){
+        showAlert("发生错误："+errorThrown);
+      },
+      success: function(res) {
+        debugger;
+        if(res.msg!=undefined){
+          $("#uptMsgSpan").html(res.msg);
+          return;
+        }else{
+          showAlert("修改成功,请重新登录！");
+          $("#userName").val($("#uptUserName").val());
+          $("#userPwd").val("");
+          $("#uptForm").hide();
+          $("#loginForm").show();
+
+        }
+      }
+    });
+  }
+</script>
+
+<body>
+  <div class="container wmcj">
+    <div class="main">
+      <div class="pic"><img src="../../images/v_1.png"></div>
+      <div class="mainBt">
+        <div class="h">
+          <img class="logo" src="../../images/logo.png">
+          <h2>福建铁塔绩效考评系统</h2>
+          <p>Online performance appraisal system</p>
+        </div>
+        <div class="b">
+          <form id="loginForm" method="post" class="form1">
+            <div class="br user">
+              <input type="text" maxlength="11" placeholder="请输入用户名(手机号码)" id="userName" name="userName" ><label class="icon"></label>
+            </div>
+            <div class="br password">
+              <input type="password" id="userPwd" name="userPwd" placeholder="请输入密码"><label class="icon"></label>
+            </div>
+            <div>
+              <span style="font-size:12px;color:red;" id="msgSpan"></span>
+            </div>
+            <div class="tj">
+              <input type="button" class="submit" value="登 录" id="loginBtn">
+            </div>
+            <p><a class="revisepwd" href="javascript:;">修改密码</a></p>
+            <p style="margin-top:10px;font-size:10px;color: #aaa;">温馨提示：1、首次登录，请先修改密码再登录！</br>2、请使用IE8以上或谷歌浏览器访问！</p>
+          </form>
+          <form id="uptForm" method="post" class="form2">
+            <div class="br user">
+              <input type="text" id="uptUserName" name="uptUserName" placeholder="用户名(手机号码)"><label class="icon"></label>
+            </div>
+            <div class="br code">
+              <input type="text" placeholder="请输入验证码" name="msgCode" id="msgCode" maxlength="6"><label class="icon"></label>
+              <a id="sendCodeBtn" class="code-sub" href="javascript:void(0);" onclick="sendCode();">发送验证码</a>
+            </div>
+            <div class="br password">
+              <input type="password" id="oldPwd" name="oldPwd" placeholder="旧密码(首次修改时，旧密码为邮件中的初始密码)"><label class="icon"></label>
+            </div>
+            <div class="br password">
+              <input type="password" id="newPwd" name="newPwd" placeholder="新密码"><label class="icon"></label>
+            </div>
+            <div class="br password">
+              <input type="password" id="newConfirmPwd" name="newConfirmPwd" placeholder="确认新密码"><label class="icon"></label>
+            </div>
+            <div>
+              <span style="font-size:12px;color:red;" id="uptMsgSpan"></span>
+            </div>
+            <div class="tj">
+              <input type="button" class="submit" value="提 交" id="uptPwdBtn">
+            </div>
+            <p><a class="goback" href="javascript:;">返回登录</a></p>
+          </form>
+        </div>
+      </div>
+      <div class="f">2019~2020 © 中国铁塔股份有限公司 版权所有.</div>
+    </div>
+  </div>
+  <div class="alert">
+      <div class="alert-b">
+          <a href="javascript:closeAlert();" class="alert-close"></a>
+          <div class="alert-cont">
+              <h2><span>提示</span></h2>
+              <p id="alertMsg"></p>
+          </div>
+          <div class="alert-sub"><a href="javascript:closeAlert();" style="margin-left:0px;width:100%">确 定</a></div>
+      </div>
+      <div class="alert-bg"></div>
+  </div>
+  <div id="errmsg" style="display:none; font-size:18px;padding:10px 20px;border-radius:5px;position:fixed;top:50%;left:50%; transform:translate(-50%,-50%); -webkit-transform: translate(-50%,-50%); text-align:center; background-color:#000;color:#fff; opacity:.7; z-index: 9999;">
+    这里显示信息这里显示信息</div>
+  <script type="text/javascript" src="https://js.xmnn.cn/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $('.revisepwd').click(function(){
+        $("#uptUserName").val($("#userName").val());
+        $("#oldPwd").val("");
+        $("#newPwd").val("");
+        $("#newConfirmPwd").val("");
+        $('.form1').hide();
+        $('.form2').fadeIn();
+      })
+      $('.goback').click(function(){
+        debugger;
+        $("#userPwd").val("");
+        $('.form2').hide();
+        $('.form1').fadeIn();
+      })
+    })
+  </script>
+</body>
+
+</html>

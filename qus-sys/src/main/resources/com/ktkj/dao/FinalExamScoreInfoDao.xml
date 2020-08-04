@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.FinalExamScoreInfoDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.exam_result_id,
+        T.qus_naire_station,
+        T.qus_naire_station_name,
+        T.exam_station,
+        T.exam_name,
+        T.exam_dept,
+        T.exam_city,
+        T.exam_station_name,
+        T.exam_staff_id,
+        T.exam_dept_id,
+        T.exam_city_id,
+        T.final_score,
+        T.create_time,
+        T.update_time
+        FROM tower_final_exam_score_info T
+        WHERE 1=1
+        <if test="params.examName != null and params.examName.trim() != ''">
+            AND T.exam_name LIKE '%${params.examName}%'
+        </if>
+        <if test="params.examStation != null ">
+            AND T.exam_station = '${params.examStation}'
+        </if>
+        <if test="params.cityId != null and params.cityId.trim() != ''">
+            AND T.exam_city_id = '${params.cityId}'
+        </if>
+        order by exam_station,exam_staff_id,qus_naire_station
+    </sql>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into tower_final_exam_score_info
+        (qus_naire_station,
+        qus_naire_station_name,
+        exam_station,
+        exam_name,
+        exam_dept,
+        exam_city,
+        exam_station_name,
+        exam_staff_id,
+        exam_dept_id,
+        exam_city_id,
+        final_score,
+        create_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.qusNaireStation},
+            #{item.qusNaireStationName},
+            #{item.examStation},
+            #{item.examName},
+            #{item.examDept},
+            #{item.examCity},
+            #{item.examStationName},
+            #{item.examStaffId},
+            #{item.examDeptId},
+            #{item.examCityId},
+            #{item.finalScore},
+            #{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectFinalExamScoreInfoPage" resultType="com.ktkj.entity.FinalExamScoreInfoEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.FinalExamScoreInfoEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <delete id="deleteAll">
+        delete from tower_final_exam_score_info
+    </delete>
+</mapper>

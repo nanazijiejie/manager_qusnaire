@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    #parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+        <Row :gutter="16">
+            <div class="search-group">
+                <i-col span="4">
+                    <i-input v-model="q.specName" @on-enter="query" placeholder="规格名称"/>
+                </i-col>
+                <i-button @click="query">查询</i-button>
+                <i-button @click="reloadSearch">重置</i-button>
+            </div>
+            <div class="buttons-group">
+                #if($shiro.hasPermission("ring:specparamdef:save"))
+                <i-button type="info" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</i-button>
+                #end
+                #if($shiro.hasPermission("ring:specparamdef:update"))
+                <i-button type="warning" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</i-button>
+                #end
+                #if($shiro.hasPermission("ring:specparamdef:delete"))
+                <i-button type="error" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</i-button>
+                #end
+            </div>
+        </Row>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+
+    <Card v-show="!showList">
+        <p slot="title">{{title}}</p>
+		<i-form ref="formValidate" :model="specParamDef" :rules="ruleValidate" :label-width="120">
+            <!--<Form-item label="创建时间" prop="createTime">
+                <i-input v-model="specParamDef.createTime" placeholder="创建时间"/>
+            </Form-item>-->
+            <Form-item label="规格组名称" prop="specName">
+                <i-input v-model="specParamDef.specName" placeholder="规格组名称"/>
+            </Form-item>
+            <Form-item label="参数名称" prop="paramName">
+                <i-input v-model="specParamDef.paramName" placeholder="参数名称"/>
+            </Form-item>
+            <Row>
+                <i-col span="16">
+                    <Form-item label="规格示意图片" prop="paramPicPath">
+                        <i-input v-model="specParamDef.paramPicPath" placeholder="规格示意图片" readonly/>
+                    </Form-item>
+                </i-col>
+                <i-col span="3">
+                    <Form-item :label-width="1">
+                        <Upload style="width: 300px;" action="../sys/oss/upload" :format="['jpg','jpeg','png']"
+                                max-size="2048"
+                                :on-success="handleSuccessPicUrl" :on-format-error="handleFormatError"
+                                :show-upload-list="false"
+                                :on-exceeded-size="handleMaxSize">
+                            <i-button icon="ios-cloud-upload-outline">上传图片</i-button>
+                        </Upload>
+                    </Form-item>
+                </i-col>
+                <i-col span="3">
+                    <Form-item :label-width="1">
+                        <i-button icon="eye" @click="eyeImagePicUrl">预览图片</i-button>
+                    </Form-item>
+                </i-col>
+            </Row>
+            <!--<Form-item label="图片" prop="paramPicPath">
+                <Upload style="width: 300px;" action="../sys/oss/upload" :format="['jpg','jpeg','png']"
+                        max-size="2048"
+                        :on-success="handleSuccessPicUrl" :on-format-error="handleFormatError"
+                        :show-upload-list="false"
+                        :on-exceeded-size="handleMaxSize">
+                    <i-button icon="ios-cloud-upload-outline">上传图片</i-button>
+                </Upload>
+            </Form-item>-->
+            <Form-item label="状态" prop="specStatus">
+                <i-select v-model="specParamDef.specStatus">
+                    <i-option :value="0" :key="0">上架
+                    </i-option>
+                    <i-option :value="1" :key="1">下架
+                    </i-option>
+                </i-select>
+            </Form-item>
+            <Form-item>
+                <i-button type="primary" @click="handleSubmit('formValidate')">提交</i-button>
+                <i-button type="warning" @click="reload" style="margin-left: 8px"/>返回</i-button>
+                <i-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-button>
+            </Form-item>
+        </i-form>
+	</Card>
+</div>
+
+<script src="${rc.contextPath}/js/ring/specparamdef.js?_${date.systemTime}"></script>
+</body>
+</html>

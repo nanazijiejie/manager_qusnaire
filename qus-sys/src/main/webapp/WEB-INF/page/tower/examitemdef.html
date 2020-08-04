@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    #parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+        <Row :gutter="16">
+            <div class="search-group">
+                <!--<i-col span="4">
+                    <i-input v-model="q.name" @on-enter="query" placeholder="名称"/>
+                </i-col>-->
+
+                <!--<i-button @click="reloadSearch">重置</i-button>-->
+            </div>
+            <div class="buttons-group">
+                <i-button @click="query">查询</i-button>
+                #if($shiro.hasPermission("tower:examitemdef:save"))
+                <i-button type="info" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</i-button>
+                #end
+                #if($shiro.hasPermission("tower:examitemdef:update"))
+                <i-button type="warning" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</i-button>
+                #end
+                #if($shiro.hasPermission("tower:examitemdef:delete"))
+                <i-button type="error" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</i-button>
+                #end
+            </div>
+        </Row>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+
+    <Card v-show="!showList">
+        <p slot="title">{{title}}</p>
+		<i-form ref="formValidate" :model="examItemDef" :rules="ruleValidate" :label-width="150">
+            <Form-item label="考核对象职务" prop="examStationId">
+                <i-select v-model="examItemDef.examStationId" placeholder="职务" @on-change="setStationName()">
+                    <i-option v-for="stationDef in stationDefList"  :value="stationDef.itemValue" :key="stationDef.code">
+                        {{stationDef.itemName}}
+                    </i-option>
+                </i-select>
+            </Form-item>
+            <Form-item label="考核项名称" prop="examItemName">
+                <i-input v-model="examItemDef.examItemName" placeholder="考核项名称"/>
+            </Form-item>
+            <Form-item label="考核指标项（单位：%）" prop="indexItemList">
+                <div v-model="indexItemList" v-for="indexItem in indexItemList">
+                    {{indexItem.indexItemName}}&nbsp;&nbsp;&nbsp;
+                    <i-input type="number" style="width: 400px;" @on-change="calPercentAll" v-model="indexItem.percent" placeholder="占比(单位：%),占比不填写或者填写0时表示不考核该指标项"/>
+                </div>
+            </Form-item>
+            <Form-item label="考核指标项占比总和" prop="percentAll">
+                <span>{{percentAll}}</span>
+            </Form-item>
+            <Form-item label="优秀人数限制" prop="excellentCount">
+                <i-input type="number" style="width: 400px;" v-model="examItemDef.excellentCount" placeholder="优秀人数限制,不填写或填写0视为不限制" />
+            </Form-item>
+            <Form-item label="优良人数限制" prop="goodCount">
+                <i-input type="number" style="width: 400px;" v-model="examItemDef.goodCount" placeholder="优良人数限制,不填写或填写0视为不限制" />
+            </Form-item>
+            <Form-item label="考核项描述" prop="examItemDesc">
+                <i-input type="textarea" rows="6" v-model="examItemDef.examItemDesc" placeholder="考核项描述"/>
+            </Form-item>
+            <Form-item label="显示顺序" prop="examSeq">
+                <Input-number :min="0" :step="1" v-model="examItemDef.examSeq" placeholder="排序号" style="width: 188px;"/>
+            </Form-item>
+            <!--<Form-item label="创建时间" prop="createTime">
+                <i-input v-model="examItemDef.createTime" placeholder="创建时间"/>
+            </Form-item>
+            <Form-item label="创建人" prop="createOperator">
+                <i-input v-model="examItemDef.createOperator" placeholder="创建人"/>
+            </Form-item>
+            <Form-item label="修改人" prop="updateTime">
+                <i-input v-model="examItemDef.updateTime" placeholder="修改人"/>
+            </Form-item>
+            <Form-item label="修改时间" prop="updateOperator">
+                <i-input v-model="examItemDef.updateOperator" placeholder="修改时间"/>
+            </Form-item>-->
+            <Form-item>
+                <i-button type="primary" @click="handleSubmit('formValidate')">提交</i-button>
+                <i-button type="warning" @click="reload" style="margin-left: 8px"/>返回</i-button>
+                <i-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-button>
+            </Form-item>
+        </i-form>
+	</Card>
+</div>
+
+<script src="${rc.contextPath}/js/tower/examitemdef.js?_${date.systemTime}"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.OrderInfoDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.order_id,
+        T.order_status,
+        T.total_pay_amount,
+        T.pay_time,
+        T.create_time,
+        T.goods_name,
+        T.nick_name,
+        T.open_id,
+        T.receiver,
+        T.contact_phone,
+        T.receive_addr,
+        T.spec_param,
+        T.total_count,
+        T.express_id
+        FROM ring_order_info T
+        WHERE 1=1
+        <if test="params.createTimeStar != null and params.createTimeStar.trim() != ''">
+            AND T.create_time <![CDATA[ >= ]]> ${params.createTimeStar}
+        </if>
+        <if test="params.createTimeEnd != null and params.createTimeEnd.trim() != ''">
+            AND T.create_time <![CDATA[ <= ]]> ${params.createTimeEnd}
+        </if>
+        <if test="params.orderId != null and params.orderId.trim() != ''">
+            AND T.ORDER_ID = '${params.orderId}'
+        </if>
+        <if test="params.orderStatus != null and params.orderStatus.trim() != ''">
+            AND T.order_status = '${params.orderStatus}'
+        </if>
+        <if test="params.contactPhone != null and params.contactPhone.trim() != ''">
+            AND T.contact_phone = '${params.contactPhone}'
+        </if>
+        <if test="params.expressId != null and params.expressId.trim() != ''">
+            AND T.express_id LIKE '%${params.expressId}%'
+        </if>
+    </sql>
+
+    <select id="selectOrderInfoPage" resultType="com.ktkj.entity.OrderInfoEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.OrderInfoEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <insert id="insert" parameterType="com.ktkj.entity.OrderInfoEntity">
+        insert into ring_order_info(
+            order_id,
+            order_status,
+            total_pay_amount,
+            create_time,
+            goods_name,
+            nick_name,
+            open_id,
+            receiver,
+            contact_phone,
+            receive_addr,
+            spec_param,
+            total_count
+        )
+        values(
+            '${orderId}',
+            '${orderStatus}',
+            '${totalPayAmount}',
+            CURRENT_TIMESTAMP,
+            '${goodsName}',
+            '${nickName}',
+            '${openId}',
+            '${receiver}',
+            '${contactPhone}',
+            '${receiveAddr}',
+            '${specParam}',
+            '${totalCount}'
+        )
+    </insert>
+    <update id="scanExpress" parameterType="com.ktkj.entity.OrderInfoEntity">
+        update ring_order_info
+        <set>
+            <if test="expressId != null">`express_id` = #{expressId}, </if>
+        </set>
+        where order_id = #{orderId}
+    </update>
+</mapper>

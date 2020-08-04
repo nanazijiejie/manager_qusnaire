@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.TypeDefDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.type_id,
+        T.type_name,
+        T.show_seq,
+        T.create_time,
+        T.create_operator,
+        T.type_status,
+        T.pic_path
+        FROM tokyo_type_def T
+        WHERE 1=1
+        <if test="params.name != null and params.name.trim() != ''">
+            AND T.NAME LIKE '%${params.name}%'
+        </if>
+    </sql>
+
+    <select id="selectTypeDefPage" resultType="com.ktkj.entity.TypeDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.TypeDefEntity">
+        <include refid="selectSql"/>
+    </select>
+</mapper>

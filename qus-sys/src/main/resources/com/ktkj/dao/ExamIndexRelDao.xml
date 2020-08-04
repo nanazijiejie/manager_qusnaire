@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.ExamIndexRelDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.exam_item_id,
+        T.index_item_id,
+        T.create_time,
+        T.create_operator,
+        T.percent
+        FROM tower_exam_index_rel T
+        WHERE 1=1
+        <if test="params.examItemId != null and params.examItemId.trim() != ''">
+            AND T.exam_item_id = '${params.examItemId}'
+        </if>
+    </sql>
+
+    <select id="selectExamIndexRelPage" resultType="com.ktkj.entity.ExamIndexRelEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.ExamIndexRelEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <delete id="deleteByExamId" >
+        delete from tower_exam_index_rel where exam_item_id = #{examItemId}
+    </delete>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into tower_exam_index_rel
+        (exam_item_id,index_item_id,create_time,create_operator,percent)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.examItemId},
+            #{item.indexItemId},
+            #{item.createTime},
+            #{item.createOperator},
+            #{item.percent}
+            )
+        </foreach>
+    </insert>
+</mapper>

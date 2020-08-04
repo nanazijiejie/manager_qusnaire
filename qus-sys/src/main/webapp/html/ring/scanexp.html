@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>物流单号录入页面</title>
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+  <script type="text/javascript" src="../../js/ring/tb.resize.scan.js" ignoreapd="1"></script>
+  <link rel="stylesheet" href="../../css/ring/layout_scan.css">
+</head>
+<script type="text/javascript">
+  //调用微信扫一扫功能所在的页面
+  var url = window.location.href;
+  var HOST = "https://admin.jixuxiang.com/ring/";
+  //var HOST = "http://localhost:8080/ring_framework_war_exploded/";
+  //服务端提供的接口。HOST是服务器的地址，在项目中定义为全局变量；
+  var url11 = HOST + "weixinscan/list";
+  //ajax注入权限验证
+  $.ajax({
+    //与服务器交互
+    url:url11,
+    dataType: 'json',
+    data: {"url" : url},
+    complete: function(XMLHttpRequest, textStatus){
+
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown){
+      alert("发生错误："+errorThrown);
+    },
+    success: function(res){
+      var appId = res.appId;
+      var noncestr = res.nonceStr;
+      var jsapi_ticket = res.jsapi_ticket;
+      var timestamp = res.timestamp;
+      var signature = res.signature;
+      wx.config({
+        debug: true, //开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: appId, //必填，公众号的唯一标识
+        timestamp: timestamp, // 必填，生成签名的时间戳
+        nonceStr: noncestr, //必填，生成签名的随机串
+        signature: signature,// 必填，签名，见附录1
+        jsApiList: ['checkJsApi', 'scanQRCode'] //必填，需要使用的JS接口列表，所有JS接口列表 见附录2
+      });
+    }
+  });
+  $(document).ready(function () {
+    qryOrderInfoList();
+  });
+  function qryOrderInfoList(){
+    var url12 = HOST + "ring/orderinfo/queryList";
+    $.ajax({
+      url: url12,
+      dataType: 'json',
+      data: {"contactPhone": $("#contactPhone").val()},
+      complete: function (XMLHttpRequest, textStatus) {
+
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        alert("发生错误：" + errorThrown);
+      },
+      success: function (res) {
+        var orderInfoHtml = "";
+        for(var i=0;i<res.length;i++){
+          var expInp = "expInp"+res[i].orderId;
+          var orderStatusName = "";
+          if(res[i].orderStatus=='0'){
+              orderStatusName = "预下单待支付";
+          }else if(res[i].orderStatus=='1'){
+              orderStatusName = "支付成功";
+          }else if(res[i].orderStatus=='2'){
+              orderStatusName = "支付失败";
+          }
+          var btnName = "提交";
+          if(res[i].expressId!=null&&res[i].expressId!=""){
+              btnName = "修改";
+          }
+          orderInfoHtml+="<div class=\"searchItem\">"+
+          "<p><span>订单ID：</span><em>"+res[i].orderId+"</em></p>"+
+          "<p><span>订单状态：</span><em>"+orderStatusName+"</em></p>"+
+          "<p><span>商品名称：</span><em>"+res[i].goodsName+"</em></p>"+
+          "<p><span>商品规格：</span><em>"+res[i].specParam+"</em></p>"+
+          "<p><span>商品数量：</span><em>"+res[i].totalCount+"</em></p>"+
+          "<p><span>支付金额：</span><em>"+(res[i].totalPayAmount)/100+"</em></p>"+
+          "<p><span>收货人手机：</span><em>"+res[i].contactPhone+"</em></p>"+
+          "<p><span>收货人姓名：</span><em>"+res[i].receiver+"</em></p>"+
+          "<p><span>收货地址：</span><em>"+res[i].receiveAddr+"</em></p>"+
+          "<p><span>支付时间：</span><em>"+changeTime(res[i].payTime)+"</em></p>"+
+          "<p>"+
+          "<span>物流单号：</span>"+
+          "<input id=\""+expInp+"\""+"class=\"btn-input\" type=\"text\" value=\""+res[i].expressId+"\"placeholder=\"\">"+
+          "<a class=\"btn-submit\" href='javascript:scanExpressId("+res[i].orderId+")'>扫一扫</a>"+
+          "</p>"+
+          "<p><input class=\"btn-submit btn-wl\" type=\"submit\" value=\""+btnName+"\" "+
+          "onclick='updateOrderExpress("+res[i].orderId+",this)'"+"</p>"+
+          "</p>"+
+          "</div>";
+        }
+        $(".search-b").html(orderInfoHtml);
+      }
+    });
+  }
+  function changeTime(time){
+    if(time){
+      var oDate = new Date(time*1),
+              oYear = oDate.getFullYear(),
+              oMonth = oDate.getMonth()+1,
+              oDay = oDate.getDate(),
+              oHour = oDate.getHours(),
+              oMin = oDate.getMinutes(),
+              oSen = oDate.getSeconds(),
+              oTime = oYear +'-'+ getBz(oMonth) +'-'+ getBz(oDay) +' '+ getBz(oHour) +':'+ getBz(oMin) +':'+getBz(oSen);//拼接时间
+      return oTime;
+    }else{
+      return "";
+    }
+
+  }
+  //补0
+  function getBz(num){
+    if(parseInt(num) < 10){
+      num = '0'+num;
+    }
+    return num;
+  }
+  function updateOrderExpress(orderId,obj){
+    var url12 = HOST + "ring/orderinfo/scanExpress";
+    $.ajax({
+      //与服务器交互
+      url: url12,
+      dataType: 'json',
+      data: {
+        "orderId": orderId,
+        "expressId":$("#expInp"+orderId).val()
+      },
+      complete: function (XMLHttpRequest, textStatus) {
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        alert("发生错误：" + errorThrown);
+      },
+      success: function (res) {
+          alert("物流单号录入成功！");
+          obj.value="修改";
+      }
+    });
+  };
+  function scanExpressId(orderId){
+    wx.scanQRCode({
+      needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+      scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有//
+      success: function(res) {
+        $("#expInp"+orderId).val(res.resultStr.split(',')[1]);
+      },
+      error:function(res){
+        alert(res);
+      }
+    });
+  }
+
+  wx.error(function(res) {
+    alert("出错了：" + res.errMsg);
+  });
+
+  //通过ready接口处理成功验证
+  wx.ready(function() {
+    wx.checkJsApi({
+      jsApiList: ['scanQRCode'],
+      success: function(res) {
+        alert(JSON.stringify(res));
+      }
+    });
+
+    //扫描二维码
+    document.querySelector('#scanQRCode').onclick = function() {
+      wx.scanQRCode({
+        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+        scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有//
+        success: function(res) {
+          document.getElementById("codeValue").value = res.resultStr.split(',')[1];
+        },
+        error:function(res){
+          alert(res);
+        }
+      });
+    }; //end_document_scanQRCode
+  });
+</script>
+<body>
+  <div class="container">
+    <div class="searchBox">
+        <div class="search flex">
+          <img class="iconPhone" src="../../images/phone.png" alt="">
+          <input class="btn-input" type="phone" maxlength="11" id="contactPhone" placeholder="请输入电话号码">
+          <input class="btn-submit" type="submit" value="查询" onclick="qryOrderInfoList();">
+        </div>
+        <div class="search-b">
+
+        </div>
+    </div>
+  </div>
+</body>
+</html>

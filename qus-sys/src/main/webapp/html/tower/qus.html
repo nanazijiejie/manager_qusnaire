@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>福建铁塔绩效考评系统</title>
+    <script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        document.write("<s" + "cript type='text/javascript' src='../../js/tower/session.js?time=" + Math.random() + "'></s" + "cript>");
+        document.write("<s" + "cript type='text/javascript' src='../../js/tower/qus.js?time=" + Math.random() + "'></s" + "cript>");
+        document.write("<link rel='stylesheet' type='text/css' href='../../css/layout.css?time=" + Math.random() + "'>");
+    </script>
+    <link rel="shortcut icon" href="../../images/tieta.jpeg" type="image/x-icon">
+    <!--<link rel="stylesheet" type="text/css" href="../../css/layout.css">-->
+</head>
+<body class="ibody">
+<div class="subnav">
+    <div class="sub-img">
+        <img src="../../images/logo.png" alt="">
+    </div>
+    <h2>福建铁塔绩效考评系统</h2>
+    <p>Online Performance<br>Appraisal System</p>
+    <ul>
+        <li><a href="javascript:toHandle();">绩效待办</a></li>
+    </ul>
+</div>
+<div id="exam">
+    <div class="userInfo">
+        <a class="user-name"><img src="../../images/people.png" alt=""><span id="user-name-p"></span></a>
+        <a class="quit"><img src="../../images/quit.png" alt=""><span onclick="doLogout();">退出</span></a>
+    </div>
+    <div class="exam-b" id="examInfoAll">
+        <div class="exam-h">
+            <span id="qusTitle"></span>
+        </div>
+        <div class="exam-abs">
+            <span id="headDesc"></span>
+        </div>
+        <div id="examInfo">
+        </div>
+        <div class="exam-f">
+            <span id="bottomDesc"></span>
+        </div>
+        <div class="exam-submit" id="examSubmit">
+            <input type="button" onclick="doSubmit('1')" value="提 交">
+        </div>
+        <div class="exam-save"><input type="button" value="保 存"></div>
+    </div>
+    <div class="exam-b" id="selTable">
+        <div class="exam-h">
+            <span id="selTitle"></span>
+        </div>
+        <div class="exam-abs">
+            <span id="selHeadDesc"></span>
+        </div>
+        <div id="selInfo">
+        </div>
+        <div class="exam-f">
+            <span id="selBottomDesc">候选人信息如下：</span>
+        </div>
+        <div id="selStaffInfo">
+        </div>
+        <div class="exam-submit" >
+            <input type="button" id="selSubmitBtn"  value="提 交">
+        </div>
+    </div>
+    <div class="exam-alt">
+        <a id="examA" href="javascript:void(0)" style="padding-left:60px"></a>
+        <br>
+        <a id="examB" href="javascript:void(0)" style="padding-left:60px;color:#3c61f8;text-decoration:underline"></a>
+    </div>
+    <!--<div class="exam-b" id="recoTable">
+        <div class="exam-t" style="text-align:center;font-weight: bold;font-size:20px;margin-top: 50px;">民主推荐表（A票）</div>
+            <div class="grade-main">
+                <ul>
+                    <li style="width:100px">
+                        <div class="grade-a">推荐职务</div>
+                        <div class="grade-b" style="background:#ffffff"><input   type="text" value="" style="outline:none" ></div>
+                    </li>
+                    <li style="width:100px">
+                        <div class="grade-a" >姓名</div>
+                        <div class="grade-b"><input   type="text" value="" style="outline:none" ></div>
+                    </li>
+                    <li style="width:100px">
+                        <div class="grade-a">现单位及职务</div>
+                        <div class="grade-b"><input  type="text" value="" style="outline:none" ></div>
+                    </li>
+                    <li style="width:300px">
+                        <div class="grade-a">推荐理由</div>
+                        <div class="grade-b"><input  type="text" value="" style="outline:none" ></div>
+                    </li>
+                </ul>
+            </div>
+        <div class="exam-submit" id="recoSubmit">
+            <input type="button"  value="提 交">
+        </div>
+    </div>-->
+
+</div>
+<div class="load">
+    <div class="loading">
+        <img src="../../images/loading.gif" alt="">
+        <p id="loadingP"></p>
+    </div>
+    <div class="loadbg"></div>
+</div>
+<div class="alert" id="alert">
+    <div class="alert-b">
+        <a href="javascript:closeAlert();" class="alert-close"></a>
+        <div class="alert-cont">
+            <h2><span>提示</span></h2>
+            <p id="alertMsg"></p>
+        </div>
+        <div class="alert-sub"><a href="javascript:closeAlert();" style="margin-left:0px;width:100%">确 定</a></div>
+    </div>
+    <div class="alert-bg"></div>
+</div>
+
+<div class="alert" id="confirm">
+    <div class="alert-b">
+        <a href="javascript:closeConfirm();"  class="alert-close"></a>
+        <div class="alert-cont">
+            <h2><span>询问</span></h2>
+            <p id="confirmMsg"></p>
+        </div>
+        <div class="alert-sub" style="display:inline;float:left;"><a id="confirmA" href="javascript:void(0);">确 定</a></div>
+        <div class="alert-sub" style="display:inline;float:left;"><a href="javascript:closeConfirm();">取 消</a></div>
+    </div>
+    <div class="alert-bg"></div>
+</div>
+
+</body>
+</html>

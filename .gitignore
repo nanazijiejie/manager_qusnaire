@@ -1,0 +1,9 @@
+# Project exclude paths
+/qus-admin/target/
+/qus-api/target/
+/qus-common/target/
+/qus-framework/target/
+/qus-gen/target/
+/qus-mp/target/
+/qus-schedule/target/
+/qus-sys/target/

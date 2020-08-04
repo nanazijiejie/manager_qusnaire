@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.SelectionDefDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.sel_station,
+        T.sel_station_id,
+        T.sel_count,
+        T.sel_name,
+        T.sel_city_id,
+        T.sel_city,
+        T.sel_def_id
+        FROM tower_selection_def T
+        WHERE 1=1
+        <if test="params.selCityId != null and params.selCityId.trim() != ''">
+            AND T.sel_city_id = '${params.selCityId}'
+        </if>
+    </sql>
+
+    <select id="selectSelectionDefPage" resultType="com.ktkj.entity.SelectionDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.SelectionDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="querySelCity" resultType="com.ktkj.entity.SelectionDefEntity">
+        SELECT
+            DISTINCT T.sel_city_id,
+            T.sel_city
+        FROM tower_selection_def T
+    </select>
+
+
+
+</mapper>

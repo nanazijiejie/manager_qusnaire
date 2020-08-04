@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.SpecParamDefDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.spec_id,
+        T.create_time,
+        T.spec_seq,
+        T.spec_name,
+        T.param_name,
+        T.param_pic_path,
+        T.spec_status
+        FROM ring_spec_param_def T
+        WHERE 1=1
+        <if test="params.specName != null and params.specName.trim() != ''">
+            AND T.SPEC_NAME LIKE '%${params.specName}%'
+        </if>
+    </sql>
+
+    <select id="selectSpecParamDefPage" resultType="com.ktkj.entity.SpecParamDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.SpecParamDefEntity">
+        <include refid="selectSql"/>
+    </select>
+</mapper>

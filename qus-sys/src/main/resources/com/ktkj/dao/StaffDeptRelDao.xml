@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.StaffDeptRelDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.staff_id,
+        T.dept_id,
+        T.id,
+        T.rel_type,
+        T.create_time,
+        T.create_operator
+        FROM tower_staff_dept_rel T
+        WHERE 1=1
+        <if test="params.name != null and params.name.trim() != ''">
+            AND T.NAME LIKE '%${params.name}%'
+        </if>
+    </sql>
+
+    <select id="selectStaffDeptRelPage" resultType="com.ktkj.entity.StaffDeptRelEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.StaffDeptRelEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <delete id="delByStaffId" parameterType="integer">
+        delete from tower_staff_dept_rel where staff_id = #{staffId}
+    </delete>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into tower_staff_dept_rel
+        (staff_id,dept_id,rel_type,create_time,create_operator)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.staffId},
+            #{item.deptId},
+            #{item.relType},
+            #{item.createTime},
+            #{item.createOperator}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectViceDeptByStaff" parameterType="integer" resultType="com.ktkj.entity.StaffInfoEntity">
+        SELECT
+            *
+        FROM
+            tower_staff_info
+        WHERE
+            staff_id IN ( SELECT staff_id FROM tower_staff_dept_rel WHERE dept_id IN
+            ( SELECT dept_id FROM tower_staff_dept_rel WHERE staff_id = #{staffId} AND rel_type = '0' )
+            AND rel_type = '1' )
+            AND station_id != '00'
+    </select>
+
+    <select id="selectViceManagerByDept" parameterType="integer" resultType="com.ktkj.entity.StaffInfoEntity">
+        select * from tower_staff_info where staff_id in (
+                 select staff_id from tower_staff_dept_rel where dept_id in
+                    (select dept_id from tower_staff_dept_rel where staff_id=#{staffId} and rel_type='0')
+                 and rel_type='0' and staff_id!=#{staffId}
+                         )
+               and station_id='03' and is_chief = '0'
+    </select>
+</mapper>

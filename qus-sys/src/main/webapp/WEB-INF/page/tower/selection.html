@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    #parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <Row :gutter="16">
+            <div class="search-group">
+                <i-col span="5">
+                    <i-select v-model="q.sel_city_id" @on-enter="query" placeholder="归属单位/地市">
+                        <i-option v-for="selCity in selCityList" :value="selCity.itemValue" :key="selCity.itemValue">
+                            {{selCity.itemName}}
+                        </i-option>
+                    </i-select>
+                </i-col>
+                <i-button @click="query">查询</i-button>
+                <i-button @click="reloadSearch">重置</i-button>
+            </div>
+            <div class="buttons-group">
+                #if($shiro.hasPermission("tower:selectiondef:save"))
+                <i-button type="info" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</i-button>
+                #end
+                #if($shiro.hasPermission("tower:selectiondef:update"))
+                <i-button type="warning" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</i-button>
+                #end
+                #if($shiro.hasPermission("tower:selectiondef:delete"))
+                <i-button type="error" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</i-button>
+                #end
+            </div>
+        </Row>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <Card v-show="!showList">
+        <p slot="title">{{title}}</p>
+        <i-form ref="formValidate" :model="selectionDef" :rules="ruleValidate" :label-width="80">
+            <Form-item label="选举表格名称" prop="selName">
+                <i-input v-model="selectionDef.selName" placeholder="选举表格名称"/>
+            </Form-item>
+            <Form-item label="选举的职务" prop="selStationId">
+                <i-select v-model="selectionDef.selStationId" placeholder="选举的职务">
+                    <i-option v-for="selStation in selStationList" :value="selStation.itemValue" :key="selStation.itemValue">
+                        {{selStation.itemName}}
+                    </i-option>
+                </i-select>
+            </Form-item>
+            <Form-item label="需选举的数量" prop="selCount">
+                <i-input type="text" maxlength="9" v-model="selectionDef.selCount" onkeypress="return event.keyCode>=48&&event.keyCode<=57" placeholder="需选举的数量"/>
+            </Form-item>
+            <Form-item label="归属单位/地市" prop="selCityId">
+                <i-select v-model="selectionDef.selCityId" placeholder="归属单位/地市">
+                    <i-option v-for="selCity in selCityList" :value="selCity.itemValue" :key="selCity.itemValue">
+                        {{selCity.itemName}}
+                    </i-option>
+                </i-select>
+            </Form-item>
+            <Form-item>
+                <i-button type="primary" @click="handleSubmit('formValidate')">提交</i-button>
+                <i-button type="warning" @click="reload" style="margin-left: 8px"/>返回</i-button>
+                <i-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-button>
+            </Form-item>
+        </i-form>
+    </Card>
+</div>
+
+<script src="${rc.contextPath}/js/tower/selection.js?_${date.systemTime}"></script>
+</body>
+</html>

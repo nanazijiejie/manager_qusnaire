@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.ExamPerDefDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.percent_id,
+        T.exam_station,
+        T.exam_station_id,
+        T.qus_station,
+        T.qus_station_id,
+        T.percent
+        FROM tower_exam_per_def T
+        WHERE 1=1
+        <if test="params.examStationId != null and params.examStationId.trim() != ''">
+            AND T.exam_station_id LIKE '%${params.examStationId}%'
+        </if>
+    </sql>
+
+    <select id="selectExamPerDefPage" resultType="com.ktkj.entity.ExamPerDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.ExamPerDefEntity">
+        <include refid="selectSql"/>
+    </select>
+</mapper>

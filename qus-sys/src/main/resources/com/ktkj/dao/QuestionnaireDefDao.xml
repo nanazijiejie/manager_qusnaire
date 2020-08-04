@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.QuestionnaireDefDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.qus_naire_id,
+        T.qus_naire_station,
+        T.qus_naire_name,
+        T.head_desc,
+        T.bottom_desc,
+        T.create_time,
+        T.create_operator,
+        T.update_time,
+        T.update_operator,
+        T.qus_naire_station_id
+        FROM tower_questionnaire_def T
+        WHERE 1=1
+        <if test="params.qusNaireStationId != null and params.qusNaireStationId.trim() != ''">
+            AND T.qus_naire_station_id LIKE '%${params.qusNaireStationId}%'
+        </if>
+    </sql>
+
+    <select id="selectQuestionnaireDefPage" resultType="com.ktkj.entity.QuestionnaireDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.QuestionnaireDefEntity">
+        <include refid="selectSql"/>
+    </select>
+</mapper>

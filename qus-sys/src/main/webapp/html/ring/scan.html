@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/40076/DecoderWorker.js"></script>
+<script src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/40076/exif.js"></script>
+<script src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/40076/BarcodeReader.js"></script>
+<script type="text/javascript">
+    $(function () {
+        BarcodeReader.Init();
+        BarcodeReader.SetImageCallback(function (result) {
+            console.dir(result);
+            if (!result.length) {
+                //$("#livestream_scanner").modal("hide");
+                alert("条形码读取失败");
+                //$(".container .codeInfo").html("<p>条形码读取失败</p>");
+                return ;
+            }
+            var barcode = result[0];
+            if(barcode.Value){
+                //$("#livestream_scanner").modal("hide");
+                //$(".container .codeInfo").html("<p>条形码的信息为:${barcode.Value}</p>");
+                alert("条形码的信息为:"+barcode.Value);
+            }
+        });
+        document.querySelector("#barCode").addEventListener('index.html',
+        function (evt) {
+            var file = evt.target.files[0];
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                var img = new Image();
+                img.src = reader.result;
+                BarcodeReader.DecodeImage(img);
+            }
+            reader.readAsDataURL(file);
+        }, false);
+    });
+</script>
+<body>
+<input id="barCode" type="file" accept="image/*;capture=camera" capture="camera" />
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    #parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <i-button type="info"><i class="fa fa-cloud-download"></i>&nbsp;
+        <a :href="'../tower/selectioninfo/downloadSel'">民主推荐结果导出</a>
+    </i-button>
+</div>
+
+<script src="${rc.contextPath}/js/tower/selection.js?_${date.systemTime}"></script>
+</body>
+</html>

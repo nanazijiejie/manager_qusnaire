@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.MailDefDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.mail_from,
+        T.password_mail_from,
+        T.mail_title,
+        T.mail_host,
+        T.qus_url,
+        T.qus_content,
+        T.mail_id,
+        T.del_flag
+        FROM tower_mail_def T
+        WHERE 1=1
+        <if test="params.mailTitle != null and params.mailTitle.trim() != ''">
+            AND T.mail_title LIKE '%${params.mailTitle}%'
+        </if>
+        <if test="params.delFlag != null and params.delFlag.trim() != ''">
+            AND T.del_flag = '${params.delFlag}'
+        </if>
+    </sql>
+
+    <select id="selectMailDefPage" resultType="com.ktkj.entity.MailDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.MailDefEntity">
+        <include refid="selectSql"/>
+    </select>
+</mapper>

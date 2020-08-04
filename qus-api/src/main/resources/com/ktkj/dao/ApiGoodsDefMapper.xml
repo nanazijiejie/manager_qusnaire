@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.ApiGoodsDefMapper">
+
+    <sql id="selectSql">
+        SELECT
+        T.goods_id,
+        T.goods_name,
+        T.goods_pic_path,
+        T.goods_desc,
+        T.create_operator,
+        T.create_time,
+        T.start_date,
+        T.end_date,
+        T.goods_status,
+        T.goods_pic_dtl_path,
+        T.goods_price,
+        T.pre_goods_price,
+        T.special_desc,
+        T.contact_code_path,
+        T.contact_phone
+        FROM ring_goods_def T
+        WHERE 1=1
+        <if test="params.goodsName != null and params.goodsName.trim() != ''">
+            AND T.GOODS_NAME LIKE '%${params.goodsName}%'
+        </if>
+        <if test="params.goodsStatus != null and params.goodsStatus.trim() != ''">
+            AND T.goods_status = '${params.goodsStatus}'
+        </if>
+    </sql>
+
+    <select id="selectGoodsDefPage" resultType="com.ktkj.entity.GoodsDefVo">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.GoodsDefVo">
+        <include refid="selectSql"/>
+    </select>
+</mapper>

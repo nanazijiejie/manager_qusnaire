@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.InfoDao">
+
+    <sql id="selectSql">
+        SELECT
+        T.info_id,
+        T.create_time,
+        T.pic1_path,
+        T.pic2_path,
+        T.pic3_path,
+        T.weixin_code_path,
+        T.exam_time,
+        T.exam_operator,
+        T.type_id,
+        T.type_name,
+        T.title,
+        T.info_status,
+        T.short_desc
+        FROM tokyo_info T
+        WHERE 1=1
+        <if test="params.name != null and params.name.trim() != ''">
+            AND T.NAME LIKE '%${params.name}%'
+        </if>
+    </sql>
+
+    <select id="selectInfoPage" resultType="com.ktkj.entity.InfoEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.InfoEntity">
+        <include refid="selectSql"/>
+    </select>
+</mapper>

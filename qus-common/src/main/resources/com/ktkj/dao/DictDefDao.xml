@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ktkj.dao.DictDefDao">
+    <sql id="selectSql">
+        SELECT
+        T.code,
+        T.type_code,
+        T.item_name,
+        T.item_value,
+        T.type_desc
+        FROM tower_dict_def T
+        WHERE 1=1
+        <if test="params.typeCode != null and params.typeCode.trim() != ''">
+            AND T.type_code LIKE '%${params.typeCode}%'
+        </if>
+    </sql>
+    <select id="selectDictDefPage" resultType="com.ktkj.entity.DictDefEntity">
+        <include refid="selectSql"/>
+    </select>
+
+    <select id="queryAll" resultType="com.ktkj.entity.DictDefEntity">
+        <include refid="selectSql"/>
+    </select>
+</mapper>
