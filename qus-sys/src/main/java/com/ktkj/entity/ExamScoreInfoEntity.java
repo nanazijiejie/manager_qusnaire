@@ -117,7 +117,7 @@ public class ExamScoreInfoEntity implements Serializable {
     /**
      * 考核指标项得分
      */
-    private BigDecimal indexItemScore;
+    private String indexItemScore;
     /**
      * 0:各考核项得分，1:总分
      */

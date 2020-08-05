@@ -441,23 +441,10 @@ function setExamInfo(){
         examInfoHtml += "<div class=\"exam-t\">"+(totalExamItem++)+"、"+examItemName+"<br>"+examItemDesc+"</div>";
         examInfoHtml += "<div class=\"grade-main\"><ul>";
         examInfoHtml += "<li>";
-        examInfoHtml += "<div class=\"grade-a\">"+examStation+"</div>";
+        examInfoHtml += "<div class=\"grade-a\">"+"姓名（归属单位/部门）"+"</div>";
         for(var k=0;k<arr.length;k++){
-            examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].staffName+"</div>";
+            examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].staffName+"（"+retExamStaffInfo[k].city +"/"+retExamStaffInfo[k].dept+"）</div>";
         }
-        examInfoHtml += "</li>";
-        examInfoHtml += "<li>";
-        examInfoHtml += "<div class=\"grade-a\">"+"归属单位"+"</div>";
-        for(var k=0;k<arr.length;k++){
-            examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].city+"</div>";
-        }
-        examInfoHtml += "</li>";
-        examInfoHtml += "<li>";
-        examInfoHtml += "<div class=\"grade-a\">"+"归属部门"+"</div>";
-        for(var k=0;k<arr.length;k++){
-            examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].dept+"</div>";
-        }
-        examInfoHtml += "</li>";
         //var retExamIndexRels = getExamIndexRels(examIndexRels,examItemId);
         var setRet = true;
         for(var j=0;j<examIndexRels.length;j++){
@@ -469,6 +456,7 @@ function setExamInfo(){
                 var scoreIdName = "score_"+staffId+"_"+examItemId;
                 setSession("staff_"+scoreIdName,retExamStaffInfo[m]);
                 setSession("index_"+scoreIdName,examIndexRels[j]);
+                debugger;
                 var lastScore = getLastScore(staffId,examItemId,indexItemId);
                 if(lastScore!=undefined&&lastScore!=""){
                     var setRet = setScoreInfo(scoreIdName,lastScore,examItemId,examItemName,excellentCount,goodCount,normalCount);
@@ -478,67 +466,71 @@ function setExamInfo(){
                 }else{
                     lastScore = "";
                 }
-                //examInfoHtml += "<div class=\"grade-b\"><input maxlength='3' id=\""+scoreIdName+"\" type=\"text\" value=\""+lastScore+"\" style=\"outline:none\" onkeyup=\"this.value=this.value.replace(/[^0-9]+/,'');\" onblur=\"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+")\"/></div>";
-                examInfoHtml += "<div class=\"grade-b\">"+
-                    "<select id=\""+scoreIdName+"\" type=\"text\" value=\""+lastScore+"\" style=\"outline:none\""+
-                    "onchange= \"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+","+normalCount+")\">" +
-                    "<option value=''>请评价</option>";
-                if(lastScore=='5'){
-                    examInfoHtml += "<option value='5' selected='selected' >完全同意</option>";
+                if(examItemId==72){
+                    examInfoHtml += "<div class=\"grade-b\">"+
+                        "<textarea style='width:100%;height:100%' id=\""+scoreIdName+"\"  value=\""+lastScore+"\" style=\"outline:none\""+
+                        "placeholder='请举例或者重点说明，不得超过500字' onchange= \"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+","+normalCount+")\">" +
+                        lastScore+"</textarea></div>";
                 }else{
-                    examInfoHtml += "<option value='5'>完全同意</option>";
+                    examInfoHtml += "<div class=\"grade-b\">"+
+                        "<select id=\""+scoreIdName+"\" type=\"text\" value=\""+lastScore+"\" style=\"outline:none\""+
+                        "onchange= \"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+","+normalCount+")\">" +
+                        "<option value=''>请评价</option>";
+                    if(lastScore=='5'){
+                        examInfoHtml += "<option value='5' selected='selected' >完全同意</option>";
+                    }else{
+                        examInfoHtml += "<option value='5'>完全同意</option>";
+                    }
+                    if(lastScore=='4'){
+                        examInfoHtml += "<option value='4' selected='selected' >同意</option>";
+                    }else{
+                        examInfoHtml += "<option value='4'>同意</option>";
+                    }
+                    if(lastScore=='3'){
+                        examInfoHtml += "<option value='3' selected='selected' >一般</option>";
+                    }else{
+                        examInfoHtml += "<option value='3'>一般</option>";
+                    }
+                    if(lastScore=='2'){
+                        examInfoHtml += "<option value='2' selected='selected' >不同意</option>";
+                    }else{
+                        examInfoHtml += "<option value='2'>不同意</option>";
+                    }
+                    if(lastScore=='1'){
+                        examInfoHtml += "<option value='1' selected='selected' >完全不同意/未做到</option>";
+                    }else{
+                        examInfoHtml += "<option value='1'>完全不同意/未做到</option>";
+                    }
+                    if(lastScore=='0'){
+                        examInfoHtml += "<option value='0' selected='selected' >不涉及</option>";
+                    }else{
+                        examInfoHtml += "<option value='0'>不涉及</option>";
+                    }
+                    examInfoHtml += "</select></div>";
                 }
-                if(lastScore=='4'){
-                    examInfoHtml += "<option value='4' selected='selected' >同意</option>";
-                }else{
-                    examInfoHtml += "<option value='4'>同意</option>";
-                }
-                if(lastScore=='3'){
-                    examInfoHtml += "<option value='3' selected='selected' >一般</option>";
-                }else{
-                    examInfoHtml += "<option value='3'>一般</option>";
-                }
-                if(lastScore=='2'){
-                    examInfoHtml += "<option value='2' selected='selected' >不同意</option>";
-                }else{
-                    examInfoHtml += "<option value='2'>不同意</option>";
-                }
-                if(lastScore=='1'){
-                    examInfoHtml += "<option value='1' selected='selected' >完全不同意/未做到</option>";
-                }else{
-                    examInfoHtml += "<option value='1'>完全不同意/未做到</option>";
-                }
-                if(lastScore=='0'){
-                    examInfoHtml += "<option value='0' selected='selected' >不涉及</option>";
-                }else{
-                    examInfoHtml += "<option value='0'>不涉及</option>";
-                }
-                examInfoHtml += "</select></div>";
+
             }
             examInfoHtml += "</li>";
             if(setRet==false){
-                //window.location.href = HOST + "html/tower/login.html";
                 break;
             }
         }
-        examInfoHtml += "<li>";
-        examInfoHtml += "<div class=\"grade-a\">"+"得分"+"</div>";
-        for(m=0;m<arr.length;m++){
-            var staffId = retExamStaffInfo[m].staffId;
-            var scoreIdName = "totalscore_"+staffId+"_"+examItemId;
-            setSession("staff_"+scoreIdName,retExamStaffInfo[m]);
-            var lastScore = getLastScore(staffId,examItemId,'99999999');
-            if(lastScore==undefined||lastScore==""){
-                lastScore = "";
+        if(examItemId!=72){
+            examInfoHtml += "<li>";
+            examInfoHtml += "<div class=\"grade-a\">"+"得分"+"</div>";
+            for(m=0;m<arr.length;m++){
+                var staffId = retExamStaffInfo[m].staffId;
+                var scoreIdName = "totalscore_"+staffId+"_"+examItemId;
+                setSession("staff_"+scoreIdName,retExamStaffInfo[m]);
+                var lastScore = getLastScore(staffId,examItemId,'99999999');
+                if(lastScore==undefined||lastScore==""){
+                    lastScore = "";
+                }
+                examInfoHtml += "<div class=\"grade-b\"><input readonly=\"readonly\" id=\""+scoreIdName+"\" value=\""+lastScore+"\" type=\"text\" style=\"outline:none\" /></div>";
             }
-            /*if(lastScore!=""){
-                setScoreInfo(scoreIdName,lastScore,examItemId,excellentCountLimit,goodCountLimit);
-            }*/
-            examInfoHtml += "<div class=\"grade-b\"><input readonly=\"readonly\" id=\""+scoreIdName+"\" value=\""+lastScore+"\" type=\"text\" style=\"outline:none\" /></div>";
+            examInfoHtml += "</li>";
         }
-        examInfoHtml += "</li>";
-
-        examInfoHtml+="</li></ul></div>";
+        examInfoHtml+="</ul></div>";
         var msgTipId = "msgTip"+"_"+examItemId;
         examInfoHtml += "<div style='margin-bottom: 30px'> <span id=\""+msgTipId+"\" style='color:red;font-size:16px;'></span></div>";
     }
@@ -683,10 +675,6 @@ function setScoreInfo(objId,objValue,examItemId,examItemName,excellentCountLimit
     if(!checkTokenTime()){
         return false;
     }
-    if(objValue>100){
-        showAlert("评分不能超过100分，请调整！");
-        return;
-    }
     var id = objId;
     var staffId = "";//被评价的用户ID
     //var indexItemId = "";//评价的指标项
@@ -748,83 +736,47 @@ function setScoreInfo(objId,objValue,examItemId,examItemName,excellentCountLimit
         scoreArr.splice(totalIndex,1);
     }
     scoreArr.push(score);
-    $("#totalscore_"+staffId+"_"+examItemId).val("");
-    var totalScoreValue = 0;
-    for(var i=0;i<scoreArr.length;i++){
-        if(scoreArr[i].examStaffId==staffId&&scoreArr[i].examItemId==examItemId){
-            if(scoreArr[i].indexItemScore==''||scoreArr[i].indexItemPercent==''){
-                continue;
-            }
-            totalScoreValue += scoreArr[i].indexItemScore*scoreArr[i].indexItemPercent/100;
-        }
-    }
-    totalScoreValue = totalScoreValue.toFixed(2);
-    $("#totalscore_"+staffId+"_"+examItemId).val(totalScoreValue);//&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:red'>
-    var totalScore = new Object();
-    totalScore.pageId = "totalscore_"+staffId+"_"+examItemId;
-    totalScore.examStation = staffInfo.stationId;
-    totalScore.examStationName = staffInfo.station;
-    totalScore.examName = staffInfo.staffName;
-    totalScore.examDept = staffInfo.dept;
-    totalScore.examCity = staffInfo.city;
-    totalScore.examStaffId = staffInfo.staffId;
-    totalScore.examDeptId = staffInfo.deptId;
-    totalScore.examCityId = staffInfo.cityId;
-    totalScore.indexItemId = 99999999;
-    totalScore.indexItemName = "合计";
-    totalScore.indexItemPercent = 0;
-    totalScore.indexItemScore = totalScoreValue;
-    totalScore.scoreType = "1";
-    totalScore.examItemId = examItemId;
-    totalScore.examItemName = examItemName;
-    if(isExcellent(totalScoreValue)){
-        totalScore.isExcellent = "0";//0:是 1：否
-    }else{
-        totalScore.isExcellent = "1";//0:是 1：否
-    }
-    if(isGood(totalScoreValue)){
-        totalScore.isGood = "0";//0:是 1：否
-    }else{
-        totalScore.isGood = "1";//0:是 1：否
-    }
-    scoreArr.push(totalScore);
-    //校验优良和优秀的人数
-    var isExcellentCount = 0;
-    var isGoodCount = 0;
-    var isNormalCount = 0;
-    for(var i=0;i<scoreArr.length;i++){
-        if(scoreArr[i].examItemId==examItemId&&scoreArr[i].pageId.indexOf("totalscore")!=-1){
-            if(scoreArr[i].indexItemScore=="95.00"){
-                isExcellentCount++;
-            }
-            if(scoreArr[i].indexItemScore=="85.00"){
-                isGoodCount++;
-            }
-            if(scoreArr[i].indexItemScore=="70.00"){
-                isNormalCount++;
+    if(examItemId!=72){
+        $("#totalscore_"+staffId+"_"+examItemId).val("");
+        var totalScoreValue = 0;
+        for(var i=0;i<scoreArr.length;i++){
+            if(scoreArr[i].examStaffId==staffId&&scoreArr[i].examItemId==examItemId){
+                if(scoreArr[i].indexItemScore==''||scoreArr[i].indexItemPercent==''){
+                    continue;
+                }
+                totalScoreValue += scoreArr[i].indexItemScore*scoreArr[i].indexItemPercent/100;
             }
         }
-
-    }
-    if(examItemId==65||examItemId==70||examItemId==71){
-        var checkLimitStr = "当前评选的得A人数："+isExcellentCount+"；得B人数："+isGoodCount+"；得C人数："+isGoodCount+"。"
-        if(excellentCountLimit!=0&&excellentCountLimit!=''&&isExcellentCount!=excellentCountLimit){
-            checkLimitStr += "得A人数不符合设定，请调整！"
+        totalScoreValue = totalScoreValue.toFixed(2);
+        $("#totalscore_"+staffId+"_"+examItemId).val(totalScoreValue);//&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:red'>
+        var totalScore = new Object();
+        totalScore.pageId = "totalscore_"+staffId+"_"+examItemId;
+        totalScore.examStation = staffInfo.stationId;
+        totalScore.examStationName = staffInfo.station;
+        totalScore.examName = staffInfo.staffName;
+        totalScore.examDept = staffInfo.dept;
+        totalScore.examCity = staffInfo.city;
+        totalScore.examStaffId = staffInfo.staffId;
+        totalScore.examDeptId = staffInfo.deptId;
+        totalScore.examCityId = staffInfo.cityId;
+        totalScore.indexItemId = 99999999;
+        totalScore.indexItemName = "合计";
+        totalScore.indexItemPercent = 0;
+        totalScore.indexItemScore = totalScoreValue;
+        totalScore.scoreType = "1";
+        totalScore.examItemId = examItemId;
+        totalScore.examItemName = examItemName;
+        if(isExcellent(totalScoreValue)){
+            totalScore.isExcellent = "0";//0:是 1：否
+        }else{
+            totalScore.isExcellent = "1";//0:是 1：否
         }
-        if(goodCountLimit!=0&&goodCountLimit!=''&&isGoodCount!=goodCountLimit){
-            checkLimitStr += "得B人数不符合设定，请调整！"
+        if(isGood(totalScoreValue)){
+            totalScore.isGood = "0";//0:是 1：否
+        }else{
+            totalScore.isGood = "1";//0:是 1：否
         }
-        if(normalCountLimit!=0&&normalCountLimit!=''&&isNormalCount!=normalCountLimit){
-            checkLimitStr += "得C人数不符合设定，请调整！"
-        }
-        $("#"+"msgTip"+"_"+examItemId).html(checkLimitStr);
-    }
-    if(examItemId==66){
-        var checkLimitStr = "当前评选的得A人数："+isExcellentCount+"；";
-        if(excellentCountLimit!=0&&excellentCountLimit!=''&&isExcellentCount>excellentCountLimit){
-            checkLimitStr += "得A人数不符合设定，请调整！"
-        }
-        $("#"+"msgTip"+"_"+examItemId).html(checkLimitStr);
+        scoreArr.push(totalScore);
     }
 }
 

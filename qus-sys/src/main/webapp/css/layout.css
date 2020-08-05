@@ -80,7 +80,7 @@ body{ background: #ffffff;; font-size:16px; line-height: 30px; font-family: Micr
 .grade-main ul{ margin-bottom: 30px; width: 100%; display: -webkit-box; display: flex;}
 .grade-main ul:after{ content: "."; display: block; visibility: hidden; height:0; clear: both; }
 .grade-main li{ width: 100px; float: left; -webkit-box-flex: 1; flex: 1; border-top: 1px solid #d0dafd; text-align: center; line-height: 20px;}
-.grade-main li:first-child{ width: 199px; -webkit-box-flex: 1.3; flex: 1.3; border-left: 1px solid #d0dafd;}
+.grade-main li:first-child{ width: 199px; -webkit-box-flex: 0.8; flex: 0.8; border-left: 1px solid #d0dafd;}
 .grade-a{ height: 60px; border-right: 1px solid #d0dafd; border-bottom: 1px solid #d0dafd; background: #ebeffd; font-weight: bold; display: -webkit-box; display: flex; -webkit-box-pack: center; justify-content: center; -webkit-box-align: center; align-items: center; padding: 5px;}
 .grade-b{ height: 60px; border-right: 1px solid #d0dafd; border-bottom: 1px solid #d0dafd; display: -webkit-box; display: flex; -webkit-box-pack: center; justify-content: center; -webkit-box-align: center; align-items: center; padding: 5px;}
 .grade-main li:first-child .grade-b{ background: #ebeffd;}
