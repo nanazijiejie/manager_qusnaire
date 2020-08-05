@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 public class ResourceUtil {
     private static ResourceUtil RESOURCE_UTIL = null;
 
-    private static ResourceBundle BUNDLE = java.util.ResourceBundle.getBundle("ktkj");
+    private static ResourceBundle BUNDLE = ResourceBundle.getBundle("ktkj");
 
     private ResourceUtil() {
 
@@ -31,7 +31,7 @@ public class ResourceUtil {
             RESOURCE_UTIL = new ResourceUtil();
         }
         if (properties != null) {
-            BUNDLE = java.util.ResourceBundle.getBundle(properties);
+            BUNDLE = ResourceBundle.getBundle(properties);
         }
         return RESOURCE_UTIL;
     }

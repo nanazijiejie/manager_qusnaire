@@ -24,15 +24,15 @@ public class Constant {
     /**
      * 权限前缀
      */
-    public static final String PERMS_LIST = "OT_permsList";
+    public static final String PERMS_LIST = "permsList";
     /**
      * 数据字典
      */
-    public static final String DATA_DICT = "OT_DATA_DICT";
+    public static final String DATA_DICT = "AH_DATA_DICT";
     /**
      * 数据字典
      */
-    public static final String CITY_DEPT = "OT_CITY_DEPT";
+    public static final String CITY_DEPT = "AH_CITY_DEPT";
     /**
      * 数据字典缓存时间
      */
@@ -40,15 +40,15 @@ public class Constant {
     /**
      * 云存储配置KEY
      */
-    public final static String CLOUD_STORAGE_CONFIG_KEY = "OT_CLOUD_STORAGE_CONFIG_KEY";
+    public final static String CLOUD_STORAGE_CONFIG_KEY = "CLOUD_STORAGE_CONFIG_KEY";
     /**
      * 短信配置KEY
      */
-    public final static String SMS_CONFIG_KEY = "OT_SMS_CONFIG_KEY";
+    public final static String SMS_CONFIG_KEY = "SMS_CONFIG_KEY";
     /**
      * 权限前缀
      */
-    public static final String SESSION_KEY = "OT_SESSIONID_";
+    public static final String SESSION_KEY = "SESSIONID_";
 
     /**
      * 排序方式名称 asc:正序 | desc:倒序
@@ -66,7 +66,7 @@ public class Constant {
     /**
      * 系统缓存前缀
      */
-    public static final String SYS_CACHE = "OT_SYS_CACHE:";
+    public static final String SYS_CACHE = "SYS_CACHE:";
 
     /**
      * 地市领导班子
@@ -88,12 +88,12 @@ public class Constant {
     /**
      * 考核结果下载地址
      */
-    public static final String REPORT_DOWNLOAD_PATH="OT_REPORT_DOWNLOAD_PATH";
+    public static final String REPORT_DOWNLOAD_PATH="REPORT_DOWNLOAD_PATH";
 
     /**
      * 模板下载地址
      */
-    public static final String TMPLATE_DOWNLOAD_PATH="OT_TMPLATE_DOWNLOAD_PATH";
+    public static final String TMPLATE_DOWNLOAD_PATH="TMPLATE_DOWNLOAD_PATH";
 
     /**
      * 菜单类型

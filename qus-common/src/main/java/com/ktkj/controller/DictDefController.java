@@ -10,13 +10,11 @@
  */
 package com.ktkj.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ktkj.annotation.SysLog;
 import com.ktkj.cache.J2CacheUtils;
 import com.ktkj.entity.DictDefEntity;
 import com.ktkj.service.DictDefService;
 import com.ktkj.utils.Constant;
-import com.ktkj.utils.PageUtils;
 import com.ktkj.utils.R;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,25 +53,6 @@ public class DictDefController extends AbstractController {
         }
 
         return R.ok().put("list", dictList);
-    }
-
-    /**
-     * 分页查询
-     *
-     * @param params 查询参数
-     * @return R
-     */
-    @GetMapping("/list")
-    @RequiresPermissions("tower:dictdef:list")
-    public R list(@RequestParam Map<String, Object> params) {
-        if(params.get("typeCode")!=null){
-            String typeCode = java.net.URLDecoder.decode(""+params.get("typeCode"));
-            params.put("typeCode",typeCode);
-        }
-        Page page = dictDefService.queryPage(params);
-        PageUtils pageUtil = new PageUtils(page.getRecords(), (int)page.getTotal(), (int)page.getSize(), (int)page.getCurrent());
-        return R.ok().put("page", pageUtil);
-
     }
 
     /**

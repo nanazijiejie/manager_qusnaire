@@ -38,21 +38,20 @@ public class DictDefServiceImpl extends ServiceImpl<DictDefDao, DictDefEntity> i
     public List<DictDefEntity> queryAll(Map<String, Object> params) {
         return baseMapper.queryAll(params);
     }
-
     @Override
-    public String qryItemName(String typeCode, String itemValue) {
+    public String qryItemName(String typeCode, String itemValue){
         List<DictDefEntity> dictList = null;
-        if (J2CacheUtils.get(Constant.DATA_DICT) != null) {
-            dictList = (List<DictDefEntity>) J2CacheUtils.get(Constant.DATA_DICT);
-        } else {
+        if( J2CacheUtils.get(Constant.DATA_DICT)!=null){
+            dictList = (List<DictDefEntity>)J2CacheUtils.get(Constant.DATA_DICT);
+        }else{
             Map<String, Object> params = new HashMap<String, Object>();
             dictList = this.queryAll(params);
-            J2CacheUtils.set(Constant.DATA_DICT, dictList, Constant.ALIVE_SECONDS, false);
+            J2CacheUtils.set(Constant.DATA_DICT,dictList,Constant.ALIVE_SECONDS,false);
         }
-        for (DictDefEntity dictDefEntity : dictList
-                ) {
-            if (typeCode.equals(dictDefEntity.getTypeCode())
-                    && itemValue.equals(dictDefEntity.getItemValue())) {
+        for (DictDefEntity dictDefEntity:dictList
+             ) {
+            if(typeCode.equals(dictDefEntity.getTypeCode())
+                    &&itemValue.equals(dictDefEntity.getItemValue())){
                 return dictDefEntity.getItemName();
             }
         }
@@ -71,30 +70,22 @@ public class DictDefServiceImpl extends ServiceImpl<DictDefDao, DictDefEntity> i
 
     @Override
     public boolean add(DictDefEntity dictDef) {
-        boolean result = this.save(dictDef);
-        J2CacheUtils.set(Constant.DATA_DICT, this.queryAll(new HashMap<>(0)), Constant.ALIVE_SECONDS, false);
-        return result;
+        return this.save(dictDef);
     }
 
     @Override
     public boolean update(DictDefEntity dictDef) {
-        boolean result = this.updateById(dictDef);
-        J2CacheUtils.set(Constant.DATA_DICT, this.queryAll(new HashMap<>(0)), Constant.ALIVE_SECONDS, false);
-        return result;
+        return this.updateById(dictDef);
     }
 
     @Override
     public boolean delete(Integer code) {
-        boolean result = this.removeById(code);
-        J2CacheUtils.set(Constant.DATA_DICT, this.queryAll(new HashMap<>(0)), Constant.ALIVE_SECONDS, false);
-        return result;
+        return this.removeById(code);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteBatch(Integer[] codes) {
-        boolean result = this.removeByIds(Arrays.asList(codes));
-        J2CacheUtils.set(Constant.DATA_DICT, this.queryAll(new HashMap<>(0)), Constant.ALIVE_SECONDS, false);
-        return result;
+        return this.removeByIds(Arrays.asList(codes));
     }
 }

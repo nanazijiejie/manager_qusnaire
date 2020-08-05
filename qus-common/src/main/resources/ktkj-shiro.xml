@@ -55,6 +55,7 @@
 				/tower/staffinfo/**=anon
 				/tower/examscoreinfo/**=anon
 				/tower/selectioninfo/**=anon
+				/tower/evaluateinfo/**=anon
 				/js/**=anon
 	        	/statics/**=anon
 				/api/**=anon
