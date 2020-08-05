@@ -73,5 +73,5 @@ public interface FinalExamScoreInfoService extends IService<FinalExamScoreInfoEn
      */
     boolean deleteBatch(Integer[] examResultIds);
 
-    void insertBatch(List<FinalExamScoreInfoEntity>list);
+    void insertBatch(List<FinalExamScoreInfoEntity> list);
 }

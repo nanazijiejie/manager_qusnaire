@@ -45,7 +45,7 @@ public interface ExamIndexRelDao extends BaseMapper<ExamIndexRelEntity> {
      */
     List<ExamIndexRelEntity> selectExamIndexRelPage(IPage page, @Param("params") Map<String, Object> params);
 
-    void insertBatch(@Param("list")List<ExamIndexRelEntity>list);
+    void insertBatch(@Param("list") List<ExamIndexRelEntity> list);
 
     void deleteByExamId(@Param("examItemId") Integer examItemId);
 }

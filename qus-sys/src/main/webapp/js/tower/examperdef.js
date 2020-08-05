@@ -25,14 +25,7 @@ $(function () {
     });
     vm.qryDictDef();
 });
-const isInteger = (rule, value, callback) => {
-	const age= /^[0-9]*$/
-	if (!age.test(value)) {
-		callback(new Error('请输入数字'))
-	}else{
-		callback()
-	}
-};
+
 var vm = new Vue({
 	el: '#rrapp',
 	data: {
@@ -47,7 +40,7 @@ var vm = new Vue({
 				{required: true, message: '填写问卷人职务不能为空', trigger: 'blur'}
 			],
 			percent: [
-				{required: true, validator: isInteger, message: '请输入数字', trigger: 'blur'}
+				{required: true, message: '考核结果占比'}
 			]
 		},
 		q: {

@@ -77,7 +77,7 @@ public interface SelectionInfoService extends IService<SelectionInfoEntity> {
 
     List<SelRetEntity> querySelRet();
 
-    public List<FinalSelRetEntity> calSel() throws Exception;
+    public List<FinalSelRetEntity> calSel();
 
     public Integer selCountByStation(Map<String, Object> params);
 }

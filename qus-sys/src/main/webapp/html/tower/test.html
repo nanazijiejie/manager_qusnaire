@@ -1,0 +1,873 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>问卷考核填写</title>
+    <script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="../../js/tower/session.js"></script>
+    <!--     <script type="text/javascript">
+        var scoreArr = [];
+        var HOST = "http://localhost:8080/qus_framework_war_exploded/";
+        $(function () {
+            if(window.sessionStorage.getItem("token")==null){
+                window.location.href = HOST + "html/tower/login.html";
+                return;
+            }
+            checkTokenTime();
+            checkQusLogin();
+            var qusTitle =  getSession("qusInfo").qusNaireName;
+            $("#qusTitle").html(qusTitle);
+            var headDesc =  getSession("qusInfo").headDesc;
+            $("#headDesc").html(headDesc);
+            var bottomDesc =  getSession("qusInfo").bottomDesc;
+            $("#bottomDesc").html(bottomDesc);
+            var examStaffInfo = getSession("examStaffInfo");
+            var examItemInfo = getSession("examItemInfo");
+            var examInfoHtml = "";
+            for(var i=0;i<examItemInfo.length;i++){
+                var examIndexRels = examItemInfo[i].examIndexRels;
+                var examItemDesc = examItemInfo[i].examItemDesc;
+                var examItemId = examItemInfo[i].examItemId;
+                var examStationId = examItemInfo[i].examStationId;
+                var excellentCount = examItemInfo[i].excellentCount;
+                var goodCount = examItemInfo[i].goodCount;
+                var examItemName = examItemInfo[i].examItemName;
+                var examStation = examItemInfo[i].examStation;
+                examInfoHtml += "<div style=\"font-size:16px;\">"+(i+1)+"、"+examItemName+examItemDesc+"</div>";
+                examInfoHtml += "<div class=\"grade-main\"><ul>";
+                examInfoHtml += "<li>";
+                examInfoHtml += "<div class=\"grade-a\">"+examStation+"</div>";
+                var retExamStaffInfo = getStaffInfo(examStaffInfo,examStationId);
+                var arr = Object.keys(retExamStaffInfo);
+                for(var k=0;k<arr.length;k++){
+                    examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].staffName+"</div>";
+                }
+                examInfoHtml += "</li>";
+                //var retExamIndexRels = getExamIndexRels(examIndexRels,examItemId);
+
+                for(var j=0;j<examIndexRels.length;j++){
+                    examInfoHtml += "<li>";
+                    examInfoHtml += "<div class=\"grade-a\">"+examIndexRels[j].indexItemName+"</div>";
+                    for(m=0;m<arr.length;m++){
+                        var staffId = retExamStaffInfo[m].staffId;
+                        var indexItemId = examIndexRels[j].indexItemId;
+                        var scoreIdName = "score_"+staffId+"_"+indexItemId;
+                        setSession("staff_"+scoreIdName,retExamStaffInfo[m]);
+                        setSession("index_"+scoreIdName,examIndexRels[j]);
+                        var lastScore = getLastScore(staffId,indexItemId);
+                        if(lastScore!=""){
+                            setScoreInfo(scoreIdName,lastScore,examItemId,excellentCount,goodCount);
+                        }
+                        examInfoHtml += "<div class=\"grade-b\"><input maxlength='3' id=\""+scoreIdName+"\" type=\"text\" value=\""+lastScore+"\" style=\"outline:none\" onblur=\"setScoreInfo(this.id,this.value,"+examItemId+","+excellentCount+","+goodCount+")\"/></div>";
+                    }
+                    examInfoHtml += "</li>";
+                }
+                examInfoHtml += "<li>";
+                examInfoHtml += "<div class=\"grade-a\">"+"总分"+"</div>";
+                for(m=0;m<arr.length;m++){
+                    var staffId = retExamStaffInfo[m].staffId;
+                    var scoreIdName = "totalscore_"+staffId;
+                    setSession("staff_"+scoreIdName,retExamStaffInfo[m]);
+                    var lastScore = getLastScore(staffId,'99999999');
+                    /*if(lastScore!=""){
+                        setScoreInfo(scoreIdName,lastScore,examItemId,excellentCountLimit,goodCountLimit);
+                    }*/
+                    examInfoHtml += "<div class=\"grade-b\"><input readonly=\"readonly\" id=\""+scoreIdName+"\" value=\""+lastScore+"\" type=\"text\" style=\"outline:none\" /></div>";
+                }
+                examInfoHtml += "</li>";
+
+                examInfoHtml+="</li></ul></div>";
+                var msgTipId = "msgTip"+"_"+examItemId;
+                examInfoHtml += "<div> <span id=\""+msgTipId+"\" style='color:red;font-size:16px'></span></div>";
+            }
+            $("#examInfo").html(examInfoHtml);
+        });
+        function getLastScore(staffId,indexItemId){
+            if(getSession("examScoreInfo")!=null){
+                var examScoreInfo = getSession("examScoreInfo");
+                for(var i=0;i<examScoreInfo.length;i++){
+                    if(examScoreInfo[i].examStaffId == staffId&&examScoreInfo[i].indexItemId == indexItemId){
+                        return examScoreInfo[i].indexItemScore;
+                    }
+
+                }
+            }else{
+                return "";
+            }
+        }
+        function checkTokenTime(){
+            var tokenBeginTime = window.sessionStorage.getItem("tokenTime");
+            var nowTime = new Date().getTime();
+            if(nowTime-tokenBeginTime>2*60*60*1000){//2*60*60*1000
+                alert("您未登录或已失效，请重新登录！");
+                window.location.href = HOST + "html/tower/login.html";
+            }
+        }
+        function checkQusLogin(){
+            var url = "../../tower/staffinfo/checkQusLogin";
+            $.ajax({
+                //与服务器交互
+                url:url,
+                type:'post',
+                dataType: 'json',
+                data: {
+                    "token":window.sessionStorage.getItem("token")
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    alert("发生错误："+errorThrown);
+                },
+                success: function(res){
+                    if(res.msg!=undefined){
+                        alert(res.msg);
+                        if(res.msg.indexOf('未登录或已失效')!=-1){
+                            window.location.href = HOST + "html/tower/login.html";
+                        }
+                    }
+                }
+            });
+        }
+        //100-91分A(优秀)、 90-76分B（优良）、75-61分C（称职）、60-31分D（须改进）、30-0分E（不称职）
+        function isExcellent(score){
+            if(score>=91&&score<=100){
+                return true;
+            }
+        }
+        function isGood(score){
+            if(score>=76&&score<=90){
+                return true;
+            }
+        }
+        function setScoreInfo(objId,objValue,examItemId,excellentCountLimit,goodCountLimit){
+            checkTokenTime();
+            //debugger;
+            if(objValue>100){
+                alert("评分不能超过100分，请调整！");
+                return;
+            }
+            var id = objId;
+            var staffId = "";//被评价的用户ID
+            var indexItemId = "";//评价的指标项
+            var scoreType = "";
+            var staffInfo = getSession("staff_"+id);
+            var indexItemInfo = getSession("index_"+id);
+            if(id.indexOf("totalscore")==-1){//各项得分
+                var beginIndex = id.indexOf('_')+1;
+                var endIndex = id.lastIndexOf('_');
+                staffId = id.substring(beginIndex,endIndex);
+                indexItemId = id.substring(endIndex+1,id.length);
+                scoreType = '0';
+            }else{//总得分
+                var beginIndex = id.indexOf('_')+1;
+                staffId = id.substring(beginIndex,id.length);
+                scoreType = '1';
+            }
+            var score = new Object();
+            score.pageId = id;
+            score.examStation = staffInfo.stationId;
+            score.examStationName = staffInfo.station;
+            score.examName = staffInfo.staffName;
+            score.examDept = staffInfo.dept;
+            score.examCity = staffInfo.city;
+            score.examStaffId = staffInfo.staffId;
+            score.examDeptId = staffInfo.deptId;
+            score.examCityId = staffInfo.cityId;
+            score.indexItemId = indexItemInfo.indexItemId;
+            score.indexItemName = indexItemInfo.indexItemName;
+            score.indexItemPercent = indexItemInfo.percent;
+            score.indexItemScore = objValue;
+            score.scoreType = scoreType;
+            score.examItemId = examItemId;
+            var hasValue = false;
+            var repeatIndex ;
+            var totalIndex;
+            var hasTotalValue = false;
+            for(var i=0;i<scoreArr.length;i++){
+                if(scoreArr[i].pageId==id){
+                    hasValue = true;
+                    repeatIndex = i;
+                    break;
+                }
+
+            }
+            if(hasValue){
+                scoreArr.splice(repeatIndex,1);
+            }
+            for(var i=0;i<scoreArr.length;i++){
+                if(scoreArr[i].pageId=="totalscore_"+staffId){
+                    totalIndex = i;
+                    hasTotalValue = true;
+                    break;
+                }
+
+            }
+            if(hasTotalValue){
+                scoreArr.splice(totalIndex,1);
+            }
+            scoreArr.push(score);
+            $("#totalscore_"+staffId).val("");
+            var totalScoreValue = 0;
+            for(var i=0;i<scoreArr.length;i++){
+                if(scoreArr[i].examStaffId==staffId){
+                    if(scoreArr[i].indexItemScore==''||scoreArr[i].indexItemPercent==''){
+                        continue;
+                    }
+                    totalScoreValue += scoreArr[i].indexItemScore*scoreArr[i].indexItemPercent/100;
+                }
+            }
+            totalScoreValue = totalScoreValue.toFixed(2);
+            $("#totalscore_"+staffId).val(totalScoreValue);
+            var totalScore = new Object();
+            totalScore.pageId = "totalscore_"+staffId;
+            totalScore.examStation = staffInfo.stationId;
+            totalScore.examStationName = staffInfo.station;
+            totalScore.examName = staffInfo.staffName;
+            totalScore.examDept = staffInfo.dept;
+            totalScore.examCity = staffInfo.city;
+            totalScore.examStaffId = staffInfo.staffId;
+            totalScore.examDeptId = staffInfo.deptId;
+            totalScore.examCityId = staffInfo.cityId;
+            totalScore.indexItemId = 99999999;
+            totalScore.indexItemName = "合计";
+            totalScore.indexItemPercent = 0;
+            totalScore.indexItemScore = totalScoreValue;
+            totalScore.scoreType = "1";
+            totalScore.examItemId = examItemId;
+            if(isExcellent(totalScoreValue)){
+                totalScore.isExcellent = "0";//0:是 1：否
+            }else{
+                totalScore.isExcellent = "1";//0:是 1：否
+            }
+            if(isGood(totalScoreValue)){
+                totalScore.isGood = "0";//0:是 1：否
+            }else{
+                totalScore.isGood = "1";//0:是 1：否
+            }
+            scoreArr.push(totalScore);
+            //校验优良和优秀的人数
+            var isExcellentCount = 0;
+            var isGoodCount = 0;
+            for(var i=0;i<scoreArr.length;i++){
+                if(scoreArr[i].examItemId==examItemId&&scoreArr[i].pageId.indexOf("totalscore")!=-1){
+                    if(scoreArr[i].isExcellent=="0"){
+                        isExcellentCount++;
+                    }
+                    if(scoreArr[i].isGood=="0"){
+                        isGoodCount++;
+                    }
+                }
+
+            }
+            var checkLimitStr = "当前评选的优秀人数："+isExcellentCount+"；优良人数："+isGoodCount+"。"
+            if(excellentCountLimit!=0&&excellentCountLimit!=''&&isExcellentCount>excellentCountLimit){
+                checkLimitStr += "优秀人数超过限制，请调整！"
+            }
+            if(goodCountLimit!=0&&goodCountLimit!=''&&isGoodCount>goodCountLimit){
+                checkLimitStr += "优良人数超过限制，请调整！"
+            }
+            $("#"+"msgTip"+"_"+examItemId).html(checkLimitStr);
+
+        }
+
+        function getStaffInfo(examStaffInfo,examStationId){
+            var retExamStaffInfo ={};
+            var count = 0;
+            for(var i=0;i<examStaffInfo.length;i++){
+                if(examStaffInfo[i].stationId==examStationId){
+                    retExamStaffInfo[count++] = examStaffInfo[i];
+                }
+                // else{
+                //     break;
+                // }
+
+            }
+            return retExamStaffInfo;
+        }
+        function getExamIndexRels(examIndexRels,examItemId){
+            var retExamIndexRels ={};
+            var count = 0;
+            for(var i=0;i<examIndexRels.length;i++){
+                if(examIndexRels[i].examItemId==examItemId){
+                    retExamIndexRels[count++] = examIndexRels[i];
+                }
+                // else{
+                //     break;
+                // }
+
+            }
+            return retExamIndexRels;
+        }
+        function checkSubmit(){
+            var examItemInfo = getSession("examItemInfo");
+            for(var i=0;i<examItemInfo.length;i++) {
+                var examItemId = examItemInfo[i].examItemId;
+                var examItemName = examItemInfo[i].examItemName;
+                var msgTip = $("#"+"msgTip"+"_"+examItemId).html();
+                if(msgTip.indexOf("请调整")!=-1){
+                    alert("'"+examItemName+"'"+"考核项评选不符合限制，请根据提示调整！")
+                    return false;
+                }
+            }
+            var isCheck = true;
+            $('.grade-b input').each(function(){
+                var scoreIdName = $(this).attr("id");
+                var examStaffInfo = getSession("staff_"+scoreIdName);
+                var examIndexInfo = getSession("index_"+scoreIdName);
+                if($.trim($(this).val())==""){
+                    alert("员工'"+examStaffInfo.staffName+"'的'"+examIndexInfo.indexItemName+"'未评分，请填写后再提交！");
+                    $(this).focus();
+                    isCheck = false;
+                    return false;
+                }
+            });
+            return isCheck;
+        }
+        function doSubmit(){
+            if(!checkSubmit()) return;
+            if(!window.confirm("是否确认提交您的问卷信息？")){
+                return;
+            }
+            var url = "../../tower/examscoreinfo/save";
+            console.log(JSON.stringify(scoreArr));
+            $.ajax({
+                //与服务器交互
+                url:url,
+                type:'post',
+                dataType: 'json',
+                data: {"scoreListStr":JSON.stringify(scoreArr),
+                    "token":window.sessionStorage.getItem("token")
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    alert("发生错误："+errorThrown);
+                },
+                success: function(res){
+                    if(res.msg==undefined){
+                        if(window.confirm("提交成功，是否退出问卷考核系统？")){
+                            window.location.href = HOST + "html/tower/login.html";
+                            //清空session信息
+                        }else{
+                            //重新查询一遍修改后的信息
+                            setSession("examScoreInfo",res.examScoreInfo);
+                        }
+                    }else{
+                        alert(res.msg);
+                        if(res.msg.indexOf('未登录或已失效')!=-1){
+                            window.location.href = HOST + "html/tower/login.html";
+                        }
+                    }
+                }
+            });
+        }
+    </script> -->
+</head>
+<link rel="stylesheet" type="text/css" href="css/layout.css">
+
+<body class="ibody">
+    <div id="exam">
+        <div class="userInfo">
+            <a class="user-name"><img src="images/people.png" alt=""><span>罗黑黑（18059040463）</span></a>
+            <a class="quit"><img src="images/quit.png" alt=""><span>退出</span></a>
+        </div>
+        <div class="exam-h">
+            <span id="qusTitle">2018年度三级管理人员及省公司部门总监综合考核问卷 A</span>
+        </div>
+        <div class="exam-abs">
+            <span id="headDesc">原则上，每个被考核组优秀比例不超过30%，优良不超过40%。指标介绍详见问卷末尾。特别说明：1、由于，系统无法实现每个指标评分等级比例的设置，故请各位领导根据提示的人数或个数进行评分。2、请各位领导将各细指标的平均分值（精确到小数点后一位），填入每个被评价人的总分栏。如总分栏不等于各项平均值的，以总分值为准。</span>
+        </div>
+        <div id="examInfo">
+            <div class="exam-t">1、省公司部门正职（原则上，“总分栏”的优秀不超过2人，优良不超过2人）每个指标的打分范围为100-0分。100-91分A(优秀)、
+                90-76分B（优良）、75-61分C（称职）、60-31分D（须改进）、30-0分E（不称职） (矩阵填空题 *必答)</div>
+            <div class="grade-main grade-main-1">
+                <ul>
+                    <li>
+                        <div class="grade-a">省公司部门正职</div>
+                        <div class="grade-b">张三</div>
+                        <div class="grade-b">抓狂</div>
+                    </li>
+                    <li>
+                        <div class="grade-a">政治素质</div>
+                        <div class="grade-b"><input maxlength="3" id="score_66_5" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_70_5" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">职业操守</div>
+                        <div class="grade-b"><input maxlength="3" id="score_66_6" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_70_6" type="text" value="70"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">作风建设</div>
+                        <div class="grade-b"><input maxlength="3" id="score_66_7" type="text" value="70"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_70_7" type="text" value="88"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">廉洁从业</div>
+                        <div class="grade-b"><input maxlength="3" id="score_66_8" type="text" value="77"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_70_8" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">科学决策</div>
+                        <div class="grade-b"><input maxlength="3" id="score_66_9" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_70_9" type="text" value="88"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">推动执行</div>
+                        <div class="grade-b"><input maxlength="3" id="score_66_10" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_70_10" type="text" value="64"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">学习创新</div>
+                        <div class="grade-b"><input maxlength="3" id="score_66_11" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_70_11" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">团队建设</div>
+                        <div class="grade-b"><input maxlength="3" id="score_66_12" type="text" value="96"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_70_12" type="text" value="91"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,65,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">总分</div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_66" value="84.13" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_70" value="82.63" type="text"
+                                style="outline:none"></div>
+                    </li>
+                </ul>
+            </div>
+            <div> <span id="msgTip_65" style="color:red;font-size:16px"></span></div>
+            <div class="exam-t">2、省公司部门副职/总监（原则上，“总分栏”的优秀不超过2人，优良不超过2人）每个指标的打分范围为100-0分。100-91分A(优秀)、
+                90-76分B（优良）、75-61分C（称职）、60-31分D（须改进）、30-0分E（不称职） (矩阵填空题 *必答)</div>
+            <div class="grade-main grade-main-2">
+                <ul>
+                    <li>
+                        <div class="grade-a">省公司部门副职/总监</div>
+                        <div class="grade-b">赵二</div>
+                        <div class="grade-b">王五</div>
+                        <div class="grade-b">李四</div>
+                    </li>
+                    <li>
+                        <div class="grade-a">政治素质</div>
+                        <div class="grade-b"><input maxlength="3" id="score_69_5" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_68_5" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_67_5" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">职业操守</div>
+                        <div class="grade-b"><input maxlength="3" id="score_69_6" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_68_6" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_67_6" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">作风建设</div>
+                        <div class="grade-b"><input maxlength="3" id="score_69_7" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_68_7" type="text" value="98"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_67_7" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">廉洁从业</div>
+                        <div class="grade-b"><input maxlength="3" id="score_69_8" type="text" value="70"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_68_8" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_67_8" type="text" value="70"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">科学决策</div>
+                        <div class="grade-b"><input maxlength="3" id="score_69_9" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_68_9" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_67_9" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">推动执行</div>
+                        <div class="grade-b"><input maxlength="3" id="score_69_10" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_68_10" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_67_10" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">学习创新</div>
+                        <div class="grade-b"><input maxlength="3" id="score_69_11" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_68_11" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_67_11" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">团队建设</div>
+                        <div class="grade-b"><input maxlength="3" id="score_69_12" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_68_12" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_67_12" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,66,2,2)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">总分</div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_69" value="86.25" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_68" value="91" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_67" value="87.5" type="text"
+                                style="outline:none"></div>
+                    </li>
+                </ul>
+            </div>
+            <div> <span id="msgTip_66" style="color:red;font-size:16px"></span></div>
+            <div class="exam-t">3、地市分公司领导班子每个指标的打分范围为100-0分。100-91分A(优秀)、
+                90-76分B（优良）、75-61分C（称职）、60-31分D（须改进）、30-0分E（不称职） (矩阵填空题 *必答)</div>
+            <div class="grade-main grade-main-3">
+                <ul>
+                    <li>
+                        <div class="grade-a">地市分公司领导班子</div>
+                        <div class="grade-b">福州地市分公司领导班子</div>
+                        <div class="grade-b">厦门地市分公司领导班子</div>
+                        <div class="grade-b">泉州地市分公司领导班子</div>
+                        <div class="grade-b">漳州地市分公司领导班子</div>
+                        <div class="grade-b">宁德地市分公司领导班子</div>
+                        <div class="grade-b">莆田地市分公司领导班子</div>
+                        <div class="grade-b">南平地市分公司领导班子</div>
+                        <div class="grade-b">三明地市分公司领导班子</div>
+                        <div class="grade-b">龙岩地市分公司领导班子</div>
+                    </li>
+                    <li>
+                        <div class="grade-a">作风士气</div>
+                        <div class="grade-b"><input maxlength="3" id="score_2_13" type="text" value="85"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_3_13" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_4_13" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_5_13" type="text" value="85"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_6_13" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_7_13" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_8_13" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_9_13" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_10_13" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">选人用人</div>
+                        <div class="grade-b"><input maxlength="3" id="score_2_14" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_3_14" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_4_14" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_5_14" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_6_14" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_7_14" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_8_14" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_9_14" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_10_14" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">科学管理</div>
+                        <div class="grade-b"><input maxlength="3" id="score_2_15" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_3_15" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_4_15" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_5_15" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_6_15" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_7_15" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_8_15" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_9_15" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_10_15" type="text" value="80"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">创新成效</div>
+                        <div class="grade-b"><input maxlength="3" id="score_2_16" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_3_16" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_4_16" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_5_16" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_6_16" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_7_16" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_8_16" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_9_16" type="text" value="70"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_10_16" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,67,0,0)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">总分</div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_2" value="91.25" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_3" value="97.5" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_4" value="95" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_5" value="96.25" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_6" value="92.5" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_7" value="95" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_8" value="87.5" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_9" value="87.5" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_10" value="90" type="text"
+                                style="outline:none"></div>
+                    </li>
+                </ul>
+            </div>
+            <div> <span id="msgTip_67" style="color:red;font-size:16px"></span></div>
+            <div class="exam-t">4、地市公司正职（原则上，“总分栏”的优秀不超过2人，优良不超过3人）每个指标的打分范围为100-0分。100-91分A(优秀)、
+                90-76分B（优良）、75-61分C（称职）、60-31分D（须改进）、30-0分E（不称职） (矩阵填空题 *必答)</div>
+            <div class="grade-main grade-main-4">
+                <ul>
+                    <li>
+                        <div class="grade-a">地市公司正职</div>
+                        <div class="grade-b">阿娇从电视</div>
+                        <div class="grade-b">抓啊铯</div>
+                    </li>
+                    <li>
+                        <div class="grade-a">政治素质</div>
+                        <div class="grade-b"><input maxlength="3" id="score_72_5" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_71_5" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">职业操守</div>
+                        <div class="grade-b"><input maxlength="3" id="score_72_6" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_71_6" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">作风建设</div>
+                        <div class="grade-b"><input maxlength="3" id="score_72_7" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_71_7" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">廉洁从业</div>
+                        <div class="grade-b"><input maxlength="3" id="score_72_8" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_71_8" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">科学决策</div>
+                        <div class="grade-b"><input maxlength="3" id="score_72_9" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_71_9" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">推动执行</div>
+                        <div class="grade-b"><input maxlength="3" id="score_72_10" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_71_10" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">学习创新</div>
+                        <div class="grade-b"><input maxlength="3" id="score_72_11" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_71_11" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">团队建设</div>
+                        <div class="grade-b"><input maxlength="3" id="score_72_12" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_71_12" type="text" value="90"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,68,2,3)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">总分</div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_72" value="100" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_71" value="95" type="text"
+                                style="outline:none"></div>
+                    </li>
+                </ul>
+            </div>
+            <div> <span id="msgTip_68" style="color:red;font-size:16px"></span></div>
+            <div class="exam-t">5、地市公司副职（原则上，“总分栏”的优秀不超过4人，优良不超过5人）每个指标的打分范围为100-0分。100-91分A(优秀)、
+                90-76分B（优良）、75-61分C（称职）、60-31分D（须改进）、30-0分E（不称职） (矩阵填空题 *必答)</div>
+            <div class="grade-main">
+                <ul>
+                    <li>
+                        <div class="grade-a">地市公司副职</div>
+                        <div class="grade-b">哈哈哈</div>
+                        <div class="grade-b">洒家说</div>
+                        <div class="grade-b">是啊</div>
+                    </li>
+                    <li>
+                        <div class="grade-a">政治素质</div>
+                        <div class="grade-b"><input maxlength="3" id="score_75_5" type="text" value="99"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_74_5" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_73_5" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">职业操守</div>
+                        <div class="grade-b"><input maxlength="3" id="score_75_6" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_74_6" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_73_6" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">作风建设</div>
+                        <div class="grade-b"><input maxlength="3" id="score_75_7" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_74_7" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_73_7" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">廉洁从业</div>
+                        <div class="grade-b"><input maxlength="3" id="score_75_8" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_74_8" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_73_8" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">科学决策</div>
+                        <div class="grade-b"><input maxlength="3" id="score_75_9" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_74_9" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_73_9" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">推动执行</div>
+                        <div class="grade-b"><input maxlength="3" id="score_75_10" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_74_10" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_73_10" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">学习创新</div>
+                        <div class="grade-b"><input maxlength="3" id="score_75_11" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_74_11" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_73_11" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">团队建设</div>
+                        <div class="grade-b"><input maxlength="3" id="score_75_12" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_74_12" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                        <div class="grade-b"><input maxlength="3" id="score_73_12" type="text" value="100"
+                                style="outline:none" onblur="setScoreInfo(this.id,this.value,69,4,5)"></div>
+                    </li>
+                    <li>
+                        <div class="grade-a">总分</div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_75" value="99.88" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_74" value="100" type="text"
+                                style="outline:none"></div>
+                        <div class="grade-b"><input readonly="readonly" id="totalscore_73" value="100" type="text"
+                                style="outline:none"></div>
+                    </li>
+                </ul>
+            </div>
+            <div> <span id="msgTip_69" style="color:red;font-size:16px"></span></div>
+        </div>
+        <div class="exam-f">
+            <span id="bottomDesc">指标介绍：政治素质：1. 思想素质好，坚定理想信念，牢固树立四个意识，在政治上、思想上、行动上与中央保持高度一致；2.
+                党性观念和组织纪律观念强，能够经受各种风险和挑战考验，严守政治纪律和政治规矩，坚持原则,顾全大局；3.
+                坚持贯彻公司“三步走”战略，落实“三有利”，促进公司持续健康发展；4．坚持民主集中制原则，坚持四个服从；大公无私，勇于担当。职业操守：1. 担当务实好，忠诚于公司事业，推动中国铁塔改革创新，具有正确的业绩观；2.
+                有良好的职业精神和个人品行，遵守法律法规和公司章程，严守公司秘密，遵守商业道德和职业道德，诚信践诺； 3. 有强烈的事业心、责任感，充满干事创业的激情,忠于职守，勤勉尽责。作风建设：1.
+                严守中央八项规定，坚决反对形式主义、官僚主义、享乐主义和奢靡之风；带头践行“三严三实”；2. 树立求是作风，对上敢建言，对组织、自己负责；对下敢要求，对岗位、员工负责；不唯书，只唯是；3.
+                建立平等尊重氛围，平等、尊重，畅所欲言。廉洁从业：1. 廉洁自律好，牢记谨慎用权，严守底线，公私分明，带头遵守党风廉政建设的各项规定，诚实守信、依法经营； 2.
+                履行一岗双责，作风正派、严于律己、以上率下，严格约束亲属和身边工作人员，自觉接受组织和职工群众监督。科学决策：1. 战略思维能力强，善于把握行业发展趋势，探索铁塔运营规律，具有大视野、系统思维和专业能力；2.
+                能够深刻理解公司“三步走”战略、客户需求和上级重点部署，统筹资源，把握轻重缓急，灵活迅速地做出正确决策；3. 懂经营、会管理、善决策，坚持按程序办事，坚持科学决策、民主决策、依法决策。推动执行：1.
+                经营管控能力强，能够结合实际认真贯彻落实公司各项重点部署，具备驾驭全局、应对复杂局面、解决重点问题的能力； 2. 工作有魄力，敢于大胆管理，勇于承担责任； 3.
+                善于优化资源配置，协同各方力量，能够调动各方面积极性，有力推进各项工作。学习创新：1. 探索实践“铁塔模式”，勇于创新，敢为人先，锐意进取，能够因地因时创新实践； 2.
+                善于学习能够快速系统掌握新知识，不断完善知识结构，能够快速适应新环境、新岗位或新任务要求； 3. 努力营造学习型组织氛围，鼓励创新型企业文化，能够取得创新实效。团队建设：1.
+                团队协作和引领能力强，关心关爱员工，营造良好企业氛围；2.
+                加强沟通协调，自觉维护班子团结，形成班子合力；正职善于抓班子、带队伍，发挥班子成员特长，充分调动班子成员积极性，凝聚集体智慧；班子其他成员善于当好决策参谋，善于抓好分工落实，善于维护团结协作；3.
+                营造积极团队氛围，注重发现和善于培养激励下属，带领的团队有活力、凝聚力和战斗力。履职业绩：1.正职业绩即为本地市分公司/省分部门经营业绩得分，根据财务部相关办法量化考核；2.副职业绩/省公司部门总监得分由本地市分公司/省分部门经营业绩（60%）和个人分管履职（40%）构成，个人分管履职采取多维度测评打分，具体评价副职分管指标完成情况，分管职责和重点工作落实的成效。</span>
+        </div>
+        <div class="exam-submit"><input type="button" onclick="doSubmit();" value="提 交"></div>
+    </div>
+    <div class="load">
+        <div class="loading">
+            <img src="images/loading.gif" alt="">
+            <p>正在提交中...</p>
+        </div>
+        <div class="loadbg"></div>
+    </div>
+</body>
+
+</html>

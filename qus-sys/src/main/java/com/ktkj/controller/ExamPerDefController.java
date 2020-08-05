@@ -102,7 +102,7 @@ public class ExamPerDefController extends AbstractController {
         for (ExamPerDefEntity entity:list
              ) {
             totalPercent += entity.getPercent();
-            if(examPerDef.getQusStationId().equals(entity.getQusStationId())){
+            if (examPerDef.getQusStationId().equals(entity.getQusStationId())) {
                 return R.error("该配置项已存在，请勿重复添加！");
             }
         }

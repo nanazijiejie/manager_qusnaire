@@ -45,6 +45,248 @@
         </div>
         <div class="exam-save"><input type="button" value="保 存"></div>
     </div>
+
+    <div class="exam-b" id="responseTable">
+        <div class="exam-h" >
+            <span id="responseHead"></span>
+        </div>
+        <div class="exam-abs">
+            <span>
+                注意事项：<br>
+                1.请在分值栏内选择评分,3分为最高分，0分为最低分；没有选择评分，视为无效票，不计得分。<br>
+                2.得分=（10项打分合计）/3，分值按四舍五入，取小数点后两位。<br>
+                3.最终得分为参加民主测评人员平均分。
+            </span>
+        </div>
+        <div id="responseInfo">
+            <div class="grade-main">
+                <ul>
+                    <li>
+                        <div class="grade-a">评价内容</div>
+                        <div class="grade-b">在党委（党支部）发挥领导作用方面。是否“不忘初心、牢记使命”，积极履责担当，把握正确方向，勇于自我革命，引领改革发展，完成生产经营任务，落实“一体两翼”战略，建设“两型企业”。</div>
+                        <div class="grade-b">在班子团结方面。是否团结协作、密切配合、氛围融洽，不搞团团伙伙，不搞圈子文化。</div>
+                        <div class="grade-b">在选人用人方面。是否公开透明、公平公正，员工满意认可，不暗箱操作，不任人唯亲。</div>
+                        <div class="grade-b">在纪律建设方面。党员领导干部是否严格遵守党纪党规，以身作则、廉洁自律。</div>
+                        <div class="grade-b">在作风建设方面。党员领导干部是否担当作为，转变作风，严格遵守中央八项规定精神，坚决反对“四风”。</div>
+                        <div class="grade-b">在联系基层、联系群众方面。党员领导干部是否深入基层了解情况，开展谈心谈话，倾听意见建议，改进提高工作, 解决员工群众反映强烈的问题。</div>
+                        <div class="grade-b">在党员发挥先锋模范作用方面。党员干部是否平常时候看得出来，遇到急难险重任务时挺身而出。</div>
+                        <div class="grade-b">在员工关爱方面。党员领导干部是否开展帮扶慰问，为员工排忧解难，解决工作生活问题。</div>
+                        <div class="grade-b">在环境氛围方面。市分公司是否阳光透明、公平公正、和谐友爱、风清气正，充满正能量。</div>
+                        <div class="grade-b">在个人感受方面。是否心情舒畅，对目前工作现状满意，对未来发展充满信心。</div>
+                    </li>
+                    <li>
+                        <div class="grade-a">情况评价</div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="responseSel1"
+                                                     onchange="getResAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="responseSel2"
+                                                     onchange="getResAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="responseSel3"
+                                                     onchange="getResAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="responseSel4"
+                                                     onchange="getResAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="responseSel5"
+                                                     onchange="getResAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="responseSel6"
+                                                     onchange="getResAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="responseSel7"
+                                                     onchange="getResAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="responseSel8"
+                                                     onchange="getResAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="responseSel9"
+                                                     onchange="getResAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="responseSel10"
+                                                     onchange="getResAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+
+                    </li>
+                </ul>
+            </div>
+            <div style='margin-bottom: 30px'> <span id="responseTip" style='color:red;font-size:16px;'></span></div>
+        </div>
+        <div class="exam-submit" >
+            <input type="button" id="resSubmitBtn"  value="提 交">
+        </div>
+    </div>
+
+    <div class="exam-b" id="clearTable">
+        <div class="exam-h">
+            <span id="clearHead">党风廉政建设和反腐败工作责任制考核民主测评表</span>
+        </div>
+        <div class="exam-abs">
+                <span>
+                    填写须知：</span><br>
+                        1.职工民主测评选项分“好、较好、一般、差”（空项视同差）四档，
+                    依次按3分、2分、1分、0分统计合格票得分。得分计算公式为： [合格票累计得分/（合格票数×3）]×20。<br>
+                        2.请在对应情况选择评分。
+                </span>
+        </div>
+        <div id="clearInfo">
+            <div class="grade-main">
+                <ul>
+                    <li>
+                        <div class="grade-a">评价内容</div>
+                        <div class="grade-b">市级分公司党委（党支部）是否及时学习贯彻中央及上级重要会议和重要文件精神，落实上级重要决策部署。</div>
+                        <div class="grade-b">是否在年初对党风廉政建设和反腐败工作的有关任务进行了分解；是否在年中开展了责任制落实情况的检查和监督；是否对责任制落实不力的部门、单位进行严格问责。</div>
+                        <div class="grade-b">是否存在形式主义、官僚主义的表现，调研走过场，用会议落实会议，说一套做一套、台上台下两个样。</div>
+                        <div class="grade-b">是否通过“两学一做”常态化制度化，积极开展党纪党规的学习，加大理想信念教育、廉洁从业教育，筑牢思想道德防线。</div>
+                        <div class="grade-b">是否采取完善制度流程、加强专项检查等措施，从源头上预防和发现腐败问题并及时进行整改、堵塞漏洞，形成“不能腐”的防范机制。</div>
+                        <div class="grade-b">公司党委是否支持纪委履职查办案件，是否存在漏报、瞒报的情况。</div>
+                        <div class="grade-b">是否对发现的腐败问题线索或发生的违纪违法案件，以及违反中央八项规定精神和“四风”问题（包括公车私用、公款吃喝、对合作单位吃拿卡要、挪用资金费用形成小金库等，也包括工作搞花架子、工作作风粗暴、工作情况和数据弄虚作假等），及时开展核查并进行严肃处理。</div>
+                        <div class="grade-b">是否严格按程序开展采购招标，是否存在“打招呼”，违规招投标情况</div>
+                        <div class="grade-b">是否在选人用人上存在不正之风，是否对管辖范围内的领导干部进行严格教育、管理和监督。</div>
+                        <div class="grade-b">是否关心员工，关心员工工作、生活情况，为员工排忧解难。</div>
+                    </li>
+                    <li>
+                        <div class="grade-a">情况评价</div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="clearSel1"
+                                                     onchange="getClearAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="clearSel2"
+                                                     onchange="getClearAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="clearSel3"
+                                                     onchange="getClearAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="clearSel4"
+                                                     onchange="getClearAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="clearSel5"
+                                                     onchange="getClearAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="clearSel6"
+                                                     onchange="getClearAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="clearSel7"
+                                                     onchange="getClearAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="clearSel8"
+                                                     onchange="getClearAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="clearSel9"
+                                                     onchange="getClearAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                        <div class="grade-b"><select type="text" value="" style="outline:none" id="clearSel10"
+                                                     onchange="getClearAvg()">
+                            <option value="">请评分</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select></div>
+                    </li>
+                </ul>
+            </div>
+            <div style='margin-bottom: 30px'> <span id="clearTip" style='color:red;font-size:16px;'></span></div>
+        </div>
+    <div class="exam-submit" >
+        <input type="button" id="clearSubmitBtn"  value="提 交">
+    </div>
+    </div>
+
     <div class="exam-b" id="selTable">
         <div class="exam-h">
             <span id="selTitle"></span>
@@ -63,38 +305,22 @@
             <input type="button" id="selSubmitBtn"  value="提 交">
         </div>
     </div>
+
     <div class="exam-alt">
         <a id="examA" href="javascript:void(0)" style="padding-left:60px"></a>
         <br>
-        <a id="examB" href="javascript:void(0)" style="padding-left:60px;color:#3c61f8;text-decoration:underline"></a>
-    </div>
-    <!--<div class="exam-b" id="recoTable">
-        <div class="exam-t" style="text-align:center;font-weight: bold;font-size:20px;margin-top: 50px;">民主推荐表（A票）</div>
-            <div class="grade-main">
-                <ul>
-                    <li style="width:100px">
-                        <div class="grade-a">推荐职务</div>
-                        <div class="grade-b" style="background:#ffffff"><input   type="text" value="" style="outline:none" ></div>
-                    </li>
-                    <li style="width:100px">
-                        <div class="grade-a" >姓名</div>
-                        <div class="grade-b"><input   type="text" value="" style="outline:none" ></div>
-                    </li>
-                    <li style="width:100px">
-                        <div class="grade-a">现单位及职务</div>
-                        <div class="grade-b"><input  type="text" value="" style="outline:none" ></div>
-                    </li>
-                    <li style="width:300px">
-                        <div class="grade-a">推荐理由</div>
-                        <div class="grade-b"><input  type="text" value="" style="outline:none" ></div>
-                    </li>
-                </ul>
-            </div>
-        <div class="exam-submit" id="recoSubmit">
-            <input type="button"  value="提 交">
-        </div>
-    </div>-->
+        <!--<a id="examB" href="javascript:void(0)" style="padding-left:60px;color:#3c61f8;text-decoration:underline"></a>
+        <br>-->
+        <a id="examC" href="javascript:void(0)" style="padding-left:60px;color:#3c61f8;text-decoration:underline;display: none">
 
+        </a>
+        <br>
+        <a id="examD" href="javascript:void(0)" style="padding-left:60px;color:#3c61f8;text-decoration:underline;display: none">
+
+        </a>
+
+
+    </div>
 </div>
 <div class="load">
     <div class="loading">

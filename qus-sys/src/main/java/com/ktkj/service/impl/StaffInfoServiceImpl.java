@@ -10,6 +10,7 @@
  */
 package com.ktkj.service.impl;
 
+import com.alipay.api.domain.StaffInfo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ktkj.cache.J2CacheUtils;
@@ -144,13 +145,6 @@ public class StaffInfoServiceImpl extends ServiceImpl<StaffInfoDao, StaffInfoEnt
             map.put("staffId",staffInfo.getStaffId());
             baseMapper.updateDeptNull(map);
         }
-        if(StringUtils.isEmpty(staffInfo.getSelStationId())){
-            Map<String,Object> map= new HashMap<String,Object>();
-            map.put("deptType","2");
-            map.put("staffId",staffInfo.getStaffId());
-            baseMapper.updateDeptNull(map);
-            staffInfo.setSelStation("");
-        }
         return this.updateById(staffInfo);
     }
 
@@ -181,13 +175,6 @@ public class StaffInfoServiceImpl extends ServiceImpl<StaffInfoDao, StaffInfoEnt
         baseMapper.updateBatch(map);
     }
     @Override
-    public void updateIsSelectionBatch(Integer[] staffIds,String status){
-        Map<String, Object> map = new HashMap<String,Object>();
-        map.put("list", staffIds);
-        map.put("status", status);
-        baseMapper.updateIsSelectionBatch(map);
-    }
-    @Override
     public List<StaffInfoEntity> qrySelStaff(Map<String, Object> params){
         return baseMapper.qrySelStaff(params);
     }
@@ -196,6 +183,29 @@ public class StaffInfoServiceImpl extends ServiceImpl<StaffInfoDao, StaffInfoEnt
     public List<StaffInfoEntity> qryExamStaff(Map<String, Object> params){
         return baseMapper.qryExamStaff(params);
     }
+
+    @Override
+    public List<StaffInfoEntity> qryExamStaffName(String qusStaffName){
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("staffName",qusStaffName);
+        List<QusExamStaffRel> qusExamStaffRelList = baseMapper.qryExamStaffName(params);
+        if(qusExamStaffRelList!=null&&qusExamStaffRelList.size()>0){
+            QusExamStaffRel QusExamStaffRel = qusExamStaffRelList.get(0);
+            String examStaffNameStr = "";
+            String[]examStaffNameArr = QusExamStaffRel.getExamStaffName().trim().split("、");
+            for(String examStaffName:examStaffNameArr){
+                examStaffNameStr += "'"+examStaffName+"',";
+            }
+            if(StringUtils.isNotEmpty(examStaffNameStr)){
+                examStaffNameStr = examStaffNameStr.substring(0,examStaffNameStr.length()-1);
+            }
+            params.put("staffName",examStaffNameStr);
+            return baseMapper.qryExamStaff(params);
+        }else{
+            return null;
+        }
+    }
+
     @Override
     public List<SelectionDefEntity> qrySelDef(Map<String, Object> params){
         return baseMapper.qrySelDef(params);
@@ -403,44 +413,6 @@ public class StaffInfoServiceImpl extends ServiceImpl<StaffInfoDao, StaffInfoEnt
             return R.ok();
         }catch (Exception e) {
             logger.error("batchSave2",e);
-            return R.error("批量上传数据异常，第"+indexRow+"条数据输入不合法！");
-
-        }
-    }
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public R batchSave3(Sheet sheet, StaffInfoEntity entity) {
-        int indexRow=1;
-        try {
-            Iterator<Row> it = sheet.rowIterator();
-            //过滤头
-            if(it.hasNext()){
-                it.next();
-            }
-            List <String> batch=new ArrayList<String>();
-            while (it.hasNext()) {
-                Row row =it.next();
-                //校验邮箱
-                HSSFCell email = (HSSFCell) row.getCell(0);
-                if(email!=null&&!StringUtils.isEmpty(conversion(email))){
-                    String emailStr =conversion(email);
-                    if(!emailStr.matches("[\\w\\.\\-]+@([\\w\\-]+\\.)+[\\w\\-]+")){
-                        return R.error("第"+indexRow+"条数据--“邮箱”格式不正确");
-                    }
-                    batch.add(emailStr);
-                }else{
-                    break;
-                }
-                indexRow++;
-            }
-            //批量修改
-            Map<String,Object> map = new HashMap<String,Object>();
-            map.put("list", batch);
-            map.put("status", "1");
-            baseMapper.updateIsSelectionBatchByEmail(map);
-            return R.ok();
-        }catch (Exception e) {
-            logger.error("batchSave3",e);
             return R.error("批量上传数据异常，第"+indexRow+"条数据输入不合法！");
 
         }

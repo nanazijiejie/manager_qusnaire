@@ -47,7 +47,7 @@ public interface ExamItemDefService extends IService<ExamItemDefEntity> {
      * @param examItemDef 
      * @return 新增结果
      */
-    boolean add(ExamItemDefEntity examItemDef,Integer[] rels);
+    boolean add(ExamItemDefEntity examItemDef, Integer[] rels);
 
     /**
      * 根据主键更新

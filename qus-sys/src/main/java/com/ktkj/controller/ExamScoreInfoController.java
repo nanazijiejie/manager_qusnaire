@@ -55,6 +55,8 @@ public class ExamScoreInfoController extends AbstractController {
     private StaffDeptRelService staffDeptRelService;
     @Autowired
     private MailDefService mailDefService;
+    @Autowired
+    private ExamPerDefService examPerDefService;
 
     /**
      * 查看所有列表
@@ -147,9 +149,9 @@ public class ExamScoreInfoController extends AbstractController {
      * 判断是否分管
      * @return
      */
-    private static boolean isDeptVice(String[] qusViceDeptId,String[] examDeptId){
-        if(qusViceDeptId==null||examDeptId==null||qusViceDeptId.length==0||examDeptId.length==0) return false;
-        for (String viceDeptId:qusViceDeptId
+    private static boolean isSameDept(String[] qusDeptId,String[] examDeptId){
+        if(qusDeptId==null||examDeptId==null||qusDeptId.length==0||examDeptId.length==0) return false;
+        for (String viceDeptId:qusDeptId
              ) {
             for (String deptId:examDeptId
                  ) {
@@ -160,27 +162,10 @@ public class ExamScoreInfoController extends AbstractController {
         }
         return false;
     }
-    /**
-     * 判断是否其他副总
-     * @return
-     */
-    private static boolean isOtherDeptVice(String[] qusViceDeptId,String[] examDeptId){
-        if(qusViceDeptId==null||examDeptId==null||qusViceDeptId.length==0||examDeptId.length==0) return false;
-        for (String viceDeptId:qusViceDeptId
-        ) {
-            for (String deptId:examDeptId
-            ) {
-                if(viceDeptId.equals(deptId)){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
     @RequestMapping("/checkAllSubmit")
     public R checkAllSubmit(){
         Map<String, Object> params1 = new HashMap<String, Object>();
-        params1.put("sendMailMark","0");
+        //params1.put("sendMailMark","0");
         params1.put("isSubmit","0");
         List<StaffInfoEntity> staffInfoList = staffInfoService.queryAll(params1);
         if(staffInfoList!=null&&staffInfoList.size()!=0){
@@ -201,7 +186,7 @@ public class ExamScoreInfoController extends AbstractController {
                       HttpServletResponse response) {
         //判断是否还有用户未提交问卷结果
         Map<String, Object> params1 = new HashMap<String, Object>();
-        params1.put("sendMailMark","0");
+        //params1.put("sendMailMark","0");
         params1.put("isSubmit","0");
         List<StaffInfoEntity> staffInfoList = staffInfoService.queryAll(params1);
         if(staffInfoList!=null&&staffInfoList.size()!=0){
@@ -211,24 +196,10 @@ public class ExamScoreInfoController extends AbstractController {
         List<ExamScoreInfoEntity> scoreList = examScoreInfoService.queryAll(params2);
         for (ExamScoreInfoEntity entity : scoreList
         ) {
-            //被考核人：分管副职--考核表的身份改成地市副职
-            /*if (Station.provinceChargeManager.equals(entity.getExamStation())){
-                entity.setExamStation(Station.cityViceManager);
-                entity.setExamStationName(dictDefService.qryItemName("EXAM_STATION", Station.cityViceManager));
-            }*/
-            //被考核人：本部门副职--考核表的身份改成省公司部门副职/总监
-            /*if (Station.localDpetViceManager.equals(entity.getExamStation())){
-                entity.setExamStation(Station.provinceDeptViceManager);
-                entity.setExamStationName(dictDefService.qryItemName("EXAM_STATION", Station.provinceDeptViceManager));
-            }*/
             String qusStation = entity.getQusNaireStation();
             String examStation = entity.getExamStation();
-            String[] qusViceDeptId = null;
             String[] examDeptId = null;
             String[] qusDeptId = null;
-            if(StringUtils.isNotEmpty(entity.getQusNaireViceDeptId())){
-                qusViceDeptId = entity.getQusNaireViceDeptId().split(",");//评分人分管部门
-            }
             if(StringUtils.isNotEmpty(entity.getExamDeptId())){
                 examDeptId = entity.getExamDeptId().split(",");//被评价员工归属部门
             }
@@ -237,92 +208,63 @@ public class ExamScoreInfoController extends AbstractController {
             }
             entity.setExelStation(entity.getQusNaireStation());
             entity.setExelStationName(entity.getQusNaireStationName());
-            if(Station.provinceDeptManager.equals(qusStation)||
-                    Station.provinceDeptViceManager.equals(qusStation)){
-                entity.setExelStation(Station.localDeptManagers);
-                entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION",Station.localDeptManagers));
-            }else{
-                entity.setExelStation(Station.localStaff);
-                entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION",Station.localStaff));
+            //被考核人：省部门正职
+            if (Station.provinceDeptManager.equals(examStation)) {
+                //省分部门正职+省分部门副职=省分部门负责人
+                if (Station.provinceDeptManager.equals(qusStation)||
+                        Station.provinceDeptViceManager.equals(qusStation)) {
+                    entity.setExelStation(Station.provinceMiddleManager);
+                    entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.provinceMiddleManager));
+                }
             }
-            //全省中层正职副职
-            /*if ((Station.cityManager.equals(qusStation) ||
-                    Station.provinceDeptManager.equals(qusStation) ||
-                    Station.cityViceManager.equals(qusStation) ||
-                    Station.provinceDeptViceManager.equals(qusStation))&&
-                    (Station.provinceDeptViceManager.equals(examStation)||
-                     Station.cityViceManager.equals(examStation))) {
-                entity.setExelStation(Station.provinceAllMiddleManager);
-                entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.provinceAllMiddleManager));
-            }*/
-            //全省中层正职:地市正职+省公司部门正职
-            /*if ((Station.cityManager.equals(qusStation) ||
-                    Station.provinceDeptManager.equals(qusStation))&&
-                    (Station.provinceDeptManager.equals(examStation)||
-                            Station.cityManager.equals(examStation))
-            ) {
-                entity.setExelStation(Station.provinceMiddleManager);
-                entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.provinceMiddleManager));
-            }*/
-            //全省中层副职
-            /*if ((Station.cityViceManager.equals(qusStation) ||
-                    Station.provinceDeptViceManager.equals(qusStation))&&
-                    (Station.provinceDeptManager.equals(examStation)||
-                            Station.cityManager.equals(examStation))) {
-                entity.setExelStation(Station.provinceMiddleViceManager);
-                entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.provinceMiddleViceManager));
-            }*/
-            //被考核人：省部门正职/副职
-            /*if (Station.provinceDeptManager.equals(examStation) || Station.provinceDeptViceManager.equals(examStation)) {
-                //分管副总
-                if (Station.provinceViceManager.equals(qusStation)&&isDeptVice(qusViceDeptId, examDeptId)) {
-                    entity.setExelStation(Station.provinceChargeManager);
-                    entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.provinceChargeManager));
-                }
-                //其他副总
-                if (Station.provinceViceManager.equals(qusStation)&&isOtherDeptVice(qusViceDeptId, examDeptId)) {
-                    entity.setExelStation(Station.provinceOtherViceManager);
-                    entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.provinceOtherViceManager));
-
-                }
-                //本部门副职
-                if (Station.provinceDeptManager.equals(examStation)&&Station.provinceDeptViceManager.equals(qusStation) && isDeptVice(qusDeptId, examDeptId)) {
-                    entity.setExelStation(Station.localViceManager);
-                    entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.localViceManager));
-                }
-
-                //本部门正职
-                if (Station.provinceDeptViceManager.equals(examStation)&&Station.provinceDeptManager.equals(qusStation) && isDeptVice(qusDeptId, examDeptId)) {
+            //被考核人：省部门副职
+            if (Station.provinceDeptViceManager.equals(examStation)) {
+                //同个省部门的正职==本部门正职
+                if (Station.provinceDeptManager.equals(qusStation)&&isSameDept(qusDeptId, examDeptId)) {
                     entity.setExelStation(Station.localManager);
                     entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.localManager));
+                }else if(Station.provinceDeptManager.equals(qusStation)||
+                        Station.provinceDeptViceManager.equals(qusStation)){//除了本部门正职外的其他省部门负责人=其他省分部门负责人
+                    entity.setExelStation(Station.provinceOtherMiddleManager);
+                    entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.provinceOtherMiddleManager));
                 }
-                //本部门员工
+
+            }
+            //被考核人：省部门正职、副职
+            if(Station.provinceDeptManager.equals(examStation)||
+                    Station.provinceDeptViceManager.equals(examStation)){
+                //省分员工=省本部全体员工
                 if (Station.provinceStaff.equals(qusStation)) {
                     entity.setExelStation(Station.localStaff);
                     entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.localStaff));
                 }
-            }*/
-
-            //被考核人：地市正职、副职
-            /*if (Station.cityManager.equals(examStation)&&Station.cityViceManager.equals(qusStation)
-                    || Station.cityViceManager.equals(examStation)&&Station.cityManager.equals(qusStation)) {
-                    entity.setExelStation(entity.getQusNaireStation());
-                    entity.setExelStationName(entity.getQusNaireStationName());
             }
+
+            //被考核人：地市正职
+            if (Station.cityManager.equals(examStation)) {
+                if(Station.provinceDeptManager.equals(qusStation)){//省分部门主要负责人
+                    entity.setExelStation(Station.provinceMainMiddleManager);
+                    entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.provinceMainMiddleManager));
+                }
+
+            }
+
+            //被考核人：地市副职
+            if (Station.cityViceManager.equals(examStation)) {
+                if(Station.cityViceManager.equals(qusStation)){
+                    entity.setExelStation(Station.cityOtherViceManager);
+                    entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.cityOtherViceManager));
+
+                }
+            }
+            //被考核人：正职、副职&&评分人：市分员工
             if (Station.cityManager.equals(examStation)||Station.cityViceManager.equals(examStation)){
                 if (Station.cityStaff.equals(qusStation)) {
                     entity.setExelStation(Station.representStaff);
                     entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.representStaff));
 
                 }
-            }*/
-            //被考核人：地市领导班子
-            /*if(Station.cityTeam.equals(examStation)){
-                if (Station.cityStaff.equals(qusStation)) {//员工代表
-                    entity.setExelStation(Station.representStaff);
-                    entity.setExelStationName(dictDefService.qryItemName("EXEL_STATION", Station.representStaff));
-                }
-            }*/
+            }
         }
         //批量更新
         int partCount0 = scoreList.size()/1000 +1;
@@ -337,79 +279,53 @@ public class ExamScoreInfoController extends AbstractController {
                 examScoreInfoService.updateBatchById(finalPartList);
             }
         }
-
-        //计算考核结果
-        List<FinalExamScoreInfoEntity> finalRetList = examScoreInfoService.queryFinalScore();
-        //List<FinalExamScoreInfoEntity> finalRetList = new ArrayList<FinalExamScoreInfoEntity>();
-        //省公司部门正职或者副职，若无分管副职，总经理的占比为：总经理占比+分管副总占比
-        /*for (FinalExamScoreInfoEntity entity:finalList
+        Map<String,Object> perMap = new HashMap<String,Object>();
+        List<ExamPerDefEntity> perList = examPerDefService.queryAll(perMap);
+        Integer examStaffIdTmp = 99999999;
+        String examStationIdTmp = "";
+                //计算考核结果
+        List<FinalExamScoreInfoEntity> finalList = examScoreInfoService.queryFinalScore();
+        List<FinalExamScoreInfoEntity> finalRetList = new ArrayList<FinalExamScoreInfoEntity>();
+        List<String> personList = new ArrayList<String>();
+        FinalExamScoreInfoEntity entityTmp = null;
+        for (FinalExamScoreInfoEntity entity:finalList
              ) {
-            String stationId = entity.getExamStation();//
-            String deptId = entity.getExamDeptId();
             String qusStationId = entity.getQusNaireStation();
-            boolean hasDeptManager = true;
-            boolean hasDeptViceManager = true;
-            //若为省公司正职，需判断是否有副职，无副职的情况下，员工评价占比为30%
-            if(Station.localStaff.equals(qusStationId)&&Station.provinceDeptManager.equals(stationId)){
-                //selectViceManagerByDept
-                if(StringUtils.isNotEmpty(deptId)){
-                    List<StaffInfoEntity> staffList = staffDeptRelService.selectViceManagerByDept(entity.getExamStaffId());
-                    if(staffList==null||staffList.size()==0){
-                        hasDeptViceManager = false;
-                    }
-                }else{
-                    hasDeptViceManager = false;
+            if(examStaffIdTmp == 99999999||examStaffIdTmp.equals(entity.getExamStaffId())){
+                personList.add(qusStationId);
+            }else{
+                List<String> examList = getExamList(perList,examStationIdTmp);
+                //判断是否有缺项，缺项需补上
+                boolean isNotContain = examList.removeAll(personList);
+                int containSize = personList.size();//一共包含多少项
+                if(examList!=null&&examList.size()!=0){
+                    setArgScore(containSize,examStaffIdTmp,finalList);
                 }
-                if(!hasDeptViceManager){
-                    FinalExamScoreInfoEntity deptEntity = new FinalExamScoreInfoEntity();
-                    deptEntity.setCreateTime(new Date());
-                    deptEntity.setExamCity(entity.getExamCity());
-                    deptEntity.setExamCityId(entity.getExamCityId());
-                    deptEntity.setExamDept(entity.getExamDept());
-                    deptEntity.setExamDeptId(entity.getExamDeptId());
-                    deptEntity.setExamName(entity.getExamName());
-                    deptEntity.setExamStaffId(entity.getExamStaffId());
-                    deptEntity.setExamStation(entity.getExamStation());
-                    deptEntity.setExamStationName(entity.getExamStationName());
-                    deptEntity.setFinalScore(new BigDecimal(0));
-                    deptEntity.setQusNaireStation(Station.localViceManager);
-                    deptEntity.setQusNaireStationName("本部门副职");
-                    finalRetList.add(deptEntity);
-                    entity.setFinalScore(entity.getFinalScore().divide(new BigDecimal(0.2),2, RoundingMode.HALF_UP).multiply(new BigDecimal(0.3)));
+                for (String str:examList
+                     ) {
+                    FinalExamScoreInfoEntity add = new FinalExamScoreInfoEntity();
+                    add.setFinalScore(new BigDecimal(0));
+                    add.setCreateTime(new Date());
+                    add.setExamCity(entityTmp.getExamCity());
+                    add.setExamCityId(entityTmp.getExamCityId());
+                    add.setExamDept(entityTmp.getExamDept());
+                    add.setExamDeptId(entityTmp.getExamDeptId());
+                    add.setExamName(entityTmp.getExamName());
+                    add.setExamStaffId(entityTmp.getExamStaffId());
+                    add.setExamStation(entityTmp.getExamStation());
+                    add.setExamStationName(entityTmp.getExamStationName());
+                    add.setQusNaireStation(str);
+                    add.setQusNaireStationName(dictDefService.qryItemName("EXEL_STATION", str));
+                    finalRetList.add(add);
                 }
+                personList = new ArrayList<String>();
+                personList.add(qusStationId);
             }
-            if(Station.provinceManager.equals(qusStationId)&&(Station.provinceDeptViceManager.equals(stationId)||Station.provinceDeptManager.equals(stationId))){
-                //判断其是否有分管副总
-                if(StringUtils.isNotEmpty(deptId)){//如果该员工无归属部门，则无分管副总
-                    List<StaffInfoEntity> relsList = staffDeptRelService.selectViceDeptByStaff(entity.getExamStaffId());
-                    if(relsList==null||relsList.size()==0){
-                        hasDeptManager = false;
-                    }
-                }else{
-                    hasDeptManager = false;
-                }
-                if(!hasDeptManager){//无分管副总
-                    entity.setFinalScore(entity.getFinalScore().divide(new BigDecimal(0.2),2, RoundingMode.HALF_UP).multiply(new BigDecimal(0.35)));
-                    FinalExamScoreInfoEntity deptEntity = new FinalExamScoreInfoEntity();
-                    deptEntity.setCreateTime(new Date());
-                    deptEntity.setExamCity(entity.getExamCity());
-                    deptEntity.setExamCityId(entity.getExamCityId());
-                    deptEntity.setExamDept(entity.getExamDept());
-                    deptEntity.setExamDeptId(entity.getExamDeptId());
-                    deptEntity.setExamName(entity.getExamName());
-                    deptEntity.setExamStaffId(entity.getExamStaffId());
-                    deptEntity.setExamStation(entity.getExamStation());
-                    deptEntity.setExamStationName(entity.getExamStationName());
-                    deptEntity.setFinalScore(new BigDecimal(0));
-                    deptEntity.setQusNaireStation(Station.provinceChargeManager);
-                    deptEntity.setQusNaireStationName("分管副总");
-                    finalRetList.add(deptEntity);
-
-                }
-            }
+            examStaffIdTmp = entity.getExamStaffId();
+            examStationIdTmp = entity.getExamStation();
+            entityTmp = entity;
             finalRetList.add(entity);
-
-        }*/
+        }
         //计算考核结果并入库
         int partCount = finalRetList.size()/1000 +1;
         for(int i=0;i<partCount;i++){
@@ -429,6 +345,27 @@ public class ExamScoreInfoController extends AbstractController {
             e.printStackTrace();
         }
         return R.ok();
+    }
+
+    private List<FinalExamScoreInfoEntity> setArgScore(int containSize,Integer examStaffId,List<FinalExamScoreInfoEntity> scoreList){
+        for (FinalExamScoreInfoEntity entity:scoreList
+             ) {
+            if(examStaffId.equals(entity.getExamStaffId())){
+                entity.setFinalScore(entity.getIndexItemScore().divide(new BigDecimal(containSize)));
+            }
+        }
+        return scoreList;
+    }
+
+    private List<String> getExamList(List<ExamPerDefEntity> perList,String examStationId){
+        List<String> examList = new ArrayList<String>();
+        for (ExamPerDefEntity entity:perList
+             ) {
+            if(entity.getExamStationId().equals(examStationId)){
+                examList.add(entity.getQusStationId());
+            }
+        }
+        return examList;
     }
 
     private void sendMailNotice()throws Exception{
@@ -499,9 +436,9 @@ public class ExamScoreInfoController extends AbstractController {
         }
         String stationId = staffInfo.getStationId();
         String stationName = staffInfo.getStation();
-        String isChief = staffInfo.getIsChief();
+        /*String isChief = staffInfo.getIsChief();
         String isRepresent = staffInfo.getIsRepresent();
-        /*if(Station.provinceDeptViceManager.equals(stationId)&&"1".equals(isChief)&&"1".equals(isRepresent)){
+        if(Station.provinceDeptViceManager.equals(stationId)&&"1".equals(isChief)&&"1".equals(isRepresent)){
             stationId = Station.provinceStaff;
             stationName = "省公司员工";
         }*/

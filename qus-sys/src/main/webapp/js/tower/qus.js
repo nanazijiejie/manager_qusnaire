@@ -268,6 +268,28 @@ function showSelTable(){
 function goLogin(){
     window.location.href = HOST + "html/tower/login.html";
 }
+function getResAvg(){
+   var totalScore = 0;
+   for(var i=1;i<=10;i++){
+       if($("#responseSel"+i).val()!=''){
+           totalScore += new Number($("#responseSel"+i).val());
+       }
+   }
+   $("#responseTip").html("总分："+(totalScore/3).toFixed(2));
+   //return (totalScore/3).toFixed(2);
+}
+function getClearAvg(){
+    var totalScore = 0;
+    var validCount = 0;
+    for(var i=1;i<=10;i++){
+        if($("#clearSel"+i).val()!=''){
+            totalScore += new Number($("#clearSel"+i).val());
+            validCount++;
+        }
+    }
+    $("#clearTip").html("总分："+((totalScore/(validCount*3))*20).toFixed(2));
+    //return (totalScore/3).toFixed(2);
+}
 function toHandle(){
     scoreArr = [];
     selArr=[];
@@ -278,17 +300,28 @@ function toHandle(){
     }
     if(!checkTokenTime()) return;
     checkQusLogin(function(){
-        debugger;
         var isSubmit = window.sessionStorage.getItem("isSubmit");
         var isSelSubmit = window.sessionStorage.getItem("isSelSubmit");
         var isSelection = window.sessionStorage.getItem("isSelection");
+        var isClear = window.sessionStorage.getItem("isClear");
+        var isClearSubmit = window.sessionStorage.getItem("isClearSubmit");
+        var isResponse = window.sessionStorage.getItem("isResponse");
+        var isResponseSubmit = window.sessionStorage.getItem("isResponseSubmit");
+        var city = window.sessionStorage.getItem("city");
         $(".exam-alt").show();
         $("#selTable").hide();
+        $("#clearTable").hide();
+        $("#responseTable").hide();
         $("#examInfoAll").hide();
         $("#exam").height($(window).height()-60);
         //问卷考核已提交&&(民主投票已提交||不需要民主投票)
-        if(isSubmit=="1"&&(isSelection=='1'&&isSelSubmit=='1'||isSelection=='0')){
+        if(isSubmit=="1"&&
+            (isSelection=='1'&&isSelSubmit=='1'||isSelection=='0')&&
+            (isClear=='1'&&isSelSubmit=='1'||isClear=='0')&&
+            (isResponse=='1'&&isResponseSubmit=='1'||isResponse=='0')){
             $("#examB").hide();
+            $("#examC").hide();
+            $("#examD").hide();
             $("#examA").show();
             $("#examA").html("您没有待处理的绩效考评！");
             $("#examA").css("color","#000");
@@ -296,6 +329,7 @@ function toHandle(){
             $("#examA").unbind();
         }else{
             if(isSubmit=='0'){
+                $("#examA").show();
                 $("#examA").html(getSession("qusInfo").qusNaireName);
                 $("#examA").css("color","#3c61f8");
                 $("#examA").css("text-decoration","underline");
@@ -313,6 +347,40 @@ function toHandle(){
                 $("#selSubmitBtn").click(doSelSubmit);
             }else{
                 $("#examB").hide();
+            }
+
+            if(isClear=='1'&&isClearSubmit=='0'){
+                $("#clearHead").html("2019党风廉政建设和反腐败工作责任制考核民主测评表");
+                $("#examD").html("2019党风廉政建设和反腐败工作责任制考核民主测评表");
+                $("#examD").show();
+                $("#examD").click(function(){
+                    $("#exam").css("height","100%");
+                    $("#examB").hide();
+                    $("#examC").hide();
+                    $("#examD").hide();
+                    $("#examA").hide();
+                    $("#clearTable").show();
+                });
+                $("#clearSubmitBtn").click(doClearSubmit);
+            }else{
+                $("#examD").hide();
+            }
+
+            if(isResponse=='1'&&isResponseSubmit=='0'){
+                $("#responseHead").html("2019年度"+city+"市分公司党建工作责任制考核民主测评打分表");
+                $("#examC").html("2019年度"+city+"市分公司党建工作责任制考核民主测评打分表");
+                $("#examC").show();
+                $("#examC").click(function(){
+                    $("#exam").css("height","100%");
+                    $("#examB").hide();
+                    $("#examC").hide();
+                    $("#examD").hide();
+                    $("#examA").hide();
+                    $("#responseTable").show();
+                });
+                $("#resSubmitBtn").click(doResponseSubmit);
+            }else{
+                $("#examC").hide();
             }
         }
 
@@ -362,9 +430,10 @@ function setExamInfo(){
         var examStationId = examItemInfo[i].examStationId;
         var excellentCount = examItemInfo[i].excellentCount;
         var goodCount = examItemInfo[i].goodCount;
+        var normalCount = examItemInfo[i].normalCount;
         var examItemName = examItemInfo[i].examItemName;
         var examStation = examItemInfo[i].examStation;
-        var retExamStaffInfo = getStaffInfo(examStaffInfo,examStationId);
+        var retExamStaffInfo = examStaffInfo;//getStaffInfo(examStaffInfo,examStationId);
         var arr = Object.keys(retExamStaffInfo);
         if(arr.length==0){
             continue;
@@ -377,6 +446,18 @@ function setExamInfo(){
             examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].staffName+"</div>";
         }
         examInfoHtml += "</li>";
+        examInfoHtml += "<li>";
+        examInfoHtml += "<div class=\"grade-a\">"+"归属单位"+"</div>";
+        for(var k=0;k<arr.length;k++){
+            examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].city+"</div>";
+        }
+        examInfoHtml += "</li>";
+        examInfoHtml += "<li>";
+        examInfoHtml += "<div class=\"grade-a\">"+"归属部门"+"</div>";
+        for(var k=0;k<arr.length;k++){
+            examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].dept+"</div>";
+        }
+        examInfoHtml += "</li>";
         //var retExamIndexRels = getExamIndexRels(examIndexRels,examItemId);
         var setRet = true;
         for(var j=0;j<examIndexRels.length;j++){
@@ -385,20 +466,54 @@ function setExamInfo(){
             for(m=0;m<arr.length;m++){
                 var staffId = retExamStaffInfo[m].staffId;
                 var indexItemId = examIndexRels[j].indexItemId;
-                var scoreIdName = "score_"+staffId+"_"+indexItemId;
+                var scoreIdName = "score_"+staffId+"_"+examItemId;
                 setSession("staff_"+scoreIdName,retExamStaffInfo[m]);
                 setSession("index_"+scoreIdName,examIndexRels[j]);
-                debugger;
                 var lastScore = getLastScore(staffId,examItemId,indexItemId);
-                if((lastScore!=undefined&&lastScore!="")||lastScore==0){
-                    var setRet = setScoreInfo(scoreIdName,lastScore,examItemId,examItemName,excellentCount,goodCount);
+                if(lastScore!=undefined&&lastScore!=""){
+                    var setRet = setScoreInfo(scoreIdName,lastScore,examItemId,examItemName,excellentCount,goodCount,normalCount);
                     if(setRet==false){
                         break;
                     }
                 }else{
                     lastScore = "";
                 }
-                examInfoHtml += "<div class=\"grade-b\"><input maxlength='3' id=\""+scoreIdName+"\" type=\"text\" value=\""+lastScore+"\" style=\"outline:none\" onkeyup=\"this.value=this.value.replace(/[^0-9]+/,'');\" onblur=\"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+")\"/></div>";
+                //examInfoHtml += "<div class=\"grade-b\"><input maxlength='3' id=\""+scoreIdName+"\" type=\"text\" value=\""+lastScore+"\" style=\"outline:none\" onkeyup=\"this.value=this.value.replace(/[^0-9]+/,'');\" onblur=\"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+")\"/></div>";
+                examInfoHtml += "<div class=\"grade-b\">"+
+                    "<select id=\""+scoreIdName+"\" type=\"text\" value=\""+lastScore+"\" style=\"outline:none\""+
+                    "onchange= \"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+","+normalCount+")\">" +
+                    "<option value=''>请评价</option>";
+                if(lastScore=='5'){
+                    examInfoHtml += "<option value='5' selected='selected' >完全同意</option>";
+                }else{
+                    examInfoHtml += "<option value='5'>完全同意</option>";
+                }
+                if(lastScore=='4'){
+                    examInfoHtml += "<option value='4' selected='selected' >同意</option>";
+                }else{
+                    examInfoHtml += "<option value='4'>同意</option>";
+                }
+                if(lastScore=='3'){
+                    examInfoHtml += "<option value='3' selected='selected' >一般</option>";
+                }else{
+                    examInfoHtml += "<option value='3'>一般</option>";
+                }
+                if(lastScore=='2'){
+                    examInfoHtml += "<option value='2' selected='selected' >不同意</option>";
+                }else{
+                    examInfoHtml += "<option value='2'>不同意</option>";
+                }
+                if(lastScore=='1'){
+                    examInfoHtml += "<option value='1' selected='selected' >完全不同意/未做到</option>";
+                }else{
+                    examInfoHtml += "<option value='1'>完全不同意/未做到</option>";
+                }
+                if(lastScore=='0'){
+                    examInfoHtml += "<option value='0' selected='selected' >不涉及</option>";
+                }else{
+                    examInfoHtml += "<option value='0'>不涉及</option>";
+                }
+                examInfoHtml += "</select></div>";
             }
             examInfoHtml += "</li>";
             if(setRet==false){
@@ -407,13 +522,13 @@ function setExamInfo(){
             }
         }
         examInfoHtml += "<li>";
-        examInfoHtml += "<div class=\"grade-a\">"+"总分"+"</div>";
+        examInfoHtml += "<div class=\"grade-a\">"+"得分"+"</div>";
         for(m=0;m<arr.length;m++){
             var staffId = retExamStaffInfo[m].staffId;
             var scoreIdName = "totalscore_"+staffId+"_"+examItemId;
             setSession("staff_"+scoreIdName,retExamStaffInfo[m]);
             var lastScore = getLastScore(staffId,examItemId,'99999999');
-            if((lastScore==undefined||lastScore=="")&&lastScore!=0){
+            if(lastScore==undefined||lastScore==""){
                 lastScore = "";
             }
             /*if(lastScore!=""){
@@ -506,26 +621,36 @@ function checkQusLogin(callback){
                 window.sessionStorage.setItem("isSubmit",res.staffInfo.isSubmit);
                 window.sessionStorage.setItem("isSelSubmit",res.staffInfo.isSelSubmit);
                 window.sessionStorage.setItem("isSelection",res.staffInfo.isSelection);
+                window.sessionStorage.setItem("isClear",res.staffInfo.isClear);
+                window.sessionStorage.setItem("isClearSubmit",res.staffInfo.isClearSubmit);
+                window.sessionStorage.setItem("isResponse",res.staffInfo.isResponse);
+                window.sessionStorage.setItem("isResponseSubmit",res.staffInfo.isResponseSubmit);
+
                 callback();
             }
         }
     });
 }
-//[90-100]分为表现优秀；[80-90)分为表现良好；[70-80)分为表现称职；[60-70)分为表现须改进；60分以下为表现不称职
+//0-100分。90-100分A(优秀)、
+// 70-90（不含）分B（优良）、
+// 50-70（不含）分C（称职）、
+// 30-50（不含）分D（须改进）、
+// 0-30（不含）分E（不称职）
+//0-100分。90-100分A(优秀)、 70-89分B（优良）、50-69分C（称职）、30-49分D（须改进）、0-29分E（不称职）
 function getLevelName(score){
     if(score>=90&&score<=100){
         return "优秀";
     }
-    if(score>=80&&score<90){
-        return "良好";
+    if(score>=70&&score<90){
+        return "优良";
     }
-    if(score>=70&&score<80){
+    if(score>=50&&score<70){
         return "称职";
     }
-    if(score>=60&&score<70){
+    if(score>=30&&score<50){
         return "须改进";
     }
-    if(score>=0&&score<60){
+    if(score>=0&&score<30){
         return "不称职";
     }
 }
@@ -554,7 +679,7 @@ function isGood(score){
         return true;
     }
 }
-function setScoreInfo(objId,objValue,examItemId,examItemName,excellentCountLimit,goodCountLimit){
+function setScoreInfo(objId,objValue,examItemId,examItemName,excellentCountLimit,goodCountLimit,normalCountLimit){
     if(!checkTokenTime()){
         return false;
     }
@@ -564,7 +689,7 @@ function setScoreInfo(objId,objValue,examItemId,examItemName,excellentCountLimit
     }
     var id = objId;
     var staffId = "";//被评价的用户ID
-    var indexItemId = "";//评价的指标项
+    //var indexItemId = "";//评价的指标项
     var scoreType = "";
     var staffInfo = getSession("staff_"+id);
     var indexItemInfo = getSession("index_"+id);
@@ -572,7 +697,7 @@ function setScoreInfo(objId,objValue,examItemId,examItemName,excellentCountLimit
         var beginIndex = id.indexOf('_')+1;
         var endIndex = id.lastIndexOf('_');
         staffId = id.substring(beginIndex,endIndex);
-        indexItemId = id.substring(endIndex+1,id.length);
+        //indexItemId = id.substring(endIndex+1,id.length);
         scoreType = '0';
     }else{//总得分
         var beginIndex = id.indexOf('_')+1;
@@ -634,11 +759,7 @@ function setScoreInfo(objId,objValue,examItemId,examItemName,excellentCountLimit
         }
     }
     totalScoreValue = totalScoreValue.toFixed(2);
-    if(examItemId==75||examItemId==76||examItemId==77){
-        $("#totalscore_"+staffId+"_"+examItemId).val(totalScoreValue+"（"+getLevelName2(totalScoreValue)+"）");//&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:red'>
-    }else{
-        $("#totalscore_"+staffId+"_"+examItemId).val(totalScoreValue+"("+getLevelName(totalScoreValue)+")");//&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:red'>
-    }
+    $("#totalscore_"+staffId+"_"+examItemId).val(totalScoreValue);//&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:red'>
     var totalScore = new Object();
     totalScore.pageId = "totalscore_"+staffId+"_"+examItemId;
     totalScore.examStation = staffInfo.stationId;
@@ -655,7 +776,7 @@ function setScoreInfo(objId,objValue,examItemId,examItemName,excellentCountLimit
     totalScore.indexItemScore = totalScoreValue;
     totalScore.scoreType = "1";
     totalScore.examItemId = examItemId;
-    score.examItemName = examItemName;
+    totalScore.examItemName = examItemName;
     if(isExcellent(totalScoreValue)){
         totalScore.isExcellent = "0";//0:是 1：否
     }else{
@@ -670,27 +791,41 @@ function setScoreInfo(objId,objValue,examItemId,examItemName,excellentCountLimit
     //校验优良和优秀的人数
     var isExcellentCount = 0;
     var isGoodCount = 0;
+    var isNormalCount = 0;
     for(var i=0;i<scoreArr.length;i++){
         if(scoreArr[i].examItemId==examItemId&&scoreArr[i].pageId.indexOf("totalscore")!=-1){
-            if(scoreArr[i].isExcellent=="0"){
+            if(scoreArr[i].indexItemScore=="95.00"){
                 isExcellentCount++;
             }
-            if(scoreArr[i].isGood=="0"){
+            if(scoreArr[i].indexItemScore=="85.00"){
                 isGoodCount++;
+            }
+            if(scoreArr[i].indexItemScore=="70.00"){
+                isNormalCount++;
             }
         }
 
     }
-    /*if(examItemId!=75&&examItemId!=76&&examItemId!=77){
-        var checkLimitStr = "当前评选的优秀人数："+isExcellentCount+"；优良人数："+isGoodCount+"。"
-        if(excellentCountLimit!=0&&excellentCountLimit!=''&&isExcellentCount>excellentCountLimit){
-            checkLimitStr += "优秀人数超过限制，请调整！"
+    if(examItemId==65||examItemId==70||examItemId==71){
+        var checkLimitStr = "当前评选的得A人数："+isExcellentCount+"；得B人数："+isGoodCount+"；得C人数："+isGoodCount+"。"
+        if(excellentCountLimit!=0&&excellentCountLimit!=''&&isExcellentCount!=excellentCountLimit){
+            checkLimitStr += "得A人数不符合设定，请调整！"
         }
-        if(goodCountLimit!=0&&goodCountLimit!=''&&isGoodCount>goodCountLimit){
-            checkLimitStr += "优良人数超过限制，请调整！"
+        if(goodCountLimit!=0&&goodCountLimit!=''&&isGoodCount!=goodCountLimit){
+            checkLimitStr += "得B人数不符合设定，请调整！"
+        }
+        if(normalCountLimit!=0&&normalCountLimit!=''&&isNormalCount!=normalCountLimit){
+            checkLimitStr += "得C人数不符合设定，请调整！"
         }
         $("#"+"msgTip"+"_"+examItemId).html(checkLimitStr);
-    }*/
+    }
+    if(examItemId==66){
+        var checkLimitStr = "当前评选的得A人数："+isExcellentCount+"；";
+        if(excellentCountLimit!=0&&excellentCountLimit!=''&&isExcellentCount>excellentCountLimit){
+            checkLimitStr += "得A人数不符合设定，请调整！"
+        }
+        $("#"+"msgTip"+"_"+examItemId).html(checkLimitStr);
+    }
 }
 
 function getStaffInfo(examStaffInfo,examStationId){
@@ -722,24 +857,25 @@ function getExamIndexRels(examIndexRels,examItemId){
     return retExamIndexRels;
 }
 function checkSubmit(isCommit){
+    debugger;
     var examItemInfo = getSession("examItemInfo");
     for(var i=0;i<examItemInfo.length;i++) {
         var examItemId = examItemInfo[i].examItemId;
         var examItemName = examItemInfo[i].examItemName;
         var msgTip = $("#"+"msgTip"+"_"+examItemId).html();
         if(msgTip!=undefined&&msgTip.indexOf("请调整")!=-1){
-            showAlert("'"+examItemName+"'"+"考核项评选不符合比例限制，请调整！")
+            showAlert("'"+examItemName+"'"+"考核项评选人数不符合设定，请调整！")
             return false;
         }
     }
     var isCheck = true;
-    $('#examInfo .grade-b input').each(function(){
+    $('#examInfo .grade-b select').each(function(){
         var scoreIdName = $(this).attr("id");
         var examStaffInfo = getSession("staff_"+scoreIdName);
         var examIndexInfo = getSession("index_"+scoreIdName);
-        if(isCommit=='1'&&$.trim($(this).val())==""){
+        if(isCommit=='1'&&($(this).find("option:selected").text()=="请评价")){
             //showAlert("员工'"+examStaffInfo.staffName+"'的'"+examIndexInfo.indexItemName+"'未评分，请填写后再提交！");
-            showAlert("您对员工'"+examStaffInfo.staffName+"'未完成考评，请填写后再提交！");
+            showAlert("您对'"+examStaffInfo.staffName+"'未完成评价，请填写后再提交！");
             $(this).focus();
             isCheck = false;
             return false;
@@ -809,7 +945,7 @@ function selSubmit(){
             $(".load").hide(function(){
                 toHandle();
                 if(res.msg==undefined){
-                    showConfirm("提交成功，是否退出问卷考核系统？",logout);
+                    showAlert("提交成功!");
                 }else{
                     showAlert(res.msg);
                     if(res.msg.indexOf('未登录或已失效')!=-1){
@@ -876,7 +1012,6 @@ function submit(isCommit){
  * 提交
  */
 function doSubmit(isCommit){
-    debugger;
     if(!checkSubmit(isCommit)) return;
     if(isCommit=="1"){
         showConfirm("提交后无法再次修改，是否确认提交您的问卷信息？",function(){
@@ -916,4 +1051,106 @@ function doSelSubmit(){
         tmpSelStaffId = selArr[i].selStaffId;
     }
     showConfirm("提交后无法再次修改，是否确认提交您的民主投票信息？",selSubmit);
+}
+function checkRCSubmit(evaluateType){
+    var selItemName = "#responseSel";
+    if(evaluateType=='1'){
+        selItemName = "#clearSel";
+    }
+    for(var i=1;i<=10;i++) {
+        if ($(selItemName + i).val() == '') {
+            return false;
+        }
+    }
+    return true;
+}
+function doResponseSubmit(){
+    if(checkRCSubmit('0')==false){
+        showAlert("您有选项未评分，请选择评分后再提交！");
+        return false;
+    }
+    showConfirm("提交后无法再次修改，是否确认提交您的'党建工作责任制考核民主测评打分表'？",function(){
+        evaluateSubmit('0');
+    });
+}
+function doClearSubmit(){
+    if(checkRCSubmit('1')==false){
+        showAlert("您有选项未评分，请选择评分后再提交！");
+        return false;
+    }
+    showConfirm("提交后无法再次修改，是否确认提交您的'党风廉政建设和反腐败工作责任制考核民主测评表'？",function(){
+        evaluateSubmit('1');
+    });
+}
+function evaluateSubmit(evaluateType){
+    $("#confirm").hide();
+    $(".load").show();
+    var url = "../../tower/evaluateinfo/save?number="+Math.random();
+    var resArr=[];
+    console.log(JSON.stringify(resArr));
+    var totalScore = 0;
+    var validCount = 0;
+    var selItemName = "#responseSel";
+    if(evaluateType=='1'){
+        selItemName = "#clearSel";
+    }
+    for(var i=1;i<=10;i++){
+        var resItem = new Object();
+        if($(selItemName+i).val()!=''){
+            resItem.score = new Number($(selItemName+i).val());
+        }else{
+            resItem.score = "";
+        }
+        resItem.scoreType='0';
+        resItem.evaluateType = evaluateType;
+        resItem.evaContent = i;
+        if(evaluateType=='0'&&resItem.score!=''){
+            totalScore += new Number($(selItemName+i).val());
+        }else if(evaluateType=='1'&&resItem.score!=''){//[合格票累计得分/（合格票数×3）]×20
+            validCount++;
+            totalScore += new Number($(selItemName+i).val());
+        }
+        resArr.push(resItem);
+    }
+    var resItem = new Object();
+    if(evaluateType=='0'){
+        resItem.score = (totalScore/3).toFixed(2);
+    }else{
+        resItem.score = ((totalScore/(validCount*3))*20).toFixed(2);
+    }
+    resItem.scoreType='1';
+    resItem.evaluateType = evaluateType;
+    resItem.evaContent ='合计';
+    resArr.push(resItem);
+
+    $.ajax({
+        //与服务器交互
+        url:url,
+        type:'post',
+        dataType: 'json',
+        data: {"scoreListStr":JSON.stringify(resArr),
+            "token":window.sessionStorage.getItem("token")
+        },
+        complete: function (XMLHttpRequest, textStatus) {
+            $(".load").hide();
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+            $(".load").hide();
+            showAlert("发生错误："+errorThrown);
+        },
+        success: function(res){
+            $(".load").hide(function(){
+                toHandle();
+                if(res.msg==undefined){
+                    showAlert("提交成功!");
+                }else{
+                    showAlert(res.msg);
+                    if(res.msg.indexOf('未登录或已失效')!=-1){
+                        window.location.href = HOST + "html/tower/login.html";
+                    }
+                }
+            });
+
+        }
+    });
 }

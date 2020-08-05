@@ -1,10 +1,10 @@
 /*
- * 类名称:StaffDeptRelDao.java
+ * 类名称:EvaluateInfoDao.java
  * 包名称:com.ktkj.dao
  *
  * 修改履历:
  *     日期                       修正者        主要内容
- *     2019-10-14 15:00:32        lipengjun     初版做成
+ *     2020-03-24 09:58:44        lipengjun     初版做成
  *
  * Copyright (c) 2019-2019 厦门继续想科技有限公司
  */
@@ -12,8 +12,8 @@ package com.ktkj.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.ktkj.entity.StaffDeptRelEntity;
-import com.ktkj.entity.StaffInfoEntity;
+import com.ktkj.entity.EvaluateInfoEntity;
+import com.ktkj.entity.ExamScoreInfoEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,10 +24,10 @@ import java.util.Map;
  * Dao
  *
  * @author lipengjun
- * @date 2019-10-14 15:00:32
+ * @date 2020-03-24 09:58:44
  */
 @Mapper
-public interface StaffDeptRelDao extends BaseMapper<StaffDeptRelEntity> {
+public interface EvaluateInfoDao extends BaseMapper<EvaluateInfoEntity> {
 
     /**
      * 查询所有列表
@@ -35,7 +35,7 @@ public interface StaffDeptRelDao extends BaseMapper<StaffDeptRelEntity> {
      * @param params 查询参数
      * @return List
      */
-    List<StaffDeptRelEntity> queryAll(@Param("params") Map<String, Object> params);
+    List<EvaluateInfoEntity> queryAll(@Param("params") Map<String, Object> params);
 
     /**
      * 自定义分页查询
@@ -44,13 +44,17 @@ public interface StaffDeptRelDao extends BaseMapper<StaffDeptRelEntity> {
      * @param params 查询参数
      * @return List
      */
-    List<StaffDeptRelEntity> selectStaffDeptRelPage(IPage page, @Param("params") Map<String, Object> params);
+    List<EvaluateInfoEntity> selectEvaluateInfoPage(IPage page, @Param("params") Map<String, Object> params);
 
-    void delByStaffId(Integer staffId);
+    /**
+     * 删除
+     * @param params
+     */
+    void deleteByStaffId(@Param("params") Map<String, Object> params);
 
-    void insertBatch(@Param("list") List<StaffDeptRelEntity> list);
-
-    List<StaffInfoEntity> selectViceDeptByStaff(Integer staffId);
-
-    List<StaffInfoEntity> selectViceManagerByDept(Integer staffId);
+    /**
+     * 批量插入得分数据
+     * @param list
+     */
+    void insertBatch(@Param("list") List<EvaluateInfoEntity> list);
 }

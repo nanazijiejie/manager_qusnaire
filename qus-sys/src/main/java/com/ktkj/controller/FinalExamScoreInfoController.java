@@ -300,7 +300,7 @@ public class FinalExamScoreInfoController extends AbstractController {
                 }
             }
             Cell last = columnRow.createCell(colunmIndex);
-            last.setCellValue("胜任力考核得分");
+            last.setCellValue("能力考核与素质考核得分");
             /**
              * 往Excel中写新数据
              */
@@ -333,7 +333,6 @@ public class FinalExamScoreInfoController extends AbstractController {
                                 totalFinalScore += Double.valueOf(""+rowData.get(k).getFinalScore());
                             }
                         }
-                        //合计
                         Cell finalScoreCell = row.createCell(colunmIndex);
                         finalScoreCell.setCellValue(totalFinalScore);
                         row = sheet.createRow(rowCount++);

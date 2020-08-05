@@ -13,7 +13,7 @@ $(function () {
 			//{label: '考核员工ID', name: 'examStaffId', index: 'exam_staff_id', width: 80},
 			//{label: '考核人归属部门ID', name: 'examDeptId', index: 'exam_dept_id', width: 80},
 			//{label: '考核人归属地市ID', name: 'examCityId', index: 'exam_city_id', width: 80},
-			{label: '胜任力考核得分', name: 'finalScore', index: 'final_score', width: 200}]
+			{label: '能力考核与素质考核得分', name: 'finalScore', index: 'final_score', width: 200}]
     });
 	vm.getUser();
 });
@@ -70,19 +70,19 @@ var vm = new Vue({
 					var count1 = 0;
 					debugger;
 					for(var i =0;i<r.list.length;i++){
-						if(r.list[i].typeCode=="STATION"){
+						if(r.list[i].typeCode=="EXAM_STATION"){
 							if(cityId!=undefined){
-								if(cityId!="Z"&&r.list[i].itemName.indexOf("地市")!=-1){
+								if(cityId!="Z"&&r.list[i].itemName.indexOf("市分")!=-1){
 									vm.stationDefList[count1++] = r.list[i];
 								}
-								if(cityId=="Z"&&r.list[i].itemName.indexOf("省")!=-1){
+								if(cityId=="Z"&&r.list[i].itemName.indexOf("省分")!=-1){
 									vm.stationDefList[count1++] = r.list[i];
 								}
 							}else{
 								if(vm.user.cityId=='Z'||vm.user.userId=='1'){
 									vm.stationDefList[count1++] = r.list[i];
 								}else{
-									if(r.list[i].itemName.indexOf("地市")!=-1){
+									if(r.list[i].itemName.indexOf("市分")!=-1){
 										vm.stationDefList[count1++] = r.list[i];
 									}
 								}

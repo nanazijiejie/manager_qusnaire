@@ -3,7 +3,7 @@ $(function () {
         url: '../tower/dictdef/list',
         colModel: [
 			{label: 'code', name: 'code', index: 'code', key: true, hidden: true},
-			{label: '字典类型编码', name: 'typeCode', index: 'type_code', width: 80},
+			{label: '类型', name: 'typeCode', index: 'type_code', width: 80},
 			{label: '字典名称（展示用）', name: 'itemName', index: 'item_name', width: 80},
 			{label: '字典值（使用）', name: 'itemValue', index: 'item_value', width: 80},
 			{label: '类型描述', name: 'typeDesc', index: 'type_desc', width: 80}]
@@ -17,17 +17,8 @@ var vm = new Vue({
         title: null,
 		dictDef: {},
 		ruleValidate: {
-			typeCode: [
-				{required: true, message: '字典类型编码不能为空', trigger: 'blur'}
-			],
-			itemName: [
-				{required: true, message: '字典名称（展示用）不能为空', trigger: 'blur'}
-			],
-			itemValue: [
-				{required: true, message: '字典值（使用）不能为空', trigger: 'blur'}
-			],
-			typeDesc: [
-				{required: true, message: '类型描述不能为空', trigger: 'blur'}
+			name: [
+				{required: true, message: '名称不能为空', trigger: 'blur'}
 			]
 		},
 		q: {
@@ -92,7 +83,7 @@ var vm = new Vue({
                 url: "../tower/dictdef/info/"+code,
                 async: true,
                 successCallback: function (r) {
-                    vm.dictDef = r.dictdef;
+                    vm.dictDef = r.dictDef;
                 }
             });
 		},
@@ -100,14 +91,14 @@ var vm = new Vue({
 			vm.showList = true;
             var page = $("#jqGrid").jqGrid('getGridParam', 'page');
 			$("#jqGrid").jqGrid('setGridParam', {
-                postData: {'typeCode': vm.q.type_code},
+                postData: {'name': vm.q.name},
                 page: page
             }).trigger("reloadGrid");
             vm.handleReset('formValidate');
 		},
         reloadSearch: function() {
             vm.q = {
-				type_code: ''
+                name: ''
             }
             vm.reload();
         },

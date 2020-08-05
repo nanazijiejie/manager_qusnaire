@@ -1,6 +1,5 @@
 var fileName = null;
 var fileName2 = null;
-var fileName3 = null;
 $(function () {
     $("#jqGrid").Grid({
         url: '../tower/staffinfo/list',
@@ -12,7 +11,7 @@ $(function () {
 			{label: '姓名', name: 'staffName', index: 'staff_name', width: 100},
 			{label: '归属单位', name: 'city', index: 'city', width: 90},
 			{label: '归属部门', name: 'dept', index: 'dept', width: 90},
-			{label: '分管部门', name: 'riceDept', index: 'rice_dept', width: 90},
+			//{label: '分管部门', name: 'riceDept', index: 'rice_dept', width: 90},
 			{label: '职务', name: 'station', index: 'station', width: 120},
 			{label: '邮箱', name: 'email', index: 'email', width: 120},
 			{label: '手机号码', name: 'phone', index: 'phone', width: 120},
@@ -29,7 +28,7 @@ $(function () {
 					}
 			    }
 			},
-			{label: '是否员工代表', name: 'isRepresent', index: 'is_represent', width: 100,
+			/*{label: '是否员工代表', name: 'isRepresent', index: 'is_represent', width: 100,
 				formatter: function (value) {
 					if (value == '1') {
 						return "是";
@@ -46,8 +45,8 @@ $(function () {
 						return "否";
 					}
 				}
-			},
-			{label: '问卷是否提交', name: 'isSubmit', index: 'is_submit', width: 100,
+			},*/
+			{label: '考核问卷是否提交', name: 'isSubmit', index: 'is_submit', width: 100,
 				formatter: function (value) {
 					if (value == '1') {
 						return "已提交";
@@ -65,34 +64,14 @@ $(function () {
 					}
 				}
 			},
-            {
-                label: '是否参与民主选举投票',
-                name: 'isSelection',
-                index: 'is_selection',
-                width: 80,
-                formatter: function (value) {
-                    if (value == '1') {
-                        return "是";
-                    } else {
-                        return "否";
-                    }
-                }
-            },
-            {
-                label: '选举岗位',
-                name: 'selStation',
-                index: 'sel_station',
-                width: 80
-            },
-			{label: '最近一次登录', name: 'lastLoginTime', index: 'last_login_time', width: 80, formatter: function (value) {
+			{label: '最近一次登录', name: 'lastLoginTime', index: 'last_login_time', width: 100, formatter: function (value) {
 					return transDate(value);
 				}
 			},
-			{label: '邮件发送时间', name: 'sendTime', index: 'send_time', width: 80, formatter: function (value) {
+			{label: '邮件发送时间', name: 'sendTime', index: 'create_time', width: 100, formatter: function (value) {
 					return transDate(value);
 				}
-			},
-
+			}
 			/*,
 			{label: '创建人', name: 'createOperator', index: 'create_operator', width: 80},
 			{label: '创建时间', name: 'createTime', index: 'create_time', width: 80, formatter: function (value) {
@@ -104,51 +83,12 @@ $(function () {
 					return transDate(value);
 				}
 			}*/
-			/*,
-			{
-				label: '学历',
-				name: 'selEdu',
-				index: 'sel_edu',
-				width: 80
-			},
-			{
-				label: '任职时长（年）',
-				name: 'selTakeOfficeYears',
-				index: 'sel_take_office_years',
-				width: 80
-			},
-			{
-				label: '选举人现岗位描述',
-				name: 'selNowStation',
-				index: 'sel_now_station',
-				width: 80
-			},
-			{
-				label: '前一年绩效',
-				name: 'selPerform1',
-				index: 'sel_perform1',
-				width: 80
-			},
-			{
-				label: '前两年绩效',
-				name: 'selPerform2',
-				index: 'sel_perform2',
-				width: 80
-			},
-			{
-				label: '前三年绩效',
-				name: 'selPerform3',
-				index: 'sel_perform3',
-				width: 80
-			}*/
-
-
-
-	],
+		],
 		width:"2000",
 		//autowidth:true
     });
 	// $(window).resize(function(){
+	// 	debugger;
 	// 	$("#jqGrid").setGridWidth($(window).width());
 	// });
 	$("#uploadFile").click();
@@ -183,22 +123,6 @@ $(function () {
 			console.log("请选择正确的文件！")
 		}
 	});
-	$("#uploadFile3").click();
-	$('#uploadFile3').change(function (e) {
-		fileName3 = e.target.files[0];//js 获取文件对象
-		if (fileName3 !== undefined) {
-			var file_typename = fileName3.name.substring(fileName3.name.lastIndexOf('.'));
-			if (file_typename === '.xlsx' || file_typename === '.xls') {
-				$("#filename3").css("display", "block");
-				$("#filename3").val(fileName3.name);
-				//UpladFile(fileName);
-			} else {
-				console.log("请选择正确的文件类型！")
-			}
-		} else {
-			console.log("请选择正确的文件！")
-		}
-	});
 	//vm.qryDictDef();
 	vm.getUser();
 	//vm.qryDeptDef();
@@ -210,13 +134,13 @@ var vm = new Vue({
         showList: true,
 		showUpload :false,
 		showUpload2 :false,
-		showUpload3 :false,
 		showDept : true,
 		showViceDept : true,
 		showAdd: false,
         title: null,
 		staffInfo: {},
 		city:'',
+		isUpdateInitial:false,
 		ruleValidate: {
 			staffName: [
 				{required: true, message: '姓名不能为空', trigger: 'blur'}
@@ -250,7 +174,6 @@ var vm = new Vue({
 		},
 		cityDefList:{},
 		stationDefList:{},
-		selStationList:[{itemValue:-1, itemName:"请选择"}],
 		deptDefList:{},
 		riceDeptDefList:{},
 		user: {},
@@ -259,7 +182,6 @@ var vm = new Vue({
 		riceDeptIdArr:[],
 		showIsChief:false,
 		showIsRepresent:false,
-		isUpdateInitial:false,
 
 	},
 	methods: {
@@ -270,7 +192,6 @@ var vm = new Vue({
 			vm.showList = false;
 			vm.showUpload = false;
 			vm.showUpload2 = false;
-			vm.showUpload3 = false;
 			vm.showAdd = true;
 			vm.title = "新增";
 			vm.staffInfo = {};
@@ -283,21 +204,12 @@ var vm = new Vue({
 			vm.showList = false;
 			vm.showUpload = true;
 			vm.showUpload2 = false;
-			vm.showUpload3 = false;
 			vm.showAdd = false;
 		},
 		batchAdd2: function () {
 			vm.showList = false;
 			vm.showUpload = false;
 			vm.showUpload2 = true;
-			vm.showUpload3 = false;
-			vm.showAdd = false;
-		},
-		batchAddSelection: function () {
-			vm.showList = false;
-			vm.showUpload = false;
-			vm.showUpload2 = false;
-			vm.showUpload3 = true;
 			vm.showAdd = false;
 		},
 		update: function (event) {
@@ -311,18 +223,18 @@ var vm = new Vue({
 			vm.showAdd = true;
 			vm.batchUpload = true;
             vm.title = "修改";
-            vm.isUpdateInitial = true;
+			vm.isUpdateInitial = true;
 			vm.deptIdArr =[];
 			vm.riceDeptIdArr =[];
             vm.getInfo(staffId);
 		},
 		saveOrUpdate: function (event) {
-		    debugger;
 			if(!vm.staffInfo.email.match(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/))
 			{
 				alert("邮箱格式不正确！请重新输入");
 				return;
 			}
+			debugger;
             var url = vm.staffInfo.staffId == null ? "../tower/staffinfo/save" : "../tower/staffinfo/update";
             /**归属部门**/
             var deptId = vm.deptIdArr;
@@ -345,6 +257,7 @@ var vm = new Vue({
 				vm.staffInfo.deptId = "";
 				vm.staffInfo.dept = "";
 			}
+			debugger;
             //正职或者副职不能选归属部门
             if(vm.staffInfo.stationId=='00'||vm.staffInfo.stationId=='01'||vm.staffInfo.stationId=='10'||vm.staffInfo.stationId=='11'){//00 01 10 11
 				if(vm.staffInfo.deptId != ""){
@@ -379,6 +292,7 @@ var vm = new Vue({
 				vm.staffInfo.riceDeptId = "";
 				vm.staffInfo.riceDept = "";
 			}
+			debugger;
 			if(vm.staffInfo.stationId=='00'||vm.staffInfo.stationId=='01'||vm.staffInfo.stationId=='10'||vm.staffInfo.stationId=='11'){//00 01 10 11
 			}else{
 				if(vm.staffInfo.riceDeptId != ""){
@@ -391,9 +305,6 @@ var vm = new Vue({
 			}
 			if(vm.staffInfo.isRepresent==undefined){
 				vm.staffInfo.isRepresent = "0";
-			}
-			if(vm.staffInfo.isSelection != undefined){
-				vm.staffInfo.selStation=vm.getSelStation(vm.staffInfo.selStationId);
 			}
 			/**分管部门**/
 			Ajax.request({
@@ -408,14 +319,8 @@ var vm = new Vue({
                 }
 			});
 		},
-		getSelStation:function (selStationId) {
-			for(var k in vm.selStationList){
-				if(vm.selStationList[k].itemValue == selStationId && vm.selStationList[k].itemValue != -1){
-					return vm.selStationList[k].itemName;
-				}
-			}
-		},
 		getDeptName:function(deptId){
+			debugger;
 			var arr = Object.keys(vm.deptDefList);
 			var len = arr.length;
 			for(var i=0;i<len;i++){
@@ -444,44 +349,25 @@ var vm = new Vue({
 				});
 			});
 		},
-		isPresent:function(event){
-			var staffIds = getSelectedRows("#jqGrid");
-			if (staffIds == null){
-				return;
-			}
-			confirm('确定要将选中的记录设置为员工代表？', function () {
-				Ajax.request({
-					url: "../tower/staffinfo/ispresent",
-					params: JSON.stringify(staffIds),
-					type: "POST",
-					contentType: "application/json",
-					successCallback: function () {
-						alert('操作成功', function (index) {
-							vm.reload();
-						});
-					}
-				});
-			});
-		},
-		isSelection:function(event){
-			var staffIds = getSelectedRows("#jqGrid");
-			if (staffIds == null){
-				return;
-			}
-			confirm('确定要将选中的记录设置为民主推荐？', function () {
-				Ajax.request({
-					url: "../tower/staffinfo/isSelection",
-					params: JSON.stringify(staffIds),
-					type: "POST",
-					contentType: "application/json",
-					successCallback: function () {
-						alert('操作成功', function (index) {
-							vm.reload();
-						});
-					}
-				});
-			});
-		},
+        isPresent:function(event){
+            var staffIds = getSelectedRows("#jqGrid");
+            if (staffIds == null){
+                return;
+            }
+            confirm('确定要将选中的记录设置为员工代表？', function () {
+                Ajax.request({
+                    url: "../tower/staffinfo/ispresent",
+                    params: JSON.stringify(staffIds),
+                    type: "POST",
+                    contentType: "application/json",
+                    successCallback: function () {
+                        alert('操作成功', function (index) {
+                            vm.reload();
+                        });
+                    }
+                });
+            });
+        },
 		sendMailById: function(event){
 			var staffIds = getSelectedRows("#jqGrid");
 			if (staffIds == null){
@@ -534,6 +420,7 @@ var vm = new Vue({
                 url: "../tower/staffinfo/info/"+staffId,
                 async: true,
                 successCallback: function (r) {
+                	debugger;
                     vm.staffInfo = r.staffInfo;
 					if(vm.staffInfo.stationId=='00'||vm.staffInfo.stationId=='01'||vm.staffInfo.stationId=='10'||vm.staffInfo.stationId=='11'){
 						vm.showDept = false;
@@ -569,7 +456,6 @@ var vm = new Vue({
 			vm.showList = true;
 			vm.showUpload = false;
 			vm.showUpload2 = false;
-			vm.showUpload3 = false;
 			vm.showAdd = false;
             var page = $("#jqGrid").jqGrid('getGridParam', 'page');
 			$("#jqGrid").jqGrid('setGridParam', {
@@ -581,9 +467,7 @@ var vm = new Vue({
 					       'isSubmit':vm.q.is_submit,
 				           'isRepresent':vm.q.is_represent,
 					       'isChief':vm.q.is_chief,
-					       'stationId':vm.q.station_id,
-					       'selStationId':vm.q.sel_station_id,
-					       'isSelection':vm.q.is_selection },
+					       'stationId':vm.q.station_id},
 
                 page: 1
             }).trigger("reloadGrid");
@@ -600,9 +484,7 @@ var vm = new Vue({
 				is_submit:'',
 				is_represent:'',
 				is_chief:'',
-				station_id:'',
-				sel_station_id:'',
-				is_selection:''
+				station_id:''
             }
             vm.reload();
         },
@@ -625,9 +507,7 @@ var vm = new Vue({
 					'isSubmit':vm.q.is_submit,
 					'isRepresent':vm.q.is_represent,
 					'isChief':vm.q.is_chief,
-					'stationId':vm.q.station_id,
-					'selStationId':vm.q.sel_station_id,
-					'isSelection':vm.q.is_selection
+					'stationId':vm.q.station_id
 				});
 		},
 		UpladFile: function () {
@@ -695,54 +575,6 @@ var vm = new Vue({
 				}
 			});
 		},
-		UpladFile3: function () {
-			if(fileName3==null){
-				alert("请选择上传的文件！");
-				return;
-			}
-			var form = new FormData(); // FormData 对象
-			form.append("tempfile", fileName3); // 文件对象
-			$.ajax({
-				url: '../tower/staffinfo/batchSave3',                      //url地址
-				type: 'POST',                 //上传方式
-				data: form,                   // 上传formdata封装的数据
-				dataType: 'JSON',
-				cache: false,                  // 不缓存
-				processData: false,        // jQuery不要去处理发送的数据
-				contentType: false,         // jQuery不要去设置Content-Type请求头
-				success: function (data) {           //成功回调
-					console.log(data);
-					if(data.msg==undefined){
-						alert("修改成功！");
-					}else{
-						alert(data.msg);
-					}
-				},
-				error: function (data) {           //失败回调
-					console.log(data);
-					alert(data.msg);
-
-				}
-			});
-		},
-		qrySelStation:function(){
-			vm.selStationList=[{itemValue:"", itemName:"无"}];
-			var url = "../tower/dictdef/list";
-			Ajax.request({
-				url: url,
-				params: {'typeCode':'SEL_STATION'},
-				// type: "POST",
-				contentType: "application/json",
-				successCallback: function (r) {
-					// vm.selStationList = r.page.list;
-					for(var k in r.page.list){
-						if(r.page.list[k].itemName != undefined){
-							vm.selStationList.push(r.page.list[k]);
-						}
-					}
-				}
-			});
-		},
 		qryDictDef:function(cityId){
 			vm.stationDefList={};
 			vm.cityDefList={};
@@ -758,23 +590,24 @@ var vm = new Vue({
 					//vm.cityDefList = r.list;
 					var count = 0;
 					var count1 = 0;
+					debugger;
 					for(var i =0;i<r.list.length;i++){
 						if(r.list[i].typeCode=="CITY"){
 							vm.cityDefList[count++] = r.list[i];
 						}
 						if(r.list[i].typeCode=="STATION"){
 							if(cityId!=undefined){
-								if(cityId!="Z"&&r.list[i].itemName.indexOf("地市")!=-1){
+								if(cityId!="Z"&&r.list[i].itemName.indexOf("市分")!=-1){
 									vm.stationDefList[count1++] = r.list[i];
 								}
-								if(cityId=="Z"&&r.list[i].itemName.indexOf("省")!=-1){
+								if(cityId=="Z"&&r.list[i].itemName.indexOf("省分")!=-1){
 									vm.stationDefList[count1++] = r.list[i];
 								}
 							}else{
 								if(vm.user.cityId=='Z'||vm.user.userId=='1'){
 									vm.stationDefList[count1++] = r.list[i];
 								}else{
-									if(r.list[i].itemName.indexOf("地市")!=-1){
+									if(r.list[i].itemName.indexOf("市分")!=-1){
 										vm.stationDefList[count1++] = r.list[i];
 									}
 								}
@@ -799,13 +632,13 @@ var vm = new Vue({
 					var count2 = 0;
 					vm.deptDefList = {};
                     vm.riceDeptDefList = {};
-                    if(vm.isUpdateInitial==false){
+					if(vm.isUpdateInitial==false){
 						vm.deptIdArr =[];
 						vm.riceDeptIdArr =[];
 					}else{
 						vm.isUpdateInitial = false;
 					}
-                    debugger;
+					debugger;
 					for(var i=0;i<r.list.length;i++){
 						if(cityId==r.list[i].cityId){
 							vm.riceDeptDefList[count1] = r.list[i];
@@ -816,7 +649,6 @@ var vm = new Vue({
 							count2++;
 						}
 					}
-
 				}
 			});
 		},
@@ -824,7 +656,6 @@ var vm = new Vue({
 			$.getJSON("../sys/user/info?_" + $.now(), function (r) {
 				vm.user = r.user;
 				vm.qryDictDef();
-				vm.qrySelStation();
 				if(vm.user.userId!='1'&&vm.user.cityId!='Z'){
 					vm.qryDeptDef(vm.user.cityId);
 				}
@@ -840,9 +671,9 @@ var vm = new Vue({
 			vm.qryDeptDef(vm.staffInfo.cityId);
 			//选择地市时移除省职务，选择省时移除地市职务
 			vm.qryDictDef(vm.staffInfo.cityId);
-			vm.qrySelStation();
 		},
 		setIsRepresent:function(){
+			debugger;
 			if(vm.staffInfo.isChief=="1"){
 				vm.showIsRepresent = true;
 			}else{
@@ -873,6 +704,7 @@ var vm = new Vue({
 			}
 		},
 		downloadExcel:function(){
+			debugger;
 			if(vm.city==""){
 				alert("请先选择归属单位！");
 				return;

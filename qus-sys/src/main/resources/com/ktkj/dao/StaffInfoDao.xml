@@ -32,13 +32,10 @@
         T.sel_station_id,
         T.sel_station,
         T.is_sel_submit,
-        T.sel_edu,
-        T.sel_perform1,
-        T.sel_perform2,
-        T.sel_perform3,
-        T.sel_take_office_years,
-        T.sel_now_station,
-        T.last_login_time
+        T.is_clear,
+        T.is_clear_submit,
+        T.is_response,
+        T.is_response_submit
         FROM tower_staff_info T
         WHERE 1=1
         <if test="params.staffName != null and params.staffName.trim() != ''">
@@ -71,35 +68,26 @@
         <if test="params.stationId != null and params.stationId.trim() != ''">
             AND T.station_id = '${params.stationId}'
         </if>
-        <if test="params.selStationId != null and params.selStationId.trim() != ''">
-            AND T.sel_station_id = '${params.selStationId}'
-        </if>
-        <if test="params.isSelection != null and params.isSelection.trim() != ''">
-            AND T.is_selection = '${params.isSelection}'
-        </if>
-        <if test="params.sendMailMark != null and params.sendMailMark.trim() != ''">
-            AND (
-            ((T.is_chief = '1' or T.station_id='04' or T.station_id='13') and T.is_represent='1')
-            OR (T.is_chief != '1' and  T.station_id!='04' and  T.station_id!='13')
-            )
-        </if>
         order by create_time desc
     </sql>
+    <select id="qryExamStaffName" resultType="com.ktkj.entity.QusExamStaffRel">
+        select * from tower_qus_exam_staff_rel where
+        qus_staff_name='${params.staffName}'
+    </select>
     <select id="qryExamStaff" resultType="com.ktkj.entity.StaffInfoEntity">
         SELECT
             distinct *
         FROM
             tower_staff_info T
-        WHERE
-            station_id IN ( SELECT exam_station_id FROM tower_exam_item_def WHERE exam_item_id IN
-            ( SELECT exam_item_id FROM tower_qus_item_rel WHERE qus_naire_id IN
-            ( SELECT qus_naire_id FROM tower_questionnaire_def WHERE qus_naire_station_id = '${params.qusNaireStationId}' ) ) )
-            and staff_id != '${params.staffId}'
-            <if test="params.isRepresent != null and params.isRepresent.trim() != ''">
-                AND T.is_represent = '${params.isRepresent}'
+        WHERE 1 = 1
+            <if test="params.staffName != null and params.staffName.trim() != ''">
+                and staff_name in (${params.staffName})
+            </if>
+            <if test="params.stationId != null and params.stationId.trim() != ''">
+                and station_id in (${params.stationId})
             </if>
             <if test="params.cityId != null and params.cityId.trim() != ''">
-                AND T.city_id = '${params.cityId}'
+                and city_id='${params.cityId}'
             </if>
         ORDER BY
             station_id,show_seq
@@ -148,15 +136,6 @@
             #{staffId}
         </foreach>
     </update>
-
-    <update id="updateIsSelectionBatch">
-        UPDATE tower_staff_info SET is_selection=#{status} WHERE
-        STAFF_ID IN
-        <foreach item="staffId" collection="list"  open="(" separator="," close=")">
-            #{staffId}
-        </foreach>
-    </update>
-
     <update id="updateBatchByEmail">
         UPDATE tower_staff_info SET is_represent=#{status} WHERE
         EMAIL IN
@@ -164,13 +143,6 @@
             #{email}
         </foreach>
         and (station_id in ('04','13') or is_chief='1')
-    </update>
-    <update id="updateIsSelectionBatchByEmail">
-        UPDATE tower_staff_info SET is_selection=#{status} WHERE
-        EMAIL IN
-        <foreach item="email" collection="list"  open="(" separator="," close=")">
-            #{email}
-        </foreach>
     </update>
 
     <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="staffId" keyColumn="STAFF_ID">
@@ -201,10 +173,6 @@
         <if test="params.deptType != null and params.deptType == 1">
             rice_dept_id='',rice_dept=''
         </if>
-        <if test="params.deptType != null and params.deptType == 2">
-            sel_station_id='',sel_station=''
-        </if>
-
         where staff_id = '${params.staffId}'
     </update>
 
@@ -226,17 +194,7 @@
 			`rice_dept_id`,
 			`rice_dept`,
 			`is_represent`,
-			`is_chief`,
-			`is_selection`,
-			`sel_station_id`,
-			`sel_station`,
-			`sel_edu`,
-			`sel_take_office_years`,
-			`sel_now_station`,
-			`sel_perform1`,
-			`sel_perform2`,
-			`sel_perform3`
-
+			`is_chief`
 		)
 		values
 		(
@@ -255,16 +213,7 @@
 			#{riceDeptId},
 			#{riceDept},
 			#{isRepresent},
-			#{isChief},
-			#{isSelection},
-			#{selStationId},
-			#{selStation},
-			#{selEdu},
-			#{selTakeOfficeYears},
-			#{selNowStation},
-			#{selPerform1},
-			#{selPerform2},
-			#{selPerform3}
+			#{isChief}
 		)
 	</insert>
 

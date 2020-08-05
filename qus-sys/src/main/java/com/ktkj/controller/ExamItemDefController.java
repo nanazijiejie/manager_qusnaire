@@ -103,11 +103,11 @@ public class ExamItemDefController extends AbstractController {
         //先判断职务对应的考核项是否存在，不能重复添加
         Map<String,Object> params = new HashMap<String,Object>();
         params.put("examStationId",examItemDef.getExamStationId());
-        List<ExamItemDefEntity> list = examItemDefService.queryAll(params);
+        //List<ExamItemDefEntity> list = examItemDefService.queryAll(params);
         String stationName = dictDefService.qryItemName("EXAM_STATION",examItemDef.getExamStationId());
-        if(list!=null&&list.size()!=0){
+        /*if(list!=null&&list.size()!=0){
             return R.error("职务：'"+stationName+"'对应的考核项已存在配置，请修改，勿重复添加！");
-        }
+        }*/
         examItemDef.setCreateTime(new Date());
         examItemDef.setCreateOperator(getUser().getUsername());
         examItemDef.setExamStation(stationName);

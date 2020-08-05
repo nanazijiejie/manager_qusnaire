@@ -103,29 +103,12 @@ public interface StaffInfoService extends IService<StaffInfoEntity> {
     public R batchSave2(Sheet sheet, StaffInfoEntity entity);
 
     /**
-     * 批量选民主推荐
-     * @param sheet
-     * @param entity
-     * @return
-     */
-
-    public R batchSave3(Sheet sheet, StaffInfoEntity entity);
-
-    /**
      * 选员工代表
      * @param staffIds
      * @param status
      */
 
-    public void updateBatch(Integer[] staffIds,String status);
-
-    /**
-     * 选民主推荐
-     * @param staffIds
-     * @param status
-     */
-
-    public void updateIsSelectionBatch(Integer[] staffIds,String status);
+    public void updateBatch(Integer[] staffIds, String status);
 
     /**
      * 查询用户需要评价的人员
@@ -148,4 +131,11 @@ public interface StaffInfoService extends IService<StaffInfoEntity> {
      */
 
     List<SelectionDefEntity> qrySelDef(Map<String, Object> params);
+
+    /**
+     * 查询需要被考核的人
+     * @param qusStaffName
+     * @return
+     */
+    public List<StaffInfoEntity> qryExamStaffName(String qusStaffName);
 }

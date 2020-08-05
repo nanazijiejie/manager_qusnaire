@@ -18,7 +18,6 @@ import com.ktkj.entity.*;
 import com.ktkj.service.StaffInfoService;
 import com.ktkj.service.SysConfigService;
 import com.ktkj.util.CommonUtil;
-import com.ktkj.utils.PageUtils;
 import com.ktkj.utils.R;
 import com.ktkj.controller.AbstractController;
 import com.ktkj.service.SelectionInfoService;
@@ -77,18 +76,18 @@ public class SelectionInfoController extends AbstractController {
      *
      * @param params 查询参数
      * @return R
-     */
+
     @GetMapping("/list")
     @RequiresPermissions("tower:selectioninfo:list")
     public R list(@RequestParam Map<String, Object> params) {
-        if(params.get("selCityId")!=null){
-            String selCityId = java.net.URLDecoder.decode(""+params.get("selCityId"));
-            params.put("selCityId",selCityId);
-        }
+        Query query = new Query(params);
         Page page = selectionInfoService.queryPage(params);
-        PageUtils pageUtil = new PageUtils(page.getRecords(), (int)page.getTotal(), (int)page.getSize(), (int)page.getCurrent());
+        PageUtils pageUtil = new PageUtils(page.getRecords(),
+                Integer.parseInt(page.getTotal()+""),
+                Integer.parseInt(page.getSize()+""),
+                query.getPage());
         return R.ok().put("page", pageUtil);
-    }
+    }*/
 
     /**
      * 根据主键查询详情

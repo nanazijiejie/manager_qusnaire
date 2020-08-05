@@ -54,11 +54,14 @@
             <Form-item label="考核指标项占比总和" prop="percentAll">
                 <span>{{percentAll}}</span>
             </Form-item>
-            <Form-item label="优秀人数限制" prop="excellentCount">
-                <i-input type="number" style="width: 400px;" v-model="examItemDef.excellentCount" placeholder="优秀人数限制,不填写或填写0视为不限制" />
+            <Form-item label="得A人数限制" prop="excellentCount">
+                <i-input type="number" style="width: 400px;" v-model="examItemDef.excellentCount" placeholder="得A人数限制,不填写或填写0视为不限制" />
             </Form-item>
-            <Form-item label="优良人数限制" prop="goodCount">
-                <i-input type="number" style="width: 400px;" v-model="examItemDef.goodCount" placeholder="优良人数限制,不填写或填写0视为不限制" />
+            <Form-item label="得B人数限制" prop="goodCount">
+                <i-input type="number" style="width: 400px;" v-model="examItemDef.goodCount" placeholder="得B人数限制,不填写或填写0视为不限制" />
+            </Form-item>
+            <Form-item label="得C人数限制" prop="goodCount">
+                <i-input type="number" style="width: 400px;" v-model="examItemDef.normalCount" placeholder="得C人数限制,不填写或填写0视为不限制" />
             </Form-item>
             <Form-item label="考核项描述" prop="examItemDesc">
                 <i-input type="textarea" rows="6" v-model="examItemDef.examItemDesc" placeholder="考核项描述"/>

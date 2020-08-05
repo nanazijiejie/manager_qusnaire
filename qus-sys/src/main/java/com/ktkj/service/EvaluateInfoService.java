@@ -1,10 +1,10 @@
 /*
- * 类名称:QusItemRelService.java
+ * 类名称:EvaluateInfoService.java
  * 包名称:com.ktkj.service
  *
  * 修改履历:
  *     日期                       修正者        主要内容
- *     2019-10-09 15:21:52        lipengjun     初版做成
+ *     2020-03-24 09:58:44        lipengjun     初版做成
  *
  * Copyright (c) 2019-2019 厦门继续想科技有限公司
  */
@@ -12,7 +12,8 @@ package com.ktkj.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ktkj.entity.QusItemRelEntity;
+import com.ktkj.entity.EvaluateInfoEntity;
+import com.ktkj.entity.StaffInfoEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -21,9 +22,9 @@ import java.util.Map;
  * Service接口
  *
  * @author lipengjun
- * @date 2019-10-09 15:21:52
+ * @date 2020-03-24 09:58:44
  */
-public interface QusItemRelService extends IService<QusItemRelEntity> {
+public interface EvaluateInfoService extends IService<EvaluateInfoEntity> {
 
     /**
      * 查询所有列表
@@ -31,7 +32,7 @@ public interface QusItemRelService extends IService<QusItemRelEntity> {
      * @param params 查询参数
      * @return List
      */
-    List<QusItemRelEntity> queryAll(Map<String, Object> params);
+    List<EvaluateInfoEntity> queryAll(Map<String, Object> params);
 
     /**
      * 分页查询
@@ -44,45 +45,39 @@ public interface QusItemRelService extends IService<QusItemRelEntity> {
     /**
      * 新增
      *
-     * @param qusItemRel 
+     * @param evaluateInfo 
      * @return 新增结果
      */
-    boolean add(QusItemRelEntity qusItemRel);
+    boolean add(EvaluateInfoEntity evaluateInfo);
 
     /**
      * 根据主键更新
      *
-     * @param qusItemRel 
+     * @param evaluateInfo 
      * @return 更新结果
      */
-    boolean update(QusItemRelEntity qusItemRel);
+    boolean update(EvaluateInfoEntity evaluateInfo);
 
     /**
      * 根据主键删除
      *
-     * @param qusNaireId qusNaireId
+     * @param evaluateId evaluateId
      * @return 删除结果
      */
-    boolean delete(Integer qusNaireId);
+    boolean delete(Integer evaluateId);
 
     /**
      * 根据主键批量删除
      *
-     * @param qusNaireIds qusNaireIds
+     * @param evaluateIds evaluateIds
      * @return 删除结果
      */
-    boolean deleteBatch(Integer[] qusNaireIds);
+    boolean deleteBatch(Integer[] evaluateIds);
 
     /**
      * 批量插入
      * @param list
+     * @param staffInfoEntity
      */
-    public void addList(List<QusItemRelEntity> list);
-
-    /**
-     * 查询问卷对应的考核项
-     * @param qusNaireId
-     * @return
-     */
-    List<QusItemRelEntity> selectByQusNaireId(Integer qusNaireId);
+    public void insertBatch(List<EvaluateInfoEntity> list, StaffInfoEntity staffInfoEntity);
 }

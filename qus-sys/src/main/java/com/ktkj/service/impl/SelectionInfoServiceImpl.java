@@ -101,12 +101,9 @@ public class SelectionInfoServiceImpl extends ServiceImpl<SelectionInfoDao, Sele
      * @return
      */
     @Override
-    public List<FinalSelRetEntity> calSel() throws Exception{
+    public List<FinalSelRetEntity> calSel(){
         List<SelRetEntity> selCountList = baseMapper.querySelCount();
         List<SelRetEntity> retList = baseMapper.querySelRet();
-        if(retList.size()<1){
-            throw new Exception("投票结果为空！");
-        }
         String tmpStaffId = "";
         List<FinalSelRetEntity> finalList = new ArrayList<FinalSelRetEntity>();
         Map<String,Integer> qusInfo = new HashMap<String,Integer>();

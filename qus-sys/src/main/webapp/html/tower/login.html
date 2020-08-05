@@ -61,6 +61,7 @@
         window.sessionStorage.setItem("isSubmit",res.isSubmit);
         window.sessionStorage.setItem("isSelSubmit",res.isSelSubmit);
         window.sessionStorage.setItem("isSelection",res.isSelection);
+        window.sessionStorage.setItem("city",res.city);
         //跳转到填写问卷的页面
         setSession("qusInfo",res.qusInfo);
         setSession("examStaffInfo",res.examStaffInfo);
@@ -221,7 +222,7 @@
               <input type="button" class="submit" value="登 录" id="loginBtn">
             </div>
             <p><a class="revisepwd" href="javascript:;">修改密码</a></p>
-            <p style="margin-top:10px;font-size:10px;color: #aaa;">温馨提示：1、首次登录，请先修改密码再登录！</br>2、请使用IE8以上或谷歌浏览器访问！</p>
+            <p style="margin-top:10px;font-size:10px;color: #f37200;">温馨提示：1、首次登录，请先修改密码再登录！</br>2、请使用IE9以上或谷歌浏览器访问！</p>
           </form>
           <form id="uptForm" method="post" class="form2">
             <div class="br user">

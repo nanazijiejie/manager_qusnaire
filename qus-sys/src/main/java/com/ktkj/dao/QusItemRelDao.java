@@ -49,7 +49,7 @@ public interface QusItemRelDao extends BaseMapper<QusItemRelEntity> {
      * 批量插入
      * @param list
      */
-    void insertBatch(@Param("list")List<QusItemRelEntity>list);
+    void insertBatch(@Param("list") List<QusItemRelEntity> list);
 
     /**
      * 根据ID删除

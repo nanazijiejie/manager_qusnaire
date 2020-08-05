@@ -75,7 +75,7 @@ public interface StaffDeptRelService extends IService<StaffDeptRelEntity> {
      */
     boolean deleteBatch(Integer[] ids);
 
-    void delByStaffId( Integer staffId);
+    void delByStaffId(Integer staffId);
 
     List<StaffInfoEntity> selectViceDeptByStaff(Integer staffId);
 

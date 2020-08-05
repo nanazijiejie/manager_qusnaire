@@ -82,7 +82,7 @@ public interface ExamScoreInfoService extends IService<ExamScoreInfoEntity> {
      * 批量插入评分结果
      * @param list
      */
-    public void insertBatch(List<ExamScoreInfoEntity>list,StaffInfoEntity staffInfoEntity);
+    public void insertBatch(List<ExamScoreInfoEntity> list, StaffInfoEntity staffInfoEntity);
 
     /**
      * 考核平均分

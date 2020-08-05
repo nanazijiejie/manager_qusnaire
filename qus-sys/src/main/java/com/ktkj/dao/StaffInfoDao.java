@@ -12,6 +12,7 @@ package com.ktkj.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ktkj.entity.QusExamStaffRel;
 import com.ktkj.entity.SelectionDefEntity;
 import com.ktkj.entity.StaffInfoEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -52,19 +53,19 @@ public interface StaffInfoDao extends BaseMapper<StaffInfoEntity> {
 
     List<SelectionDefEntity> qrySelDef(@Param("params") Map<String, Object> params);
 
-    List<StaffInfoEntity>  qryStaffInfoByMobiles(@Param("list")List<String>mobile);
+    List<QusExamStaffRel>qryExamStaffName(@Param("params") Map<String, Object> params);
 
-    List<StaffInfoEntity>  qryStaffInfoByEmails(@Param("list")List<String>emails);
+    List<StaffInfoEntity>  qryStaffInfoByMobiles(@Param("list") List<String> mobile);
 
-    void insertBatch(@Param("list")List<StaffInfoEntity>mobile);
+    List<StaffInfoEntity>  qryStaffInfoByEmails(@Param("list") List<String> emails);
+
+    void insertBatch(@Param("list") List<StaffInfoEntity> mobile);
 
     int saveKeys(StaffInfoEntity staffInfoEntity);
 
     int updateBatch(Map<String, Object> map);
-    int updateIsSelectionBatch(Map<String, Object> map);
 
     int updateBatchByEmail(Map<String, Object> map);
-    int updateIsSelectionBatchByEmail(Map<String, Object> map);
 
     void updateDeptNull(@Param("params") Map<String, Object> params);
 

@@ -49,7 +49,7 @@ public interface FinalExamScoreInfoDao extends BaseMapper<FinalExamScoreInfoEnti
      * 批量插入得分数据
      * @param list
      */
-    void insertBatch(@Param("list")List<FinalExamScoreInfoEntity>list);
+    void insertBatch(@Param("list") List<FinalExamScoreInfoEntity> list);
 
     void deleteAll();
 }

@@ -79,6 +79,10 @@ public class FinalExamScoreInfoEntity implements Serializable {
      */
     private BigDecimal finalScore;
     /**
+     * 平均分
+     */
+    private BigDecimal indexItemScore;
+    /**
      * 提交时间
      */
     private Date createTime;

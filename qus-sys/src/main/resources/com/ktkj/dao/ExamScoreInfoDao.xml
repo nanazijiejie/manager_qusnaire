@@ -134,6 +134,7 @@
             c.dept_id exam_dept_id,
             c.city_id exam_city_id,
             a.percent*b.index_item_score/100 final_score,
+            b.index_item_score index_item_score,
             now() create_time
             from tower_exam_per_def a,
             (select AVG(index_item_score) index_item_score,
@@ -141,11 +142,7 @@
             exam_station,
             exel_station from
             tower_exam_score_info where
-            score_type='1' and
-            exam_station!='15' and
-            exam_station!='25' and
-            exam_station!='26' and
-            exam_station!='27'
+            score_type='1'
             group by exam_staff_id,exam_station,exel_station) b,
             tower_staff_info c,
             tower_dict_def d
@@ -154,35 +151,7 @@
             and b.exam_staff_id = c.staff_id
             and b.exel_station = d.item_value
             and d.type_code = 'EXEL_STATION'
-    union all
-    select
-            b.exel_station qus_naire_station,
-            d.item_name qus_naire_station_name,
-            '分公司领导班子' exam_station_name,
-            concat(c.item_name,'分公司领导班子') exam_name,
-            '无' exam_dept,
-            c.item_name exam_city,
-            c.code exam_staff_id,
-            '15' exam_station,
-            '' exam_dept_id,
-            c.item_value exam_city_id,
-            a.percent*b.index_item_score/100 final_score,
-            now() create_time
-            from tower_exam_per_def a,
-            (select AVG(index_item_score) index_item_score,
-            exam_staff_id,
-            exam_station,
-            exel_station from
-            tower_exam_score_info where score_type='1' and exam_station='15'
-            group by exam_staff_id,exam_station,exel_station) b,
-            tower_dict_def c,
-            tower_dict_def d
-            where a.qus_station_id = b.exel_station
-            and a.exam_station_id = b.exam_station
-            and b.exam_staff_id = c.code
-                    and c.type_code = 'CITY'
-            and b.exel_station = d.item_value
-            and d.type_code = 'EXEL_STATION'
+            order by exam_staff_id
 
     </select>
 

@@ -9,6 +9,7 @@
         T.exam_station,
         T.excellent_count,
         T.good_count,
+        T.normal_count,
         T.exam_item_name,
         T.exam_item_desc,
         T.exam_seq,

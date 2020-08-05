@@ -52,7 +52,7 @@ public interface ExamScoreInfoDao extends BaseMapper<ExamScoreInfoEntity> {
      * 批量插入得分数据
      * @param list
      */
-    void insertBatch(@Param("list")List<ExamScoreInfoEntity>list);
+    void insertBatch(@Param("list") List<ExamScoreInfoEntity> list);
 
     /**
      * 删除

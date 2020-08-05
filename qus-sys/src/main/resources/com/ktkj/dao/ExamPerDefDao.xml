@@ -14,8 +14,9 @@
         FROM tower_exam_per_def T
         WHERE 1=1
         <if test="params.examStationId != null and params.examStationId.trim() != ''">
-            AND T.exam_station_id LIKE '%${params.examStationId}%'
+            AND T.exam_station_id = '${params.examStationId}'
         </if>
+        order by exam_station_id
     </sql>
 
     <select id="selectExamPerDefPage" resultType="com.ktkj.entity.ExamPerDefEntity">

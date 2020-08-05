@@ -40,13 +40,17 @@ public class ExamItemDefAddEntity implements Serializable {
      */
     private String examStationId;
     /**
-     * 优秀人数限制
+     * 得A人数限制
      */
     private Integer excellentCount;
     /**
-     * 优良人数限制
+     * 得B人数限制
      */
     private Integer goodCount;
+    /**
+     * 得C人数限制
+     */
+    private Integer normalCount;
     /**
      * 考核项名称
      */
@@ -178,6 +182,15 @@ public class ExamItemDefAddEntity implements Serializable {
 
     public List<IndexItemDefAddEntity> getExamIndexRels() {
         return examIndexRels;
+    }
+
+
+    public Integer getNormalCount() {
+        return normalCount;
+    }
+
+    public void setNormalCount(Integer normalCount) {
+        this.normalCount = normalCount;
     }
 
     public void setExamIndexRels(List<IndexItemDefAddEntity> examIndexRels) {

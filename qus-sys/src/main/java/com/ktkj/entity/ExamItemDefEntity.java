@@ -42,13 +42,17 @@ public class ExamItemDefEntity implements Serializable {
      */
     private String examStationId;
     /**
-     * 优秀人数限制
+     * 得A人数限制
      */
     private Integer excellentCount;
     /**
-     * 优良人数限制
+     * 得B人数限制
      */
     private Integer goodCount;
+    /**
+     * 得C人数限制
+     */
+    private Integer normalCount;
     /**
      * 考核项名称
      */

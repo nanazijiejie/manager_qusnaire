@@ -143,6 +143,15 @@ public class StaffInfoEntity implements Serializable {
     private String selNowStation;
 
 
+    private String isClear;
+
+    private String isClearSubmit;
+
+    private String isResponse;
+
+    private String isResponseSubmit;
+
+
 
 
 }

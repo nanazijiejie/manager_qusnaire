@@ -251,34 +251,29 @@ public class StaffInfoController extends AbstractController {
         if(StringUtils.isEmpty(pwd)){
             return R.error("请输入密码！");
         }
-        //密码匹配正则表达式
-        /*if (!pwd.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$")) {
-            return R.error("请先修改密码再登录！");
-        }*/
 
         Map<String, Object> qryParams = new HashMap<String, Object>();
         qryParams.put("phone",phone);
         String pwdHex = new Sha256Hash(pwd).toHex();
         //先查询用户是否存在
         List<StaffInfoEntity> staffList = staffInfoService.queryAll(qryParams);
-        if(staffList==null||staffList.size()==0||!pwdHex.equals(staffList.get(0).getPwd())){
+        if(staffList==null||staffList.size()==0){
             return R.error("账号不存在或密码错误，请重新输入！");
         }
         StaffInfoEntity staffInfoEntity = staffList.get(0);
         if(!"1".equals(staffInfoEntity.getIsUptPwd())){
             return R.error("请先修改密码再登录！");
         }
-        /*if("1".equals(staffInfoEntity.getIsSubmit())){
-            return R.error("您好，您暂无待处理考评！");
-        }*/
+        if(!pwdHex.equals(staffList.get(0).getPwd())){
+            return R.error("账号不存在或密码错误，请重新输入！");
+        }
         staffInfoEntity.setLastLoginTime(new Date());
-        String token = com.ktkj.utils.StringUtils2.genenrateUniqueInd();
+        String token = StringUtils2.genenrateUniqueInd();
         //两个小时内有效
         J2CacheUtils.set(token,staffInfoEntity.getStaffId(), Constant.ALIVE_SECONDS,false);
         staffInfoEntity.setToken(token);
         staffInfoService.updateById(staffInfoEntity);
         String stationId = staffInfoEntity.getStationId();//职务
-        String isChief = staffInfoEntity.getIsChief();//是否总监
         //查询当前用户需要填写和问卷信息
         Map<String,Object> qusMap = new HashMap<String,Object>();
         qusMap.put("qusNaireStationId",stationId);
@@ -290,10 +285,10 @@ public class StaffInfoController extends AbstractController {
         //需填写的考核项
         Map<String,Object> examMap = new HashMap<String,Object>();
         examMap.put("qusNaireStationId",stationId);
-        List<ExamItemDefEntity> examItemList = examItemDefService.qryExamItem(examMap);
+        List<ExamItemDefEntity> examItemList = examItemDefService.queryAll(examMap);
         List<ExamItemDefAddEntity> examItemAddList = new ArrayList<ExamItemDefAddEntity>();
         for (ExamItemDefEntity entity:examItemList
-             ) {
+        ) {
             Integer examItemId = entity.getExamItemId();//
             Map<String,Object> indexMap = new HashMap<String,Object>();
             indexMap.put("examItemId",entity.getExamItemId());
@@ -306,37 +301,54 @@ public class StaffInfoController extends AbstractController {
             examItemDefAddEntity.setExamStationId(entity.getExamStationId());
             examItemDefAddEntity.setExcellentCount(entity.getExcellentCount());
             examItemDefAddEntity.setGoodCount(entity.getGoodCount());
+            examItemDefAddEntity.setNormalCount(entity.getNormalCount());
             examItemDefAddEntity.setExamIndexRels(indexItemDefService.queryExamIndex(indexMap));
             examItemAddList.add(examItemDefAddEntity);
         }
         //要评价的员工信息
-        Map<String,Object> staffMap = new HashMap<String,Object>();
-        if(Station.cityStaff.equals(stationId)||Station.cityMiddleManager.equals(stationId)){
-            //只需要查出本地市的员工信息
-            staffMap.put("cityId",staffInfoEntity.getCityId());
+        /*被评价人	评价人
+        省公司部门正职	省公司该部门副职、员工，地市公司该专业线所有人员（不含区域）
+        省公司部门副职	省公司该部门员工，地市公司该专业线所有人员（不含区域）
+        地市公司总经理	该地市副总经理、四级经理、普通员工
+        地市公司副总经理	该地市四级经理、普通员工
+        省公司部门正副职，地市总经理，副总经理	评价自己*/
+        /*Map<String,Object> staffMap = new HashMap<String,Object>();
+        staffMap.put("cityId",staffInfoEntity.getCityId());//只取属于本单位的人员
+        if(Station.provinceDeptViceManager.equals(stationId)){//省公司部门副职，评价省公司部门正职&&自评;
+            staffMap.put("stationId",Station.provinceDeptManager);
         }
-        staffMap.put("qusNaireStationId",stationId);
-        staffMap.put("staffId",staffInfoEntity.getStaffId());
-        List<StaffInfoEntity> staffInfoList = staffInfoService.qryExamStaff(staffMap);
-        /**只保留本部门人员**/
-        List<StaffInfoEntity> provinceStaffList = new ArrayList<StaffInfoEntity>();
-        String[] staffDeptArr = staffInfoEntity.getDeptId().split(",");
-        for (StaffInfoEntity entity:staffInfoList) {
-            String[] entitydeptArr = entity.getDeptId().split(",");
-            if(isSameDept(staffDeptArr,entitydeptArr)){
-                provinceStaffList.add(getCloneObject(entity));
+        if(Station.provinceStaff.equals(stationId)){//省公司普通员工,评价本部门正职、副职
+            staffMap.put("stationId",Station.provinceDeptManager+","+Station.provinceDeptViceManager);
+        }
+        if(Station.cityViceManager.equals(stationId)){//地市公司副职，自评&&评价地市公司正职
+            staffMap.put("stationId",Station.cityManager);
+        }
+        if(Station.cityStaff.equals(stationId)||Station.cityFourthManager.equals(stationId)){//地市公司员工||四级经理，评价地市正职、副职
+            staffMap.put("stationId",Station.cityManager+","+Station.cityViceManager);
+        }
+        List<StaffInfoEntity> staffInfoList = new ArrayList<StaffInfoEntity>();
+        if(!Station.provinceDeptManager.equals(stationId)&&!Station.cityManager.equals(stationId)){
+            staffInfoList = staffInfoService.qryExamStaff(staffMap);
+        }
+        if(Station.provinceDeptManager.equals(stationId)||Station.provinceDeptViceManager.equals(stationId)
+        ||Station.cityManager.equals(stationId)||Station.cityViceManager.equals(stationId)){//需要自评的
+            staffInfoList.add(staffInfoEntity);
+        }
+        if(Station.provinceDeptViceManager.equals(stationId)
+                ||Station.provinceStaff.equals(stationId)){
+            Iterator<StaffInfoEntity> it = staffInfoList.iterator();
+            while(it.hasNext()){
+                StaffInfoEntity examStaffInfo = it.next();
+                String [] deptArr = examStaffInfo.getDeptId().split(",");
+                if(!isSameDept(deptArr,staffInfoEntity.getDeptId().split(","))){
+                    it.remove();
+                }
             }
-        }
-        staffInfoList = provinceStaffList;
-
+        }*/
+        List<StaffInfoEntity> staffInfoList = staffInfoService.qryExamStaffName(staffInfoEntity.getStaffName().trim());
         Map<String,Object> scoreMap = new HashMap<String,Object>();
         scoreMap.put("qusNaireStaffId",staffInfoEntity.getStaffId());
         List<ExamScoreInfoEntity> scoreList = examScoreInfoService.queryAll(scoreMap);
-        //全省中层正/副职：省公司部门正/副职 + 地市正职/副职
-        //地市中层：地市部门正+副
-        //总监：被评价时为副职，评价别人时可以时员工代表
-        //省公司的总经理/副总经理、地市公司的总经理/副总经理都可以分管部门
-        //一个人可以属于不同的部门，但在一张问卷内只需要考核一次
         List<StaffInfoEntity> selStaffInfo = null;
         List<SelectionDefEntity> selDefInfo = null;
         String isSelection = staffInfoEntity.getIsSelection();//是否参与选举
@@ -356,6 +368,7 @@ public class StaffInfoController extends AbstractController {
                 .put("staffName",staffInfoEntity.getStaffName())
                 .put("userName",staffInfoEntity.getPhone())
                 .put("isSubmit",staffInfoEntity.getIsSubmit())
+                .put("city",staffInfoEntity.getCity())
                 .put("selStaffInfo",selStaffInfo)
                 .put("selDefInfo",selDefInfo)
                 .put("isSelSubmit",staffInfoEntity.getIsSelSubmit())
@@ -380,67 +393,6 @@ public class StaffInfoController extends AbstractController {
         copy.setRiceDeptId(entity.getRiceDeptId());
         return copy;
 
-    }
-    private void addStaffDeptInfo(boolean hasDeptSupport,
-                                  boolean hasDeptCooperation,
-                                  boolean hasConstruction,
-                                  StaffInfoEntity staffInfoEntity,List<StaffInfoEntity>staffInfoList){
-        Map<String, Object> map = new HashMap<>();
-        map.put("cityFilter", "Z");
-        List<SysDeptEntity> deptList = null;
-        if (J2CacheUtils.get(Constant.CITY_DEPT+"_"+"Z") != null) {
-            deptList = (List<SysDeptEntity>)J2CacheUtils.get(Constant.CITY_DEPT+"_"+"Z");
-        }else{
-            deptList = sysDeptService.queryList(map);
-            J2CacheUtils.set(Constant.CITY_DEPT+"_"+"Z", deptList, Constant.ALIVE_SECONDS, false);
-        }
-        for (SysDeptEntity sysDeptEntity:deptList
-        ) {
-            boolean isSameDept = false;
-            StaffInfoEntity entity = new StaffInfoEntity();
-            entity.setCityId("Z");
-            entity.setStaffName(sysDeptEntity.getName());
-            entity.setCity("省公司");
-            if(hasDeptSupport){
-                entity.setStationId(Station.deptSupportStatisfaction);
-                entity.setStation("部门支撑服务满意度");
-            }
-            if(hasDeptCooperation){
-                entity.setStationId(Station.deptCooperationStatisfaction);
-                entity.setStation("部门协作配合满意度");
-            }
-            if(hasConstruction){
-                entity.setStationId(Station.deptConstruction);
-                entity.setStation("部门自身建设");
-            }
-            if(hasDeptCooperation||hasConstruction){
-                String deptId = staffInfoEntity.getDeptId();
-                if(StringUtils.isNotEmpty(deptId)){
-                    String[] deptArr = deptId.split(",");
-                    for (String dept:deptArr
-                    ) {
-                        if((""+sysDeptEntity.getDeptId()).equals(dept)){
-                            isSameDept = true;
-                            break;
-                        }
-                    }
-                }
-
-            }
-            if(hasConstruction&&isSameDept){
-                entity.setStaffId(Integer.valueOf(""+sysDeptEntity.getDeptId()));
-                entity.setDeptId(""+sysDeptEntity.getDeptId());
-                staffInfoList.add(entity);
-            }
-            if(hasDeptCooperation&&!isSameDept){
-                entity.setStaffId(Integer.valueOf(""+sysDeptEntity.getDeptId()));
-                staffInfoList.add(entity);
-            }
-            if(hasDeptSupport){
-                entity.setStaffId(Integer.valueOf(""+sysDeptEntity.getDeptId()));
-                staffInfoList.add(entity);
-            }
-        }
     }
     private static boolean isSameDept(String[]arr1,String[]arr2){
         for (String arrItem1:arr1
@@ -487,7 +439,7 @@ public class StaffInfoController extends AbstractController {
         String[] failPhone = null;
         try {
             //若用户为总监、地市员工、省公司员工，得判断是否是员工代表，否则无需发送邮件
-            params.put("sendMailMark","0");
+            //params.put("sendMailMark","0"); 安徽不需要判断，只要导入系统都要发
             List<StaffInfoEntity> staffList = staffInfoService.queryAll(params);
             qryParams.put("delFlag","0");
             List<MailDefEntity> mailList = mailDefService.queryAll(qryParams);
@@ -674,14 +626,14 @@ public class StaffInfoController extends AbstractController {
            List<StaffInfoEntity> staffList = new ArrayList<StaffInfoEntity>();
            for (Integer staffId:staffIds) {
                StaffInfoEntity staffInfo = staffInfoService.getById(staffId);
-               String stationId = staffInfo.getStationId();
+               /*String stationId = staffInfo.getStationId();安徽不需要判断
                String isChief = staffInfo.getIsChief();//0否1是
                String isRepresent = staffInfo.getIsRepresent();//0否1是
                if((Station.cityStaff.equals(stationId)||
                        Station.provinceStaff.equals(stationId)||
                        "1".equals(isChief))&&"0".equals(isRepresent)){
                    return R.error("员工：'"+staffInfo.getStaffName()+"'"+"非员工代表不能发送问卷邮件！");
-               }
+               }*/
                staffList.add(staffInfo);
            }
            Map<String,Object> params = new HashMap<String,Object>();
@@ -786,14 +738,6 @@ public class StaffInfoController extends AbstractController {
         return R.ok();
     }
 
-    @SysLog("选为民主推荐")
-    @RequestMapping("/isSelection")
-    @RequiresPermissions("tower:selection:byid")
-    public R isSelection(@RequestBody Integer[] staffIds) {
-        staffInfoService.updateIsSelectionBatch(staffIds,"1");
-        return R.ok();
-    }
-
     /**
      * 导出会员
      */
@@ -812,9 +756,7 @@ public class StaffInfoController extends AbstractController {
         ExcelExport ee = new ExcelExport("员工列表");
 
         String[] header = new String[]{"姓名", "归属地市", "归属部门", "分管部门","职务",
-                "邮箱","手机号码","发送邮件状态","是否员工代表","是否总监",
-                "问卷是否提交","密码是否重置","是否参与民主推荐投票","选举岗位","学历",
-                "任职时长","选举人现岗位描述","前一年绩效","前两年绩效","前三年绩效"};
+                "邮箱","手机号码","发送邮件状态","是否员工代表","是否总监","问卷是否提交"};
         List<Map<String, Object>> list = new ArrayList<>();
         if (orderList != null && orderList.size() != 0) {
             for (StaffInfoEntity staffInfoEntity : orderList) {
@@ -833,7 +775,7 @@ public class StaffInfoController extends AbstractController {
                 }else{
                     map.put("SEND_STATUS", "未发送");
                 }
-                if("1".equals(staffInfoEntity.getIsRepresent())){
+                /*if("1".equals(staffInfoEntity.getIsRepresent())){
                     map.put("IS_REPRESENT", "是");
                 }else{
                     map.put("IS_REPRESENT", "否");
@@ -842,28 +784,12 @@ public class StaffInfoController extends AbstractController {
                     map.put("IS_CHIEF", "是");
                 }else{
                     map.put("IS_CHIEF", "否");
-                }
+                }*/
                 if("1".equals(staffInfoEntity.getIsRepresent())){
                     map.put("IS_SUBMIT", "已提交");
                 }else{
                     map.put("IS_SUBMIT", "未提交");
                 }
-                if("1".equals(staffInfoEntity.getIsUptPwd())){
-                    map.put("IS_UPT_PWD", "是");
-                }else{
-                    map.put("IS_UPT_PWD", "否");
-                }
-                if("1".equals(staffInfoEntity.getIsSelection())){
-                    map.put("IS_SELECTION", "是");
-                }else{
-                    map.put("IS_SELECTION", "否");
-                }
-                map.put("SEL_STATION", staffInfoEntity.getSelStation());
-                map.put("SEL_EDU", staffInfoEntity.getSelEdu());
-                map.put("SEL_TAKE_OFFICE_YEARS", staffInfoEntity.getSelTakeOfficeYears());
-                map.put("SEL_PERFORM1", staffInfoEntity.getSelPerform1());
-                map.put("SEL_PERFORM2", staffInfoEntity.getSelPerform2());
-                map.put("SEL_PERFORM3", staffInfoEntity.getSelPerform3());
                 list.add(map);
             }
         }
@@ -992,7 +918,7 @@ public class StaffInfoController extends AbstractController {
     }
 
     /**
-     * 下载选择员工代表的模板/民主推荐
+     * 下载选择员工代表的模板
      * @param response
      * @param request
      * @throws Exception
@@ -1123,56 +1049,6 @@ public class StaffInfoController extends AbstractController {
         }
         return R.ok();
     }
-
-    /**
-     * 选择民主推荐批量上传
-     * @param request
-     * @param response
-     * @param tempfile
-     * @return
-     */
-    @RequestMapping(value="/batchSave3", method = RequestMethod.POST)
-    @ResponseBody
-    public R batchSave3(HttpServletRequest request,HttpServletResponse response,@RequestParam("tempfile") MultipartFile tempfile){
-        InputStream in = null ;
-        Workbook workbook = null;
-        Sheet sheet = null;
-        try{
-            if(tempfile.isEmpty()){
-                return R.error("批量上传附件不能为空");
-            }
-            in =tempfile.getInputStream();
-            workbook= new HSSFWorkbook(in);
-            sheet = workbook.getSheetAt(0);
-            int len = sheet.getLastRowNum();// 总行数
-
-            if (len < 1) {
-                return R.error("导入的文件没有数据，请检查！");
-            }
-            int max = 1000;
-            if (len > max) {
-                return R.error("导入的文件记录不得超过1000条！");
-            }
-            StaffInfoEntity entity = new StaffInfoEntity();
-            entity.setCreateTime(new Date());
-            entity.setCreateOperator(getUser().getUsername());
-            return staffInfoService.batchSave3(sheet,entity);
-        } catch (Exception e) {// 异常捕获
-            R.error("保存失败");
-            logger.error("batchSave",e);
-        } finally {
-            try {
-                if(in != null){
-                    in.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return R.ok();
-    }
-
-
     @RequestMapping("/checkQusLogin")
     @ResponseBody
     public R checkQusLogin(HttpServletRequest request,

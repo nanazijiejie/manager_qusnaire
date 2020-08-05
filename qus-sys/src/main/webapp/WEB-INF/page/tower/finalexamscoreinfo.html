@@ -14,19 +14,9 @@
                 </i-col>
                 <i-col span="5">
                     <i-select v-model="q.station_id" placeholder="被考核人职务">
-                        <i-option value="02">省公司部门正职
-                        </i-option>
-                        <i-option value="03">省公司部门副职/总监
-                        </i-option>
-                        <i-option value="10">地市公司正职
-                        </i-option>
-                        <i-option value="11">地市公司副职
-                        </i-option>
-                        <i-option value="15">地市分公司领导班子
-                        </i-option>
-                        <!--<i-option v-for="stationDef in stationDefList" :value="stationDef.itemValue" :key="stationDef.code">
+                        <i-option v-for="stationDef in stationDefList" :value="stationDef.itemValue" :key="stationDef.code">
                             {{stationDef.itemName}}
-                        </i-option>-->
+                        </i-option>
                     </i-select>
                 </i-col>
                 <i-button @click="query">查询</i-button>

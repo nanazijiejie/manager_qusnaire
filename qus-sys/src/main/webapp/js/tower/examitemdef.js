@@ -6,8 +6,9 @@ $(function () {
 			{label: '考核项名称', name: 'examItemName', index: 'exam_item_name', width: 80},
 			{label: '考核对象职务', name: 'examStation', index: 'exam_station', width: 80},
 			{label: '考核对象职务ID', name: 'examStationId', index: 'exam_station_id', width: 80, hidden: true},
-			{label: '优秀人数限制', name: 'excellentCount', index: 'excellent_count', width: 80},
-			{label: '优良人数限制', name: 'goodCount', index: 'good_count', width: 80},
+			{label: '得A人数限制', name: 'excellentCount', index: 'excellent_count', width: 80},
+			{label: '得B人数限制', name: 'goodCount', index: 'good_count', width: 80},
+			{label: '得C人数限制', name: 'normalCount', index: 'good_count', width: 80},
 			{label: '考核项描述', name: 'examItemDesc', index: 'exam_item_desc', width: 80},
 			{label: '显示顺序', name: 'examSeq', index: 'exam_seq', width: 80},
 			{label: '创建时间', name: 'createTime', index: 'create_time', width: 80, formatter: function (value) {
@@ -83,11 +84,14 @@ var vm = new Vue({
 			console.log(vm.indexItemList);
             var url = vm.examItemDef.examItemId == null ? "../tower/examitemdef/save" : "../tower/examitemdef/update";
             debugger;
-            if(vm.examItemDef.excellentCount==null||vm.examItemDef.excellentCount==''){
+            if(vm.examItemDef.excellentCount==null||vm.examItemDef.excellentCount==""){
 				vm.examItemDef.excellentCount = 0;
 			}
-			if(vm.examItemDef.goodCount==null||vm.examItemDef.goodCount==''){
+			if(vm.examItemDef.goodCount==null||vm.examItemDef.goodCount==""){
 				vm.examItemDef.goodCount = 0;
+			}
+			if(vm.examItemDef.normalCount==null||vm.examItemDef.normalCount==""){
+				vm.examItemDef.normalCount = 0;
 			}
 
             Ajax.request({
@@ -116,7 +120,10 @@ var vm = new Vue({
 			var len = arr.length;
 			var stationId = vm.examItemDef.examStationId;
 			for(var i=0;i<len;i++){
-				if(vm.stationDefList[i].itemValue==stationId){
+				if(vm.stationDefList[i].itemValue==stationId&&
+					(vm.examItemDef.examItemName==null||
+						vm.examItemDef.examItemName==undefined||
+						vm.examItemDef.examItemName=='')){
 					vm.examItemDef.examItemName = vm.stationDefList[i].itemName;
 					break;
 				}
