@@ -443,7 +443,11 @@ function setExamInfo(){
         examInfoHtml += "<li>";
         examInfoHtml += "<div class=\"grade-a\">"+"姓名"+"</div>";
         for(var k=0;k<arr.length;k++){
-            examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].staffName+"</div>";
+            if(examItemId==97||examItemId==98){
+                examInfoHtml += "<div class=\"grade-b-special\">"+retExamStaffInfo[k].staffName+"</div>";
+            }else{
+                examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].staffName+"</div>";
+            }
         }
         examInfoHtml += "</li>";
         //var retExamIndexRels = getExamIndexRels(examIndexRels,examItemId);
@@ -468,7 +472,7 @@ function setExamInfo(){
                     lastScore = "";
                 }
                 if(examItemId==97||examItemId==98){
-                    examInfoHtml += "<div class=\"grade-b\">"+
+                    examInfoHtml += "<div class=\"grade-b-special\">"+
                         "<textarea style='width:100%;height:100%;border-radius:10px;' id=\""+scoreIdName+"\"  value=\""+lastScore+"\" style=\"outline:none\""+
                         "placeholder='请举例或者重点说明，不得超过500字' onchange= \"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+","+normalCount+")\">" +
                         lastScore+"</textarea></div>";
