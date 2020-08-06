@@ -441,10 +441,11 @@ function setExamInfo(){
         examInfoHtml += "<div class=\"exam-t\">"+examItemName+"</div>";
         examInfoHtml += "<div class=\"grade-main\"><ul>";
         examInfoHtml += "<li>";
-        examInfoHtml += "<div class=\"grade-a\">"+"姓名（归属单位/部门）"+"</div>";
+        examInfoHtml += "<div class=\"grade-a\">"+"姓名"+"</div>";
         for(var k=0;k<arr.length;k++){
-            examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].staffName+"（"+retExamStaffInfo[k].city +"/"+retExamStaffInfo[k].dept+"）</div>";
+            examInfoHtml += "<div class=\"grade-b\">"+retExamStaffInfo[k].staffName+"</div>";
         }
+        examInfoHtml += "</li>";
         //var retExamIndexRels = getExamIndexRels(examIndexRels,examItemId);
         var setRet = true;
         for(var j=0;j<examIndexRels.length;j++){
@@ -512,6 +513,7 @@ function setExamInfo(){
     $("#examInfo").html(examInfoHtml);
 }
 function getSpecialScoreSelectStr(lastScore){
+    var examInfoHtml = "";
     if(lastScore=='1'){
         examInfoHtml += "<option value='1' selected='selected' >完全同意</option>";
     }else{
@@ -542,8 +544,10 @@ function getSpecialScoreSelectStr(lastScore){
     }else{
         examInfoHtml += "<option value='0'>不涉及</option>";
     }
+    return examInfoHtml;
 }
 function getNormalScoreSelectStr(lastScore){
+    var examInfoHtml = "";
     if(lastScore=='5'){
         examInfoHtml += "<option value='5' selected='selected' >完全同意</option>";
     }else{
@@ -574,6 +578,7 @@ function getNormalScoreSelectStr(lastScore){
     }else{
         examInfoHtml += "<option value='0'>不涉及</option>";
     }
+    return examInfoHtml;
 }
 function showAlert(msg){
     $("#alert").show();
