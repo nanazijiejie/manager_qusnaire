@@ -284,7 +284,6 @@ public class StaffInfoController extends AbstractController {
         }
         //需填写的考核项
         Map<String,Object> examMap = new HashMap<String,Object>();
-        examMap.put("qusNaireStationId",stationId);
         List<ExamItemDefEntity> examItemList = examItemDefService.queryAll(examMap);
         List<ExamItemDefAddEntity> examItemAddList = new ArrayList<ExamItemDefAddEntity>();
         for (ExamItemDefEntity entity:examItemList

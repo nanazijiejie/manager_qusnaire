@@ -19,6 +19,7 @@ import com.ktkj.utils.R;
 import com.ktkj.controller.AbstractController;
 import com.ktkj.entity.ExamItemDefEntity;
 import com.ktkj.service.ExamItemDefService;
+import com.ktkj.utils.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -104,15 +105,16 @@ public class ExamItemDefController extends AbstractController {
         Map<String,Object> params = new HashMap<String,Object>();
         params.put("examStationId",examItemDef.getExamStationId());
         //List<ExamItemDefEntity> list = examItemDefService.queryAll(params);
-        String stationName = dictDefService.qryItemName("EXAM_STATION",examItemDef.getExamStationId());
         /*if(list!=null&&list.size()!=0){
             return R.error("职务：'"+stationName+"'对应的考核项已存在配置，请修改，勿重复添加！");
         }*/
         examItemDef.setCreateTime(new Date());
         examItemDef.setCreateOperator(getUser().getUsername());
-        examItemDef.setExamStation(stationName);
+        if(StringUtils.isNotEmpty(examItemDef.getExamStationId())){
+            String stationName = dictDefService.qryItemName("EXAM_STATION",examItemDef.getExamStationId());
+            examItemDef.setExamStation(stationName);
+        }
         examItemDefService.add(examItemDef,null);
-
         return R.ok().put("examItemId",examItemDef.getExamItemId());
     }
 
@@ -128,7 +130,9 @@ public class ExamItemDefController extends AbstractController {
     public R update(@RequestBody ExamItemDefEntity examItemDef) {
         examItemDef.setUpdateTime(new Date());
         examItemDef.setUpdateOperator(getUser().getUsername());
-        examItemDef.setExamStation(dictDefService.qryItemName("EXAM_STATION",examItemDef.getExamStationId()));
+        if(StringUtils.isNotEmpty(examItemDef.getExamStationId())){
+            examItemDef.setExamStation(dictDefService.qryItemName("EXAM_STATION",examItemDef.getExamStationId()));
+        }
         examItemDefService.update(examItemDef);
 
         return R.ok().put("examItemId",examItemDef.getExamItemId());

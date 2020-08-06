@@ -33,9 +33,9 @@ var vm = new Vue({
         title: null,
 		examItemDef: {},
 		ruleValidate: {
-			examStationId: [
+			/*examStationId: [
 				{required: true, message: '请选择考核对象职务', trigger: 'blur'}
-			],
+			],*/
 			/*excellentCount: [
 				{required: true, message: '优秀人数限制不能为空，不限制请填写0', trigger: 'blur'}
 			],
@@ -45,9 +45,9 @@ var vm = new Vue({
 			examItemName: [
 				{required: true, message: '考核项名称不能为空', trigger: 'blur'}
 			],
-			examItemDesc: [
+			/*examItemDesc: [
 				{required: true, message: '考核项描述不能为空', trigger: 'blur'}
-			],
+			],*/
 
 		},
 		q: {

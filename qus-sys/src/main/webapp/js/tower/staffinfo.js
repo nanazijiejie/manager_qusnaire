@@ -597,17 +597,17 @@ var vm = new Vue({
 						}
 						if(r.list[i].typeCode=="STATION"){
 							if(cityId!=undefined){
-								if(cityId!="Z"&&r.list[i].itemName.indexOf("市分")!=-1){
+								if(cityId!="Z"&&r.list[i].itemName.indexOf("市")!=-1){
 									vm.stationDefList[count1++] = r.list[i];
 								}
-								if(cityId=="Z"&&r.list[i].itemName.indexOf("省分")!=-1){
+								if(cityId=="Z"&&r.list[i].itemName.indexOf("省")!=-1){
 									vm.stationDefList[count1++] = r.list[i];
 								}
 							}else{
 								if(vm.user.cityId=='Z'||vm.user.userId=='1'){
 									vm.stationDefList[count1++] = r.list[i];
 								}else{
-									if(r.list[i].itemName.indexOf("市分")!=-1){
+									if(r.list[i].itemName.indexOf("市")!=-1){
 										vm.stationDefList[count1++] = r.list[i];
 									}
 								}

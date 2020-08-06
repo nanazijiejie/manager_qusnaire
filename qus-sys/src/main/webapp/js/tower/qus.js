@@ -438,7 +438,7 @@ function setExamInfo(){
         if(arr.length==0){
             continue;
         }
-        examInfoHtml += "<div class=\"exam-t\">"+(totalExamItem++)+"、"+examItemName+"<br>"+examItemDesc+"</div>";
+        examInfoHtml += "<div class=\"exam-t\">"+examItemName+"</div>";
         examInfoHtml += "<div class=\"grade-main\"><ul>";
         examInfoHtml += "<li>";
         examInfoHtml += "<div class=\"grade-a\">"+"姓名（归属单位/部门）"+"</div>";
@@ -466,9 +466,9 @@ function setExamInfo(){
                 }else{
                     lastScore = "";
                 }
-                if(examItemId==72){
+                if(examItemId==97||examItemId==98){
                     examInfoHtml += "<div class=\"grade-b\">"+
-                        "<textarea style='width:100%;height:100%' id=\""+scoreIdName+"\"  value=\""+lastScore+"\" style=\"outline:none\""+
+                        "<textarea style='width:100%;height:100%;border-radius:10px;' id=\""+scoreIdName+"\"  value=\""+lastScore+"\" style=\"outline:none\""+
                         "placeholder='请举例或者重点说明，不得超过500字' onchange= \"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+","+normalCount+")\">" +
                         lastScore+"</textarea></div>";
                 }else{
@@ -476,35 +476,10 @@ function setExamInfo(){
                         "<select id=\""+scoreIdName+"\" type=\"text\" value=\""+lastScore+"\" style=\"outline:none\""+
                         "onchange= \"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+","+normalCount+")\">" +
                         "<option value=''>请评价</option>";
-                    if(lastScore=='5'){
-                        examInfoHtml += "<option value='5' selected='selected' >完全同意</option>";
+                    if(examItemId==94||examItemId==95||examItemId==96){
+                        examInfoHtml += getSpecialScoreSelectStr(lastScore);
                     }else{
-                        examInfoHtml += "<option value='5'>完全同意</option>";
-                    }
-                    if(lastScore=='4'){
-                        examInfoHtml += "<option value='4' selected='selected' >同意</option>";
-                    }else{
-                        examInfoHtml += "<option value='4'>同意</option>";
-                    }
-                    if(lastScore=='3'){
-                        examInfoHtml += "<option value='3' selected='selected' >一般</option>";
-                    }else{
-                        examInfoHtml += "<option value='3'>一般</option>";
-                    }
-                    if(lastScore=='2'){
-                        examInfoHtml += "<option value='2' selected='selected' >不同意</option>";
-                    }else{
-                        examInfoHtml += "<option value='2'>不同意</option>";
-                    }
-                    if(lastScore=='1'){
-                        examInfoHtml += "<option value='1' selected='selected' >完全不同意/未做到</option>";
-                    }else{
-                        examInfoHtml += "<option value='1'>完全不同意/未做到</option>";
-                    }
-                    if(lastScore=='0'){
-                        examInfoHtml += "<option value='0' selected='selected' >不涉及</option>";
-                    }else{
-                        examInfoHtml += "<option value='0'>不涉及</option>";
+                        examInfoHtml += getNormalScoreSelectStr(lastScore);
                     }
                     examInfoHtml += "</select></div>";
                 }
@@ -515,7 +490,7 @@ function setExamInfo(){
                 break;
             }
         }
-        if(examItemId!=72){
+        if(examItemId!=97&&examItemId!=98){
             examInfoHtml += "<li>";
             examInfoHtml += "<div class=\"grade-a\">"+"得分"+"</div>";
             for(m=0;m<arr.length;m++){
@@ -535,6 +510,70 @@ function setExamInfo(){
         examInfoHtml += "<div style='margin-bottom: 30px'> <span id=\""+msgTipId+"\" style='color:red;font-size:16px;'></span></div>";
     }
     $("#examInfo").html(examInfoHtml);
+}
+function getSpecialScoreSelectStr(lastScore){
+    if(lastScore=='1'){
+        examInfoHtml += "<option value='1' selected='selected' >完全同意</option>";
+    }else{
+        examInfoHtml += "<option value='1'>完全同意</option>";
+    }
+    if(lastScore=='2'){
+        examInfoHtml += "<option value='2' selected='selected' >同意</option>";
+    }else{
+        examInfoHtml += "<option value='2'>同意</option>";
+    }
+    if(lastScore=='3'){
+        examInfoHtml += "<option value='3' selected='selected' >一般</option>";
+    }else{
+        examInfoHtml += "<option value='3'>一般</option>";
+    }
+    if(lastScore=='4'){
+        examInfoHtml += "<option value='4' selected='selected' >不同意</option>";
+    }else{
+        examInfoHtml += "<option value='4'>不同意</option>";
+    }
+    if(lastScore=='5'){
+        examInfoHtml += "<option value='5' selected='selected' >完全不同意</option>";
+    }else{
+        examInfoHtml += "<option value='5'>完全不同意</option>";
+    }
+    if(lastScore=='0'){
+        examInfoHtml += "<option value='0' selected='selected' >不涉及</option>";
+    }else{
+        examInfoHtml += "<option value='0'>不涉及</option>";
+    }
+}
+function getNormalScoreSelectStr(lastScore){
+    if(lastScore=='5'){
+        examInfoHtml += "<option value='5' selected='selected' >完全同意</option>";
+    }else{
+        examInfoHtml += "<option value='5'>完全同意</option>";
+    }
+    if(lastScore=='4'){
+        examInfoHtml += "<option value='4' selected='selected' >同意</option>";
+    }else{
+        examInfoHtml += "<option value='4'>同意</option>";
+    }
+    if(lastScore=='3'){
+        examInfoHtml += "<option value='3' selected='selected' >一般</option>";
+    }else{
+        examInfoHtml += "<option value='3'>一般</option>";
+    }
+    if(lastScore=='2'){
+        examInfoHtml += "<option value='2' selected='selected' >不同意</option>";
+    }else{
+        examInfoHtml += "<option value='2'>不同意</option>";
+    }
+    if(lastScore=='1'){
+        examInfoHtml += "<option value='1' selected='selected' >完全不同意/未做到</option>";
+    }else{
+        examInfoHtml += "<option value='1'>完全不同意/未做到</option>";
+    }
+    if(lastScore=='0'){
+        examInfoHtml += "<option value='0' selected='selected' >不涉及</option>";
+    }else{
+        examInfoHtml += "<option value='0'>不涉及</option>";
+    }
 }
 function showAlert(msg){
     $("#alert").show();
@@ -736,7 +775,7 @@ function setScoreInfo(objId,objValue,examItemId,examItemName,excellentCountLimit
         scoreArr.splice(totalIndex,1);
     }
     scoreArr.push(score);
-    if(examItemId!=72){
+    if(examItemId!=97&&examItemId!=98){
         $("#totalscore_"+staffId+"_"+examItemId).val("");
         var totalScoreValue = 0;
         for(var i=0;i<scoreArr.length;i++){
