@@ -8,7 +8,7 @@ $(function () {
     toHandle();
     var userName = window.sessionStorage.getItem("userName");
     var staffName = window.sessionStorage.getItem("staffName");
-    $("#user-name-p").html(staffName+"（"+userName+"）");
+    //$("#user-name-p").html(staffName+"（"+userName+"）");
 
 
 });
@@ -416,9 +416,9 @@ function setExamInfo(){
     var qusTitle =  getSession("qusInfo").qusNaireName;
     $("#qusTitle").html(qusTitle);
     var headDesc =  getSession("qusInfo").headDesc;
-    $("#headDesc").html(headDesc);
     var bottomDesc =  getSession("qusInfo").bottomDesc;
     $("#bottomDesc").html(showAreaText(bottomDesc));
+    $("#headDesc").html(showAreaText(bottomDesc));
     var examStaffInfo = getSession("examStaffInfo");
     var examItemInfo = getSession("examItemInfo");
     var examInfoHtml = "";
@@ -480,7 +480,7 @@ function setExamInfo(){
                     examInfoHtml += "<div class=\"grade-b\">"+
                         "<select id=\""+scoreIdName+"\" type=\"text\" value=\""+lastScore+"\" style=\"outline:none\""+
                         "onchange= \"setScoreInfo(this.id,this.value,"+examItemId+",'"+examItemName+"',"+excellentCount+","+goodCount+","+normalCount+")\">" +
-                        "<option value=''>请评价</option>";
+                        "<option value=''></option>";
                     if(examItemId==94||examItemId==95||examItemId==96){
                         examInfoHtml += getSpecialScoreSelectStr(lastScore);
                     }else{
@@ -873,7 +873,7 @@ function checkSubmit(isCommit){
         var scoreIdName = $(this).attr("id");
         var examStaffInfo = getSession("staff_"+scoreIdName);
         var examIndexInfo = getSession("index_"+scoreIdName);
-        if(isCommit=='1'&&($(this).find("option:selected").text()=="请评价")){
+        if(isCommit=='1'&&($(this).find("option:selected").text()=="")){
             //showAlert("员工'"+examStaffInfo.staffName+"'的'"+examIndexInfo.indexItemName+"'未评分，请填写后再提交！");
             showAlert("您对'"+examStaffInfo.staffName+"'未完成评价，请填写后再提交！");
             $(this).focus();
